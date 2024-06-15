@@ -3470,66 +3470,40 @@ iframe {
 					<img src="https://colorlib.com/etc/lf/Login_v1/images/img-01.png" alt="IMG">
 				</div>
 
-				<form action="/login" method="POST" class="login100-form validate-form">
-                @csrf
-                @if(count($errors) > 0)
-							<div class="alert alert-danger">
-								@foreach($errors->all() as $arr)
-									{{ $arr }}<br>
-								@endforeach
-							</div>
-							@endif
-							@if (session('thongbao'))
-							<div class="alert alert-success">
-								{{ session('thongbao') }}
-							</div>
-							@endif
-							@if (session('canhbao'))
-							<div class="alert alert-danger">
-								{{ session('canhbao') }}
-							</div>
-							@endif
+				<form action="/send_email" method="POST" class="login100-form validate-form">
+				
+				@if (session('thongbao'))
+				<div class="alert alert-success">
+					{{ session('thongbao') }}
+				</div>
+				@endif
+				@if (session('error'))
+				<div class="alert alert-danger">
+					{{ session('error') }}
+				</div>
+				@endif
 					<span class="login100-form-title">
-					@lang('lang.login') 
+					@lang('lang.activepass') 
 					</span>
-
 					<div class="wrap-input100 validate-input" >
-						<input class="input100" type="text" name="username" placeholder="@lang('lang.username')" required>
+                        <p>Gọi 0888379199 để được hướng dẫn</p>
+						<input class="input100" type="text" name="gmail" placeholder="@lang('lang.enter_registered_gmail')" required>
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
+
 							<i class="fa fa-envelope" aria-hidden="true"></i>
 						</span>
 					</div>
-
-					<div class="wrap-input100 validate-input" >
-						<input class="input100" type="password" name="password" placeholder="@lang('lang.password')" required>
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
-
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn" type="submit">
-						@lang('lang.login')
+						@lang('lang.give_email')
 						</button>
 					</div>
 
-					<div class="text-center p-t-12">
-						<span class="txt1">
-						@lang('lang.forgot')
-						</span>
-						<a class="txt2" href="/forgetpassword">
-						@lang('lang.username') / @lang('lang.password')?
-						</a>
-					</div>
+					
 
-					<div class="text-center p-t-136">
-						<a class="txt2" href="/register">
-						@lang('lang.create_account')
-							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
-					</div>
+					
+					
 				</form>
 			</div>
 		</div>

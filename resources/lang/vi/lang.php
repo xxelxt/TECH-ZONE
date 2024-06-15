@@ -141,5 +141,10 @@ return [
     'forgot'=>'Quên',
     'create_account'=>'Tạo tài khoản',
     'account'=>'tài khoản',
-    'register'=>'Đăng ký'
+    'register'=>'Đăng ký',
+    'give_email'=>"Gửi Email",
+    'activepass'=>"Kích hoạt lại mật khẩu",
+    'enter_registered_gmail'=>'Nhập gmail đã đăng ký',
+    'give_password'=>'Lấy lại mật khẩu'
+
 ];

@@ -25,6 +25,7 @@ use Spatie\Permission\Models\Permission;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {

@@ -11,7 +11,9 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\SubCategoriesController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Route;
+
 use Spatie\Permissions\Models\Role;
 use Illuminate\Support\Facades\Cookie;
 /*
@@ -199,6 +201,12 @@ Route::prefix('admin')->group(function(){
     
     Route::prefix('/')->middleware('admin','role:user')->group(function(){
     });
+
+
+    // xử lý quên mk
+    Route::get('/forgetpassword',[MailController::class,'forgetpassword']);
+    // Route::post('/send_email',[MailController::class,'send_passreset_token']);
+    Route::post('/send_email', [MailController::class, 'send_passreset_token']);
 // Route::get('/', function () {
 //     return view('welcome');
 // });

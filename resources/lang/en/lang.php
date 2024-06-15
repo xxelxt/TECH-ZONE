@@ -140,5 +140,9 @@ return [
     'forgot'=>'Forgot',
     'create_account'=>'Create you account',
     'account'=>'Account',
-    'register'=>'Register'
+    'register'=>'Register',
+    'give_email'=>'Give Email',
+    'activepass'=>"Active Pass",
+    'enter_registered_gmail'=>'Enter registered gmail',
+    'give_password'=>'Give password'
 ];
