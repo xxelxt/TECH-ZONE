@@ -7,7 +7,7 @@ $content = Cart::content();
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
     <div class="humberger__menu__logo">
-        <a href="#"><img src="upload/logos/{!! ($about!=null)?$about['logo']: '' !!}" alt=""></a>
+        <a href="#"><img src="upload/logos/{!! ($about!=null)?$about['logo']: '' !!}" alt="" width="300"></a>
     </div>
     <div class="humberger__menu__cart">
         @if(Auth::check())
@@ -61,14 +61,21 @@ $content = Cart::content();
                     @endforeach
                 </ul>
             </li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#">Tin tức</a>
+                <ul class="header__menu__dropdown dpd_categories">
+                    <li class="dpd_categories"><a href="#">Đánh giá</a></li>
+                    <li class="dpd_categories"><a href="#">Blog</a></li>
+                    <li class="dpd_categories"><a href="#">Sự kiện</a></li>
+                </ul>
+            </li>
+
+            <li><a href="#">Giới thiệu</a></li>
         </ul>
     </nav>
     <div id="mobile-menu-wrap"></div>
     <div class="header__top__right__social">
         <a href="#"><i class="fa fa-facebook"></i></a>
-        <a href="#"><i class="fa fa-twitter"></i></a>
+        <a href="#"><i class="fa fa-instagram"></i></a>
         <a href="#"><i class="fa fa-linkedin"></i></a>
         <a href="#"><i class="fa fa-pinterest-p"></i></a>
     </div>

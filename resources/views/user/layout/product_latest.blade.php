@@ -38,10 +38,12 @@
                     </div>
                     <div class="featured__item__text">
                         @if(isset($new['name']))
-                        <h6><a href="/products/{!! $new['id'] !!}">{!! $new['name'] !!}</a></h6>
+                        <h5><a href="/products/{!! $new['id'] !!}">{!! $new['name'] !!}</a></h5>
                         @endif
                         @if(isset($new['price']))
-                        <h5>${!! number_format($new['price']) !!}</h5>
+                        <div class="product__discount__item__text">
+                            <div class="product__item__price">{!! number_format($new['price']) !!}đ</div>
+                        </div>
                         @endif
                     </div>
                 </div>

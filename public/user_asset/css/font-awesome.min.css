@@ -180,7 +180,7 @@
 }
 .fa-heart:before{
     content:"\f004";
-    color: red;
+    color: rgb(218, 47, 47);
 }
 .fa-star:before{
     content:"\f005"

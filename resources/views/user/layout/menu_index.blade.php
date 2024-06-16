@@ -35,7 +35,7 @@
 						<form action="/search">
 							<a href="/all_products">
 								<div class="hero__search__categories">
-									->@lang('lang.all') @lang('lang.products') <- </div>
+									@lang('lang.all') @lang('lang.products')</div>
 							</a>
 							<input type="search" name="search" value="{!! Request::get('search') !!}" placeholder="@lang('lang.search')...">
 							<button type="submit" class="site-btn">@lang('lang.search')</button>
@@ -56,7 +56,7 @@
 						<div class="carousel-inner">
 							@foreach($banners as $value)
 							<div class="carousel-item @if($loop->first) active @endif">
-								<img class="d-block w-100" src="user_asset/images/banners/{!! $value['image'] !!}" alt="First slide" style="height: 450px">
+								<img class="d-block" src="user_asset/images/banners/{!! $value['image'] !!}" alt="First slide" style="height: 400px">
 							</div>
 							@endforeach
 							<a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

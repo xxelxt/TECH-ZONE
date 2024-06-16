@@ -22,11 +22,11 @@
                         <!-- Đặt hình nền cho sản phẩm bằng hình ảnh từ dữ liệu -->
                         <!-- <img src="user_asset/images/products/{!! $pro['image'] !!}" alt=""> -->
                         <ul class="featured__item__pic__hover">
-                        <!-- Kiểm tra nếu người dùng đã đăng nhập -->
-                            @if(Auth::check()) 
+                            <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                            @if(Auth::check())
                             @php
                             //Đếm số lượng wishlist của sản phẩm
-                            $countWishlist = $wishlist->countWishlist($pro['id']); 
+                            $countWishlist = $wishlist->countWishlist($pro['id']);
                             @endphp
                             <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
                                     @if($countWishlist > 0) <!-- Kiểm tra nếu sản phẩm đã có trong wishlist -->
@@ -45,12 +45,15 @@
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                         <!-- Kiểm tra nếu tên sản phẩm tồn tại -->
+                        <!-- Kiểm tra nếu tên sản phẩm tồn tại -->
                         @if(isset($pro['name']))
-                        <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6> <!-- Hiển thị tên sản phẩm -->
+                        <h5><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h5> <!-- Hiển thị tên sản phẩm -->
                         @endif
                         @if(isset($pro['price'])) <!-- Kiểm tra nếu giá sản phẩm tồn tại -->
-                        <h5>${!! number_format($pro['price']) !!}</h5> <!-- Hiển thị giá sản phẩm -->
+                        <div class="product__discount__item__text">
+                            <div class="product__item__price">{!! number_format($pro['price']) !!}đ</div>
+                        </div>
+                        <!-- Hiển thị giá sản phẩm -->
                         @endif
                     </div>
                 </div>

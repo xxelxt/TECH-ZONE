@@ -4,7 +4,7 @@ $content = Cart::content();
 ?>
 <header class="header">
     <div class="header__top">
-        <div class="container">
+        <div class="container mb-2">
             <div class="row">
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__left">
@@ -18,8 +18,8 @@ $content = Cart::content();
                     <div class="header__top__right">
                         <div class="header__top__right__social">
                             <a href="{!! $about['linkfanpage'] !!}"><i class="fa fa-facebook"></i></a>
+                            <a href="#"><i class="fa fa-instagram"></i></a>
                             <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-linkedin"></i></a>
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
                         <div class="header__top__right__language">
@@ -49,32 +49,30 @@ $content = Cart::content();
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container mb-2">
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="./"><img src="upload/logos/{!! ($about!=null)?$about['logo']: '' !!}" alt=""></a>
+                    <a href="./"><img src="upload/logos/{!! ($about!=null)?$about['logo']: '' !!}" alt="" width="300"></a>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="margin-top: 10px">
                 <nav class="header__menu">
                     <ul>
                         <li class=""><a href="/">@lang('lang.home')</a></li>
                         <li><a href="/all_products">@lang('lang.products')</a></li>
-                        <li><a href="#">Pages</a>
+                        <li><a href="#">Tin tức</a>
                             <ul class="header__menu__dropdown">
-                                <li><a href="#">Shop Details</a></li>
-                                <li><a href="#">Shoping Cart</a></li>
-                                <li><a href="#">Check Out</a></li>
-                                <li><a href="#">Blog Details</a></li>
+                                <li><a href="#">Đánh giá</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Sự kiện</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Giới thiệu</a></li>
                     </ul>
                 </nav>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-3" style="margin-top: 10px">
                 <div class="header__cart">
                 @auth
                     <ul>               
@@ -83,18 +81,18 @@ $content = Cart::content();
                         </a></li>
                         <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
-                    <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
+                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
                 @else
                     <ul>               
                         <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
-                    <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
+                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
                 @endauth
 
                 </div>
             </div>
         </div>
-        <div class="humberger__open">
+        <div class="humberger__open" style="margin-top: 15px">
             <i class="fa fa-bars"></i>
         </div>
     </div>

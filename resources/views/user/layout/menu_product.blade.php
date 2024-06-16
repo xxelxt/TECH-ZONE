@@ -60,10 +60,6 @@
 	var listItems = document.querySelectorAll('.submenu-list_item');
 	var itemShows = document.querySelectorAll('.item-show');
 
-	// listItem.addEventListener('mouseenter', function(){
-	// 	itemShow.classList.add('active');
-	// })
-
 	listItems.forEach((item, index) => {
 		const itemShow = itemShows[index];
 

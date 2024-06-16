@@ -160,7 +160,7 @@
                     <img src="upload/avatar/{!! $value['image'] !!}" alt="user image" class="img-radius img-40 align-top m-r-15" style="box-shadow: none">
                     <div class="d-inline-block">
                         <h6>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</h6>
-                        <p class="text-muted m-b-0">{!! $value['email'] !!}!</p>
+                        <p class="text-muted m-b-0">{!! $value['email'] !!}</p>
                         <span class="status deactive text-mute"><i class="far fa-clock m-r-10"></i>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</span>
                     </div>
                 </div>
