@@ -1,106 +1,72 @@
 @extends('admin.layout.index')
 @section('content')
 @role('admin')
-<div class="page-header card">
-    <div class="row align-items-end">
-        <div class="col-lg-8">
-            <div class="page-header-title">
-                <i class="feather icon-menu bg-c-blue"></i>
-                <div class="d-inline">
-                    <h4>@lang('lang.staff')</h4>
-                    <span>@lang('lang.list')</span>
-                </div>
-            </div>
+<div class="card" style="border: none; margin: 30px;">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1>@lang('lang.staff')</h1>
+            <p class="text-muted">@lang('lang.list')</p>
         </div>
-        <div class="col-lg-4">
-            <div class="page-header-breadcrumb">
-                <ul class=" breadcrumb breadcrumb-title">
-                    <li class="breadcrumb-item">
-                        <a href="index.html"><i class="feather icon-home"></i></a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#!">@lang('lang.staff')</a> </li>
-                </ul>
-            </div>
+        <div class="col-auto">
+            <a href="admin/staff/create" class="btn btn-primary">
+                @lang('lang.add')
+            </a>
         </div>
     </div>
 </div>
-<div class="main-body">
 
-    <div class="page-wrapper">
-
-        <div class="page-body">
-            <div class="row">
-                <div class="col-sm-12">
-
-                    <div class="card">
-
-                        <div class="card-block">
-                            <a href="admin/staff/create" class="text-light">
-                                <button class=" btn btn-primary float-right mb-3">@lang('lang.add')</button>
-                            </a>
-                            <div class="dt-responsive table-responsive">
-                                <table id="autofill" class="table table-striped table-bordered nowrap ">
-                                    <thead>
-                                        <tr align="center">
-                                            <th>ID</th>
-                                            <!-- <th>FirstName</th>
-                                            <th>LastName</th> -->
-                                            <th>@lang('lang.staff')</th>
-                                            <th>Email</th>
-                                            <th>@lang('lang.role')</th>
-                                            <th>@lang('lang.created')</th>
-                                            <th>@lang('lang.updated')</th>
-                                            <th>@lang('lang.active')</th>
-                                            <th>@lang('lang.edit') @lang('lang.role')</th>
-                                            <th>@lang('lang.edit') @lang('lang.permission')</th>
-                                            <th>@lang('lang.edit') @lang('lang.info')</th>
-                                            <th>@lang('lang.delete')</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($users as $value)
-                                        @foreach($value['roles'] as $role)
-                                        @if($role['name'] == 'admin' || $role['name'] == 'staff' )
-                                        <tr align="center">
-                                            <td>{!! $value['id'] !!}</td>
-                                            <!-- <td>{!! $value['firstname'] !!}</td>
-                                            <td>{!! $value['lastname'] !!}</td> -->
-                                            <td>{!! $value['username'] !!}</td>
-                                            <td>{!! $value['email'] !!}</td>
-                                            @foreach($value['roles'] as $role)
-                                            <td>
-                                                {!! $role['name'] !!}
-                                            </td>
-                                            @endforeach
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
-                                            @if($value->hasRole('admin'))
-                                            <td>
-                                                <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" class="btn-check" data-onstyle="secondary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!} disabled>
-                                            </td>
-                                            @else
-                                            <td>
-                                                <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!} >
-                                            </td>
-                                            @endif
-                                            <td class="center "><a class="btn btn-primary " href="admin/staff/role/{!! $value['id'] !!}">@lang('lang.role')</a></td>
-                                            <td class="center "><a class="btn btn-success " href="admin/staff/permission/{!! $value['id'] !!}">@lang('lang.permission')</a></td>
-                                            <td class="center "><a class="btn btn-warning " href="admin/staff/edit/{!! $value['id'] !!}">@lang('lang.edit')</a></td>
-                                            <td class="center "><a href="javascript:void(0)" data-url="{{ url('ajax/delete_staff', $value['id'] ) }}" class="btn btn-danger delete-staff">@lang('lang.delete')</a></td>
-                                        </tr>
-                                        @endif
-                                        @endforeach
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<div class="card" style="border: none; margin: 30px;">
+    <div class="table-responsive">
+        <table id="autofill" class="table table-bordered">
+            <thead>
+                <tr align="center">
+                    <th>ID</th>
+                    <th>@lang('lang.staff')</th>
+                    <th>Email</th>
+                    <th>@lang('lang.role')</th>
+                    <th>@lang('lang.created')</th>
+                    <th>@lang('lang.updated')</th>
+                    <th>@lang('lang.active')</th>
+                    <th>@lang('lang.edit') @lang('lang.role')</th>
+                    <th>@lang('lang.edit') @lang('lang.permission')</th>
+                    <th>@lang('lang.edit') @lang('lang.info')</th>
+                    <th>@lang('lang.delete')</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($users as $value)
+                @foreach($value['roles'] as $role)
+                @if($role['name'] == 'admin' || $role['name'] == 'staff' )
+                <tr align="center">
+                    <td>{!! $value['id'] !!}</td>
+                    <td>{!! $value['username'] !!}</td>
+                    <td>{!! $value['email'] !!}</td>
+                    @foreach($value['roles'] as $role)
+                    <td>
+                        {!! $role['name'] !!}
+                    </td>
+                    @endforeach
+                    <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
+                    <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
+                    @if($value->hasRole('admin'))
+                    <td>
+                        <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" class="btn-check" data-onstyle="secondary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!} disabled>
+                    </td>
+                    @else
+                    <td>
+                        <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
+                    </td>
+                    @endif
+                    <td><a class="btn btn-primary" href="admin/staff/role/{!! $value['id'] !!}">@lang('lang.role')</a></td>
+                    <td><a class="btn btn-success" href="admin/staff/permission/{!! $value['id'] !!}">@lang('lang.permission')</a></td>
+                    <td><a class="btn btn-warning" href="admin/staff/edit/{!! $value['id'] !!}">@lang('lang.edit')</a></td>
+                    <td><a href="javascript:void(0)" data-url="{{ url('ajax/delete_staff', $value['id'] ) }}" class="btn btn-danger delete-staff">@lang('lang.delete')</a></td>
+                </tr>
+                @endif
+                @endforeach
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 @else

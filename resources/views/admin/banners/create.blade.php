@@ -1,85 +1,56 @@
 @extends('admin.layout.index')
-@section('content') 
-<div class="page-header card">
-    <div class="row align-items-end">
-        <div class="col-lg-8">
-            <div class="page-header-title">
-                <i class="feather icon-aperture bg-c-blue"></i>
-                <div class="d-inline">
-                    <h4>@lang('lang.ban')</h4>
-                    <span>@lang('lang.add')</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="page-header-breadcrumb">
-                <ul class=" breadcrumb breadcrumb-title">
-                    <li class="breadcrumb-item">
-                        <a href=""><i class="feather icon-home"></i></a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#!">@lang('lang.ban')</a> </li>
-                </ul>
-            </div>
+@section('content')
+<div class="card" style="border: none; margin: 30px;">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1>@lang('lang.ban')</h1>
+            <p class="text-muted">@lang('lang.add')</p>
         </div>
     </div>
 </div>
-<div class="main-body">
-    <div class="page-wrapper">
-        <div class="page-body">
-            <div class="row">
-                <div class="col-sm-12">
 
-                    <div class="card">
-                        <div class="card-header">
-                            <!-- dich theo ngôn ngữ đã chọn -->
-                            <h5>@lang('lang.add') @lang('lang.ban')</h5>
-                        </div>
-                        <div class="card-block">
-                            @if(count($errors)>0)
-                            <div class="alert alert-danger">
-                                @foreach($errors->all() as $arr)
-                                {{$arr}}<br>
-                                @endforeach
+<div class="card" style="border: none; margin: 30px;">
+    <div class="card-body">
+        @if(count($errors) > 0)
+            <div class="alert alert-danger">
+                @foreach($errors->all() as $arr)
+                    {{$arr}}<br>
+                @endforeach
+            </div>
+        @endif
+        @if (session('thongbao'))
+            <div class="alert alert-success">
+                {{session('thongbao')}}
+            </div>
+        @endif
 
-                            </div>
-                            @endif
-                            @if (session('thongbao'))
-                            <div class="alert alert-success">
-                                {{session('thongbao')}}
-                            </div>
-                            @endif
-                            <form action="admin/banners/create" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group row">
-                                    <label class="col-sm-1 col-form-label">@lang('lang.image')</label>
-                                    <div class="col-sm-11">
-                                        <input type="file" name="Image[]" class="form-control" multiple>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-1 col-form-label">@lang('lang.active')</label>
-                                    <div class="col-sm-11 mt-2">
-                                        <label class="radio-inline">
-                                            <input name="active" value="1" checked  type="radio">@lang('lang.yes')
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input name="active" value="0"  type="radio">@lang('lang.no')
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-1"></label>
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary m-b-0">@lang('lang.add')</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+        <form action="admin/banners/create" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="row mb-3">
+                <label class="col-md-1 col-form-label">@lang('lang.image')</label>
+                <div class="col-md-11">
+                    <input type="file" name="Image[]" class="form-control" multiple> 
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-md-1 col-form-label">@lang('lang.active')</label>
+                <div class="col-md-11 mt-2">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="active" value="1" checked>
+                        <label class="form-check-label">@lang('lang.yes')</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="active" value="0">
+                        <label class="form-check-label">@lang('lang.no')</label>
                     </div>
                 </div>
             </div>
-        </div>
-
+            <div class="row mb-3">
+                <div class="col-md-11 offset-md-1">
+                    <button type="submit" class="btn btn-primary m-b-0">@lang('lang.submit')</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

@@ -3,18 +3,18 @@
         <div class="navbar-logo">
 
             <a href="/admin">
-                <img class="img-fluid" src="upload/admin/logo.png" alt="Theme-Logo" />
+                <img class="img-fluid" src="upload/admin/logo.png" alt="Theme-Logo" width="200px" height="45px" />
             </a>
             <a class="mobile-menu" id="mobile-collapse" href="#!">
-                <i class="feather icon-menu icon-toggle-right"></i>
+                <i class="feather icon-menu icon-toggle-right" style="color: #06121a;"></i>
             </a>
             <a class="mobile-options waves-effect waves-light">
-                <i class="feather icon-more-horizontal"></i>
+                <i class="feather icon-more-horizontal" style="color: #06121a;"></i>
             </a>
         </div>
         <div class="navbar-container container-fluid">
-            <ul class="nav-right">
-                <li class="user-profile header-notification">
+            <ul class="nav-right" style="margin-top: 7px; margin-right: 20px; padding-left: 0px;">
+                <li class="user-profile header-notification" style="padding-left: 0px;">
                     <div class="dropdown-primary dropdown">
 
                         @if (Auth::check())
@@ -43,7 +43,7 @@
                 <div class="dropDown">
                     <div class="dropDown_box">
                         <span class="seLect" >@lang('lang.lang')</span </div>
-                        <ul class="list_dropdow_menu">
+                        <ul class="list_dropdow_menu" style="padding-left: 0px">
                             <!-- <li class="active">Tiếng Việt</li>
                         <li>Tiếng Anh</li> -->
                             <li><a href="lang/en">@lang('lang.en')</a>

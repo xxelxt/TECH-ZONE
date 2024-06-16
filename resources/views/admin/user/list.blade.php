@@ -1,92 +1,64 @@
 @extends('admin.layout.index')
 @section('content')
 @can('list users')
-<div class="page-header card">
-    <div class="row align-items-end">
-        <div class="col-lg-8">
-            <div class="page-header-title">
-                <i class="feather icon-menu bg-c-blue"></i>
-                <div class="d-inline">
-                    <h4>@lang('lang.user')</h4>
-                    <span>@lang('lang.list')</span>
-                </div>
+    <div class="card" style="border: none; margin: 30px;">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1>@lang('lang.user')</h1>
+                <p class="text-muted">@lang('lang.list')</p>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="page-header-breadcrumb">
-                <ul class=" breadcrumb breadcrumb-title">
-                    <li class="breadcrumb-item">
-                        <a href="index.html"><i class="feather icon-home"></i></a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#!">@lang('lang.user')</a> </li>
-                </ul>
-            </div>
+            {{-- Bạn có thể thêm nút thêm mới ở đây nếu cần --}}
         </div>
     </div>
-</div>
-<div class="main-body">
 
-    <div class="page-wrapper">
-
-        <div class="page-body">
-            <div class="row">
-                <div class="col-sm-12">
-
-                    <div class="card">
-
-                        <div class="card-block">
-                            <div class="dt-responsive table-responsive">
-                                <table id="autofill" class="table table-striped table-bordered nowrap">
-                                    <thead>
-                                        <tr align="center">
-                                            <th>ID</th>
-                                            <th>@lang('lang.fristname')</th>
-                                            <th>@lang('lang.lastname')</th>
-                                            <th>@lang('lang.username')</th>
-                                            <th>Email</th>
-                                            <th>@lang('lang.created')</th>
-                                            <th>@lang('lang.updated')</th>
-                                            @can('delete users')
-                                            <th>@lang('lang.active')</th>
-                                            <th>@lang('lang.delete')</th>
-                                            @endcan
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($users as $value)
-                                        @foreach($value['roles'] as $role)
-                                        @if($role['name'] == 'user')
-                                        <tr align="center">
-                                            <td>{!! $value['id'] !!}</td>
-                                            <td>{!! $value['firstname'] !!}</td>
-                                            <td>{!! $value['lastname'] !!}</td>
-                                            <td>{!! $value['username'] !!}</td>
-                                            <td>{!! $value['email'] !!}</td>
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
-                                            @can('delete users')
-                                            <td>
-                                                <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
-                                            </td>
-                                            <td class="center "><a href="javascript:void(0)" data-url="{{ url('ajax/delete_staff', $value['id'] ) }}" class="btn btn-danger delete-staff">@lang('lang.delete')</a></td>
-                                            @endcan
-                                        </tr>
-                                        @endif
-                                        @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="card" style="border: none; margin: 30px;">
+        <div class="table-responsive">
+            <table id="autofill" class="table table-bordered">
+                <thead>
+                    <tr align="center">
+                        <th>ID</th>
+                        <th>@lang('lang.fristname')</th>
+                        <th>@lang('lang.lastname')</th>
+                        <th>@lang('lang.username')</th>
+                        <th>Email</th>
+                        <th>@lang('lang.created')</th>
+                        <th>@lang('lang.updated')</th>
+                        @can('delete users') 
+                            <th>@lang('lang.active')</th>
+                            <th>@lang('lang.delete')</th>
+                        @endcan
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($users as $value)
+                        @foreach($value['roles'] as $role)
+                            @if($role['name'] == 'user')
+                                <tr align="center">
+                                    <td>{!! $value['id'] !!}</td>
+                                    <td>{!! $value['firstname'] !!}</td>
+                                    <td>{!! $value['lastname'] !!}</td>
+                                    <td>{!! $value['username'] !!}</td>
+                                    <td>{!! $value['email'] !!}</td>
+                                    <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
+                                    <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
+                                    @can('delete users')
+                                        <td>
+                                            <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" data-url="{{ url('ajax/delete_user', $value['id'] ) }}" class="btn btn-danger delete-user">@lang('lang.delete')</a>
+                                        </td>
+                                    @endcan
+                                </tr>
+                            @endif
+                        @endforeach
+                    @endforeach
+                </tbody>
+            </table>
         </div>
-
     </div>
-</div>
 @else
-<h1 align="center">@lang('lang.deny')</h1>
+    <h1 align="center">@lang('lang.deny')</h1>
 @endcan
 @section('script')
 <script>

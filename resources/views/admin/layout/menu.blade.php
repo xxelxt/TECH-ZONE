@@ -1,8 +1,7 @@
 <nav class="pcoded-navbar">
     <div class="nav-list">
         <div class="pcoded-inner-navbar main-menu">
-            <div class="pcoded-navigation-label">@lang('lang.manage')</div>
-            <ul class="pcoded-item pcoded-left-item">
+            <ul class="pcoded-item pcoded-left-item" style="margin-top: 30px;">
                 <!-- Categories -->
                 @can('list category')
                 <li class="pcoded">
@@ -95,7 +94,7 @@
                         <span class="pcoded-micon">
                             <i class="feather icon-credit-card "></i>
                         </span>
-                        <span class="pcoded-mtext">@lang('lang.order')</span>
+                        <span class="pcoded-mtext">@lang('lang.orders')</span>
                     </a>
                 </li>
                 @endcan

@@ -98,7 +98,7 @@
                                 </ul>
                             </div>
                             <div class="product__item__text">
-                                <h6><a href="#">{!! $pro['name'] !!}</a></h6>
+                                <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
                                 @if(isset($pro['price']))
                                 <h5>{!! number_format($pro['price']) !!}</h5>
                                 @else

@@ -81,15 +81,12 @@ $content = Cart::content();
                         <li><a href="/wishlist_pages">
                             <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
                         </a></li>
-                        <li><a href="user/pages/product_cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
+                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
                     <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
                 @else
                     <ul>               
-                        <li><a href="/wishlist_pages">
-                            <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
-                        </a></li>
-                        <li><a href="user/pages/product_cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
+                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
                     <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
                 @endauth

@@ -2,6 +2,7 @@
 @section('content')
 @include('user.layout.menu_product')
 <?php
+
 use Gloudemans\Shoppingcart\Facades\Cart;
 // if (session()->has('cart')) {
 //             Cart::destroy(); // Xóa thông tin giỏ hàng hiện tại
@@ -16,6 +17,7 @@ use Gloudemans\Shoppingcart\Facades\Cart;
 $content = Cart::content();
 
 ?>
+
 <body>
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-section set-bg" data-setbg="user_asset/images/breadcrumb.jpg">
@@ -51,48 +53,40 @@ $content = Cart::content();
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($content as $value)                             
+                                @foreach($content as $value)
                                 <tr>
                                     <td class="shoping__cart__item">
                                         <img src="user_asset/images/products/{!! $value->options->image !!}" width="200px" alt="">
                                         <h5>{!! $value->name !!}</h5>
                                     </td>
                                     <td class="shoping__cart__price">
-                                       @if($value->options->price_new)
+                                        @if($value->options->price_new)
                                         {!! number_format($value->options->price_new).' '.'đ' !!}
                                         @else
                                         {!! number_format($value->price).' '.'đ' !!}
-                                       @endif
+                                        @endif
                                     </td>
-                                    <form action="/update_cart" method="POST">
-                                        @csrf
                                     <td class="shoping__cart__quantity">
                                         <div class="quantity">
                                             <div class="pro-qty">
-                                                <input type="text" name="cart_quantity" value="{!! $value->qty !!}">
-                                                
+                                                <input type="text" name="cart_quantity" value="{{ $value->qty }}" min="1" data-rowid="{{ $value->rowId }}" class="cart-quantity-input" readonly>
+
                                             </div>
                                         </div>
-                                        <input type="hidden" value="{!! $value->rowId !!}" name="rowId_cart">
                                     </td>
-                                    <td><input type="submit" value="@lang('lang.update')" name="update_qty"></td>
-                                    </form>
                                     <td class="shoping__cart__total">
-                                    <?php 
-                                        if($value->options->price_new)
-                                        {
+                                        <?php
+                                        if ($value->options->price_new) {
                                             $value->price = $value->options->price_new;
                                             $sum = $value->price * $value->qty;
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             $sum = $value->price * $value->qty;
                                         }
-                                        echo number_format($sum).' '.'đ';
-                                    ?>
+                                        echo number_format($sum) . ' ' . 'đ';
+                                        ?>
                                     </td>
                                     <td class="shoping__cart__item__close">
-                                       <a href="/delete_cart/{!! $value->rowId !!}"> <span class="icon_close"></span></a>
+                                        <a href="/delete_cart/{!! $value->rowId !!}"> <span class="icon_close"></span></a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -107,9 +101,9 @@ $content = Cart::content();
                         <a href="/" class="primary-btn cart-btn">@lang('lang.continue_shopping')</a>
                         <form action="/delete_discount" method="POST">
                             @csrf
-                        <button type="submit" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
-                        @lang('lang.delete_coupon')</button>
-                            </form>
+                            <button type="submit" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span>
+                                @lang('lang.delete_coupon')</button>
+                        </form>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -130,7 +124,7 @@ $content = Cart::content();
                         <ul>
                             <li>@lang('lang.subtotal') <span> {!! Cart::pricetotal(0,',','.').' '.'đ' !!}</span></li>
                             <li>@lang('lang.discounts')<span> {!! Cart::discount(0,',','.').' '.'đ' !!}</span></li>
-                            <li>@lang('lang.tax') <span> {!! Cart::tax(0,',','.').' '.'đ' !!}</span></li>                      
+                            <li>@lang('lang.tax') <span> {!! Cart::tax(0,',','.').' '.'đ' !!}</span></li>
                             <li>@lang('lang.total_price') <span> {!! Cart::total(0,',','.').' '.'đ' !!}</span></li>
                         </ul>
                         <a href="/checkout" class="primary-btn">@lang('lang.proceed_checkout')</a>
@@ -196,6 +190,51 @@ $content = Cart::content();
                 }
             });
         });
+
+        // Handle Decrease Button Click
+        $('.shoping__cart__quantity').on('click', '.dec', function() {
+            var input = $(this).siblings('.cart-quantity-input');
+            var qty = parseInt(input.val());
+
+            if (qty < 1) {
+                qty = 1;
+            }
+
+            input.val(qty); // Update the input value without triggering the change event
+
+            // Trigger AJAX Update
+            updateCart(input);
+        });
+
+        // Handle Increase Button Click
+        $('.shoping__cart__quantity').on('click', '.inc', function() {
+            var input = $(this).siblings('.cart-quantity-input');
+            var qty = parseInt(input.val());
+
+            input.val(qty); // Update the input value without triggering the change event
+
+            // Trigger AJAX Update
+            updateCart(input);
+        });
+
+        // Update Cart Function
+        function updateCart(input) {
+            var rowId = input.data('rowid');
+            var qty = parseInt(input.val());
+
+            $.ajax({
+                type: 'POST',
+                url: '/update_cart',
+                data: {
+                    rowId_cart: rowId,
+                    cart_quantity: qty,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    location.reload();
+                }
+            });
+        }
     });
 </script>
 @endsection

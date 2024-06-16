@@ -393,7 +393,6 @@ class UserController extends Controller
                 // echo "</pre>";
                 // Kiểm tra nếu có dữ liệu trong giỏ hàng
                 if (!empty($cartContent)) {
-                    Cart::destroy(); // Xóa giỏ hàng hiện tại
                     // Cookie::forget('cart'); // Xóa cookie có tên là 'cart'
                     foreach ($cartContent as $item) {
                         // if($userId == $item['current_id']){
@@ -415,7 +414,7 @@ class UserController extends Controller
 
         // Hiển thị trang giỏ hàng
         // echo ($request);
-        Cart::destroy();
+        // Cart::destroy();
 
         $products_id = $request->productid_hidden;
         $quantity = $request->qty;
@@ -547,6 +546,7 @@ class UserController extends Controller
                 $product->save();
             }
             Cart::destroy();
+            Cookie::queue(Cookie::forget('cart'));
             // session()->forget('cart');
             cookie()->forget('cart');
             return redirect('/your_orders')->with('thongbao', 'Successfully');
@@ -584,6 +584,7 @@ class UserController extends Controller
                 $product->save();
             }
             Cart::destroy();
+            Cookie::queue(Cookie::forget('cart'));
             // cookie()->forget('cart');
             return redirect('/your_orders')->with('thongbao', 'Successfully');
         }
@@ -638,161 +639,6 @@ class UserController extends Controller
         return redirect('/profile')->with('thongbao', 'Cập nhật thành công');
         // dd($user);
     }
-
-    // Phương thức để đặt hàng
-
-    // // Phương thức để xử lý thêm sản phẩm vào giỏ hàng
-    // public function Postcart(Request $request)
-    // {
-    //     // Hiển thị trang giỏ hàng
-    //     $products_id = $request->productid_hidden;
-    //     $quantity = $request->qty;
-    //     $products = Products::where('id', $products_id)->first();
-    //     // Cart::add('293ad', 'Product 1', 1, 9.99, 550);
-    //     if ($quantity >= $products['quantity']) {
-    //         return redirect()->back()->with('canhbao', 'Vui lòng đặt hàng ít hơn số lượng: ' . $products['quantity'] . ' !!!');
-    //     } else {
-    //         $data['id'] = $products_id;
-    //         $data['qty'] = $quantity;
-    //         $data['name'] = $products['name'];
-    //         $data['price'] = $products['price'];
-    //         $data['weight'] = 550;
-    //         $data['options']['image'] = $products['image'];
-    //         $data['options']['price_new'] = $products['price_new'];
-    //         $data['options']['size'] = $products['size'];
-    //         Cart::add($data);
-    //         //   Cart::destroy();
-    //         Cart::setGlobalTax(0);
-
-    //     }
-
-    //     return redirect('/cart')->with('thongbao', 'Sucessfully');
-    // }
-
-
-
-
-
-    // // Phương thức để lấy nội dung giỏ hàng
-    // public function index()
-    // {
-    //     // Phương thức để lấy nội dung giỏ hàng
-    //     return Cart::content();
-    // }
-
-    // // Phương thức để hiển thị trang thanh toán
-    // public function checkout()
-    // {
-    //     // Hiển thị trang thanh toán
-    //     $user = Auth::user();
-    //     return view('user.pages.product_checkout', ['user' => $user]);
-    // }
-    // // Phương thức để xóa mục khỏi giỏ hàng
-    // public function delete_cart($rowId)
-    // {
-    //     // Xóa mục khỏi giỏ hàng
-    //     Cart::update($rowId, 0);
-    //     return redirect('/cart')->with('thongbao', 'Sucessfully');
-    // }
-
-    // // Phương thức để cập nhật giỏ hàng // chưa đăng nhập
-    // public function update_cart(Request $request)
-    // {
-    //     // Cập nhật giỏ hàng và chuyển hướng với thông báo thích hợp
-    //     $rowId = $request->rowId_cart;
-    //     $quantity = $request->cart_quantity;
-    //     Cart::update($rowId, $quantity);
-    //     return redirect('/cart')->with('thongbao', 'Sucessfully');
-    // }
-    // // Phương thức để chỉnh sửa hình ảnh người dùng
-    // public function edit_img(Request $request)
-    // {
-    //     // Chỉnh sửa hình ảnh người dùng và chuyển hướng với thông báo thích hợp
-    //     $user = User::find(Auth::user()->id);
-    //     if ($request->hasFile('Image')) {
-    //         $file =  $request->file('Image');
-    //         $format = $file->getClientOriginalExtension();
-    //         if ($format != 'jpg' && $format != 'jpeg' && $format != 'png') {
-    //             return redirect('/profile')->with('thongbao', 'Không hỗ trợ ' . $format);
-    //         }
-    //         $name = $file->getClientOriginalName();
-    //         $img = Str::random(4) . '-' . $name;
-    //         while (file_exists("upload/avatar" . $img)) {
-    //             $img = Str::random(4) . '-' . $name;
-    //         }
-    //         $file->move('upload/avatar/', $img);
-    //         if ($user['image'] != '') {
-    //             if ($user['image'] != 'avatar.jpg') {
-    //                 unlink('upload/avatar/' . $user->image);
-    //             }
-    //         }
-    //         User::where('id', Auth::user()->id)->update(['image' => $img]);
-    //         // $request['image'] = $img;
-    //     }
-    //     return redirect('profile')->with('thongbao', 'Update successfully!');
-    // }
-
-    // // Phương thức để chỉnh sửa hồ sơ người dùng
-    // public function edit_profile(Request $request)
-    // {
-    //     // Chỉnh sửa hồ sơ người dùng và chuyển hướng với thông báo thích hợp
-    //     $user = User::find(Auth::user()->id);
-    //     if ($request['changepasswordprofile'] == 'on') {
-    //         $request->validate([
-    //             'password' => 'required',
-    //             'passwordagain' => 'required|same:password'
-    //         ], [
-    //             'password.required' => 'Vui lòng nhập mật khẩu mới',
-    //             'passwordagain.required' => 'Vui lòng nhập lại mật khẩu mới',
-    //             'passwordagain.same' => 'Mật khẩu nhập lại không đúng'
-    //         ]);
-    //         $request['password'] = bcrypt($request['password']);
-    //     }
-    //     $user->update($request->all());
-    //     // User::where('id',Auth::user()->id)->update($request->all());
-    //     return redirect('/profile')->with('thongbao', 'Cập nhật thành công');
-    //     // dd($user);
-    // }
-
-    // // Phương thức để đặt hàng
-    // public function order_place(Request $request)
-    // {
-    //     // Đặt hàng và chuyển hướng với thông báo thích hợp
-    //     $content = Cart::content();
-    //     //echo $content;
-    //     //insert orders
-    //     $orders = array();
-    //     $orders['users_id'] = Auth::user()->id;
-    //     $orders['lastname'] = $request->lastname;
-    //     $orders['firstname'] = $request->firstname;
-    //     $orders['address'] = $request->address;
-    //     $orders['district'] = $request->district;
-    //     $orders['city'] = $request->city;
-    //     $orders['phone'] = $request->phone;
-    //     $orders['email'] = $request->email;
-    //     $orders['content'] = $request->content;
-    //     $orders['total'] = (int)preg_replace("/[,]+/", "", Cart::total(0));
-    //     // dd((int)preg_replace("/[,]+/", "", Cart::total(0)));
-    //     $orders_id = Orders::insertGetId($orders);
-
-    //     //insert order_details
-    //     foreach ($content as $value) {
-    //         $orders_detail['orders_id'] = $orders_id;
-    //         $orders_detail['product_id'] = $value->id;
-    //         $orders_detail['name'] = $value->name;
-    //         $orders_detail['image'] = $value->options->image;
-    //         $orders_detail['quantity'] = $value->qty;
-    //         $orders_detail['price'] = $value->price;
-    //         Orders_Detail::create($orders_detail);
-    //         // Giảm số lượng sản phẩm trong bảng 'product'
-    //         $product = Products::find($value->id);
-    //         $product->quantity -= $value->qty;
-    //         $product->save();
-    //     }
-    //     Cart::destroy();
-    //     return redirect('/your_orders')->with('thongbao', 'Successfully');
-    // }
-
 
     // Phương thức để hiển thị danh sách đơn hàng (chỉ có quản trị viên mới được truy cập)    
     public function orders_list()

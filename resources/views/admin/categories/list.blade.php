@@ -1,97 +1,76 @@
 @extends('admin.layout.index')
+
 @section('content')
 @can('list category')
-<div class="page-header card">
-    <div class="row align-items-end">
-        <div class="col-lg-8">
-            <div class="page-header-title">
-                <i class="feather icon-menu bg-c-blue"></i>
-                <div class="d-inline">
-                    <h4>@lang('lang.cate')</h4>
-                    <span>@lang('lang.list')</span>
-                </div>
-            </div>
+<div class="card" style="border: none; margin: 30px;">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1>@lang('lang.cate')</h1>
+            <p class="text-muted">@lang('lang.list')</p>
         </div>
-        <div class="col-lg-4">
-            <div class="page-header-breadcrumb">
-                <ul class=" breadcrumb breadcrumb-title">
-                    <li class="breadcrumb-item">
-                        <a href="index.html"><i class="feather icon-home"></i></a>
-                    </li>
-                    <li class="breadcrumb-item"><a href="#!">@lang('lang.cate')</a> </li>
-                </ul>
-            </div>
+        @can('add category')
+        <div class="col-auto">
+            <a href="admin/categories/create" class="btn btn-primary">
+                @lang('lang.add')
+            </a>
+            <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_categories') }}">
+                @lang('lang.delete_all')
+            </button>
         </div>
+        @endcan
     </div>
 </div>
-<div class="main-body">
 
-    <div class="page-wrapper">
-
-        <div class="page-body">
-            <div class="row">
-                <div class="col-sm-12">
-
-                    <div class="card">
-
-                        <div class="card-block">
-                            @can('add category')
-                            <a href="admin/categories/create" class="text-light">
-                                <button class=" btn btn-primary float-right mb-3">@lang('lang.add')</button>
-                            </a>
-                            <button style="margin-bottom: 10px" data-url="{{ url('ajax/deleteall_categories') }}" class="btn btn-danger delete_all">@lang('lang.delete_all')</button>
-                            @endcan
-                            <div class="dt-responsive table-responsive">
-                                <table id="autofill" class="table table-striped table-bordered nowrap ngu">
-                                    <thead>
-                                        <tr align="center">
-                                            <th><input type="checkbox" id="master"></th>
-                                            <th>@lang('lang.name_pro')</th>
-                                            <th>@lang('lang.created')</th>
-                                            <th>@lang('lang.updated')</th>
-                                            @can('add category')
-                                            <th>@lang('lang.active')</th>
-                                            @endcan
-                                            @can('edit category')
-                                            <th>@lang('lang.edit')</th>
-                                            @endcan
-                                            @can('delete category')
-                                            <th>@lang('lang.delete')</th>
-                                            @endcan
-                                        </tr>
-                                    </thead>
-                                    <tbody id="memberBody">
-                                        @foreach($categories as $value)
-                                        <tr align="center">
-                                            <td><input type="checkbox" class="sub_chk" data-id="{!! $value['id'] !!}"></td>
-                                            <td>{!! $value['name'] !!}</td>
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                                            <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
-                                            @can('add category')
-                                            <td>
-                                                <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
-                                            </td>
-                                            @endcan
-                                            @can('edit category')
-                                            <td class="center "><a href="admin/categories/edit/{!! $value['id'] !!}" class="btn btn-warning ">@lang('lang.edit')</a></td>
-                                            @endcan
-                                            @can('delete category')
-                                            <td class="center "><a href="javascript:void(0)" data-url="{{ url('ajax/delete_categories', $value['id'] ) }}" class="btn btn-danger delete-categories"> @lang('lang.delete')</a></td>
-                                            @endcan
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                                {!! $categories->links() !!}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+<div class="card" style="border: none; margin: 30px;">
+    <div class="table-responsive">
+        <table id="autofill" class="table table-bordered">
+            <thead>
+                <tr align="center">
+                    <th><input type="checkbox" id="master"></th>
+                    <th>@lang('lang.name_pro')</th>
+                    <th>@lang('lang.created')</th>
+                    <th>@lang('lang.updated')</th>
+                    @can('add category')
+                    <th>@lang('lang.active')</th>
+                    @endcan
+                    @can('edit category')
+                    <th>@lang('lang.edit')</th>
+                    @endcan
+                    @can('delete category')
+                    <th>@lang('lang.delete')</th>
+                    @endcan
+                </tr>
+            </thead>
+            <tbody id="memberBody">
+                @foreach($categories as $value)
+                <tr align="center">
+                    <td><input type="checkbox" class="sub_chk" data-id="{!! $value['id'] !!}"></td>
+                    <td>{!! $value['name'] !!}</td>
+                    <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
+                    <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
+                    @can('add category')
+                    <td>
+                        <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
+                    </td>
+                    @endcan
+                    @can('edit category')
+                    <td>
+                        <a href="admin/categories/edit/{!! $value['id'] !!}" class="btn btn-warning ">@lang('lang.edit')</a>
+                    </td>
+                    @endcan
+                    @can('delete category')
+                    <td>
+                        <a href="javascript:void(0)" data-url="{{ url('ajax/delete_categories', $value['id'] ) }}" class="btn btn-danger delete-categories"> @lang('lang.delete')</a>
+                    </td>
+                    @endcan
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        {!! $categories->links() !!}
     </div>
 </div>
+
 @else
 <h1 align="center">@lang('lang.deny')</h1>
 @endcan

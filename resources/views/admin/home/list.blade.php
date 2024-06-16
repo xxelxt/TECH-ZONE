@@ -96,7 +96,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="card-block">
+            <div class="card-block" style="margin-top: 20px;">
                 <div class="latest-update-box">
                     @foreach($rating as $value)
                     <div class="row p-b-30">
