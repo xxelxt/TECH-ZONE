@@ -62,24 +62,38 @@
                 <input class="form-control" name="name" placeholder="@lang('lang.enter') @lang('lang.name')" value="{!! $products['name'] !!}" />
             </div>
         </div>
+
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.image')</label>
             <div class="col-md-11">
-                <img src="user_asset/images/products/{!! $products['image'] !!}" width="200px" alt="">
-                <br>
-                <input type='file' name='Image' class="form-control mt-2">
+                <input type='file' name='Image' class="form-control" id="imageInput">
+                <div class="d-flex flex-column">
+                    <div>
+                        <span class="text-muted">@lang('lang.current_image')</span><br>
+                        <img id="currentImage" src="user_asset/images/products/{!! $products['image'] !!}" width="200px" alt="">
+                    </div>
+                    <div class="ms-3" id="previewContainer">
+                        <img id="imagePreview" src="#" alt="Image Preview" style="display: none; width: 200px; margin-top: 10px;">
+                    </div>
+                </div>
+
             </div>
         </div>
 
         {{-- Thư viện ảnh --}}
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.image_library')</label>
-            <div class="col-md-11">
-                <input type='file' name='imagelibrary[]' class="form-control" multiple>
-                @foreach($products->Imagelibrary as $value)
-                    <a href="javascript:void(0)" data-url="{{ url('ajax/deleteimages', $value['id'] ) }}" class="btn text-danger delete-image">X</a>
-                    <img src="user_asset/images/products/{!! $value['image_library'] !!}" style="width: 200px; height: auto;" alt="">
-                @endforeach
+            <div class="col-md-11" id="libraryContainer">
+                <input type='file' name='imagelibrary[]' class="form-control" id="libraryInput" multiple>
+                <div class="row mt-2">
+                    @foreach($products->Imagelibrary as $value)
+                    <div class="col-md-2 text-center">
+                        <a href="javascript:void(0)" data-url="{{ url('ajax/deleteimages', $value['id'] ) }}" class="btn text-danger delete-image">X</a>
+                        <img src="user_asset/images/products/{!! $value['image_library'] !!}" style="width: 200px; height: auto;" alt="">
+                    </div>
+                    @endforeach
+                </div>
+                <div id="libraryPreview" class="row mt-2"></div>
             </div>
         </div>
 
@@ -99,8 +113,12 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Video</label>
             <div class="col-md-11">
-                <input class="form-control" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}" />
-                <iframe style="height: 200px; margin-top: 10px;" width="100%" src="@if(isset($products['link'])) https://www.youtube.com/embed/{!! $products['link'] !!} @endif" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}"/>
+                <div id="videoPreview" style="margin-top: 10px;">
+                    @if(isset($products['link']))
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{!! $products['link'] !!}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    @endif
+                </div>
             </div>
         </div>
         <div class="row mb-3">
@@ -183,6 +201,70 @@
             }
 
         });
+    });
+</script>
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const currentImage = document.getElementById('currentImage');
+    const previewContainer = document.getElementById('previewContainer');
+
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImage.style.display = 'block';
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                previewContainer.classList.add('d-flex');
+            };
+            reader.readAsDataURL(file);
+        } else {
+            currentImage.style.display = 'block';
+            imagePreview.src = '#';
+            imagePreview.style.display = 'none';
+            previewContainer.classList.remove('d-flex');
+        }
+    });
+
+    // Xử lý xem trước cho ảnh mô tả (Image Library)
+    const libraryInput = document.getElementById('libraryInput');
+    const libraryPreview = document.getElementById('libraryPreview');
+    const libraryContainer = document.getElementById('libraryContainer');
+
+    libraryInput.addEventListener('change', function() {
+        libraryPreview.innerHTML = ''; // Xóa các ảnh preview cũ
+
+        for (const file of this.files) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '200px';
+                img.style.margin = '15px';
+                libraryPreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Hiển thị libraryPreview nếu có ảnh được chọn
+        libraryPreview.style.display = this.files.length > 0 ? 'flex' : 'none';
+    });
+
+    // Xử lý thêm iframe video
+    const linkInput = document.getElementById('link');
+    const videoPreview = document.getElementById('videoPreview');
+
+    linkInput.addEventListener('input', function() {
+        const link = this.value;
+        if (link.includes('youtube.com/watch?v=')) {
+            const videoId = link.split('v=')[1].split('&')[0];
+            const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+            videoPreview.innerHTML = `<iframe width="560" height="315" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        } else {
+            videoPreview.innerHTML = ''; // Xóa iframe nếu link không hợp lệ
+        }
     });
 </script>
 @endsection

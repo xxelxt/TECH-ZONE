@@ -5,6 +5,8 @@ return [
     'en'=>'Tiếng Anh',
     'vi'=>'Tiếng Việt',
     'back_to'=>'Quay lại',
+    'current_image'=>'Hình ảnh hiện tại',
+    'new_image'=>'Hình ảnh mới',
     'cate' => 'Danh mục',
     'sub' => 'Danh mục con',
     'brands' => 'Thương hiệu',
