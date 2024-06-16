@@ -27,7 +27,7 @@
                 <thead>
                     <tr align="center">
                         <th><input type="checkbox" id="master"></th>
-                        <th>@lang('lang.name')</th>
+                        <th>@lang('lang.brands')</th>
                         <th>@lang('lang.image')</th>
                         <th>@lang('lang.created')</th>
                         <th>@lang('lang.updated')</th>

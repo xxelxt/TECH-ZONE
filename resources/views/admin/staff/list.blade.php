@@ -22,6 +22,7 @@
                 <tr align="center">
                     <th>ID</th>
                     <th>@lang('lang.staff')</th>
+                    <th>@lang('lang.name')</th>
                     <th>Email</th>
                     <th>@lang('lang.role')</th>
                     <th>@lang('lang.created')</th>
@@ -40,6 +41,7 @@
                 <tr align="center">
                     <td>{!! $value['id'] !!}</td>
                     <td>{!! $value['username'] !!}</td>
+                    <td>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</td>
                     <td>{!! $value['email'] !!}</td>
                     @foreach($value['roles'] as $role)
                     <td>

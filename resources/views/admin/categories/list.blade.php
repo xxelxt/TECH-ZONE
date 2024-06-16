@@ -27,7 +27,7 @@
             <thead>
                 <tr align="center">
                     <th><input type="checkbox" id="master"></th>
-                    <th>@lang('lang.name_pro')</th>
+                    <th>@lang('lang.cate')</th>
                     <th>@lang('lang.created')</th>
                     <th>@lang('lang.updated')</th>
                     @can('add category')

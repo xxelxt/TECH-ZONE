@@ -60,7 +60,7 @@
                             <td>{!! $value['users']['firstname'] !!}</td>
                             @can('add products')
                                 <td>
-                                    <input type="checkbox" class="featured_product" data-style="ios" data-toggle="toggle" data-on="on" data-off="off" data-id="{!! $value['id'] !!}" data-onstyle="success" data-offstyle="danger" {!! $value['featured_product']==true ? 'checked' : '' !!}>
+                                    <input type="checkbox" class="featured_product" data-style="ios" data-toggle="toggle" data-on="On" data-off="Off" data-id="{!! $value['id'] !!}" data-onstyle="success" data-offstyle="danger" {!! $value['featured_product']==true ? 'checked' : '' !!}>
                                 </td>
                                 <td>
                                     <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>

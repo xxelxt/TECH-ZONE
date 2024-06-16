@@ -4,7 +4,7 @@
     <div class="row align-items-center">
         <div class="col">
             <h1>@lang('lang.staff')</h1>
-            <p class="text-muted">@lang('lang.edit'): {!! $user['username'] !!}</p>
+            <p class="text-muted">@lang('lang.edit')</p>
         </div>
     </div>
 </div>
@@ -59,7 +59,7 @@
             <div class="row mb-3">
                 <div class="col-md-1">
                     <input type="checkbox" id="checkChangpassword" name="changepassword">
-                    <label for="checkChangpassword" class="form-check-label">Đổi mật khẩu</label>
+                    <label for="checkChangpassword" class="form-check-label">@lang('lang.change_password')</label>
                 </div>
                 <div class="col-md-5">
                     <input type="password" class="password form-control" name="password" disabled placeholder="Enter Password" />

@@ -10,7 +10,6 @@
 </div>
 
 <div class="card" style="border: none; margin: 30px;">
-    <div class="card-body">
         @if(count($errors) > 0)
             <div class="alert alert-danger">
                 @foreach($errors->all() as $arr)
@@ -69,7 +68,6 @@
                 </div>
             </div>
         </form>
-    </div>
 </div>
 
 @endsection

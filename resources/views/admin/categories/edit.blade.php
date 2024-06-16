@@ -4,7 +4,7 @@
     <div class="row align-items-center">
         <div class="col">
             <h1>@lang('lang.cate')</h1>
-            <p class="text-muted">@lang('lang.edit')</p>
+            <p class="text-muted">@lang('lang.edit') thông tin</p>
         </div>
     </div>
 </div>

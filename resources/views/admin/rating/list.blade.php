@@ -15,7 +15,7 @@
             <table id="autofill" class="table table-bordered"> 
                 <thead>
                     <tr align="center">
-                        <th>ID_user</th>
+                        <th>ID</th>
                         <th>@lang('lang.name')</th>
                         <th>Email</th>
                         <th>@lang('lang.products')</th>

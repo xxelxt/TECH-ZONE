@@ -16,7 +16,7 @@
                 <thead>
                     <tr align="center">
                         <th>ID</th>
-                        <th>@lang('lang.name') @lang('lang.role')</th>
+                        <th>@lang('lang.role')</th>
                         <th>@lang('lang.created')</th>
                         <th>@lang('lang.updated')</th>
                     </tr>

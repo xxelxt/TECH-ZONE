@@ -1,5 +1,4 @@
 @extends('admin.layout.index')
-
 @section('content')
 @can('list orders')
     <div class="card" style="border: none; margin: 30px;">
@@ -16,20 +15,20 @@
             <table id="autofill" class="table table-bordered">
                 <thead>
                     <tr align="center">
-                        <th>ID_Orders</th>
-                        <th>Customers</th>
+                        <th>ID</th>
+                        <th>@lang('lang.customer')</th>
                         <th>Email</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>District</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Update</th>
+                        <th>@lang('lang.phone')</th>
+                        <th>@lang('lang.address')</th>
+                        <th>@lang('lang.district')</th>
+                        <th>@lang('lang.total_price')</th>
+                        <th>@lang('lang.status')</th>
+                        <th>@lang('lang.update')</th>
                         @can('edit orders')
-                            <th>Details</th>
+                            <th>@lang('lang.billing_details')</th>
                         @endcan
                         @can('delete orders')
-                            <th>Delete</th>
+                            <th>@lang('lang.delete')</th>
                         @endcan
                     </tr>
                 </thead>
@@ -50,21 +49,21 @@
                                 <td>
                                     <div class="form-group">
                                         <select name="status" style="text-align: center;">
-                                            <option @if($value['status']==1) {!! 'selected' !!} @endif value="1" class="text-warning">Processing</option>
-                                            <option @if($value['status']==2) {!! 'selected' !!} @endif value="2" class="text-primary">Delivery</option>
-                                            <option @if($value['status']==3) {!! 'selected' !!} @endif value="3" class="text-success">Success</option>
-                                            <option @if($value['status']==4) {!! 'selected' !!} @endif value="4" class="text-danger">Denied</option>
+                                            <option @if($value['status']==1) {!! 'selected' !!} @endif value="1" class="text-warning">@lang('lang.processing')</option>
+                                            <option @if($value['status']==2) {!! 'selected' !!} @endif value="2" class="text-primary">@lang('lang.delivery')</option>
+                                            <option @if($value['status']==3) {!! 'selected' !!} @endif value="3" class="text-success">@lang('lang.success')</option>
+                                            <option @if($value['status']==4) {!! 'selected' !!} @endif value="4" class="text-danger">@lang('lang.denied')</option>
                                         </select>
                                     </div>
                                 </td>
-                                <td><button type="submit" class="btn btn-success">Update</button></td> 
+                                <td><button type="submit" class="btn btn-success">@lang('lang.update')</button></td> 
                             </form>
 
                             @can('edit orders')
-                                <td><a class="btn btn-primary" href="admin/orders/details/{!! $value['id'] !!}">Details</a></td>
+                                <td><a class="btn btn-primary" href="admin/orders/details/{!! $value['id'] !!}">@lang('lang.billing_details_short')</a></td>
                             @endcan
                             @can('delete orders')
-                                <td><a href="javascript:void(0)" class="btn btn-danger delete-orders" data-url="{{ url('ajax/delete_orders', $value['id'] ) }}">Delete</a></td>
+                                <td><a href="javascript:void(0)" class="btn btn-danger delete-orders" data-url="{{ url('ajax/delete_orders', $value['id'] ) }}">@lang('lang.delete')</a></td>
                             @endcan
                         </tr>
                     @endforeach

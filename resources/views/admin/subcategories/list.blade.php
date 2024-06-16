@@ -27,8 +27,8 @@
                 <thead>
                     <tr align="center">
                         <th><input type="checkbox" id="master"></th>
-                        <th>@lang('lang.name') @lang('lang.cate')</th>
                         <th>@lang('lang.sub')</th>
+                        <th>@lang('lang.cate')</th>
                         <th>@lang('lang.sort_name')</th>
                         <th>@lang('lang.created')</th>
                         <th>@lang('lang.updated')</th>
@@ -47,8 +47,8 @@
                     @foreach($subcategories as $value)
                         <tr align="center">
                             <td><input type="checkbox" class="sub_chk" data-id="{!! $value['id'] !!}"></td>
-                            <td>{!! $value['categories']['name']!!}</td>
                             <td>{!! $value['name'] !!}</td>
+                            <td>{!! $value['categories']['name']!!}</td>
                             <td>{!! $value['sort_name'] !!}</td>
                             <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
                             <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>

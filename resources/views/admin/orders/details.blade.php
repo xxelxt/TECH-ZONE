@@ -6,7 +6,7 @@
             <div class="col">
                 <h1>@lang('lang.order_detail')</h1>
                 <p class="text-muted">@lang('lang.list')</p>
-                <a href="admin/orders/list" class="btn btn-secondary">
+                <a href="admin/orders/list" class="btn btn-primary">
                     @lang('lang.back_to') @lang('lang.orders')
                 </a>
             </div>
@@ -18,11 +18,11 @@
             <table id="autofill" class="table table-bordered">
                 <thead>
                     <tr align="center">
-                        <th>Product_name</th>
-                        <th>Product_image</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Created_at</th>
+                        <th>@lang('lang.name_pro')</th>
+                        <th>@lang('lang.image_product')</th>
+                        <th>@lang('lang.quanty')</th>
+                        <th>@lang('lang.price')</th>
+                        <th>@lang('lang.created')</th>
                     </tr>
                 </thead>
                 <tbody>

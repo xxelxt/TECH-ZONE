@@ -17,8 +17,7 @@
                 <thead>
                     <tr align="center">
                         <th>ID</th>
-                        <th>@lang('lang.fristname')</th>
-                        <th>@lang('lang.lastname')</th>
+                        <th>@lang('lang.name')</th>
                         <th>@lang('lang.username')</th>
                         <th>Email</th>
                         <th>@lang('lang.created')</th>
@@ -35,8 +34,7 @@
                             @if($role['name'] == 'user')
                                 <tr align="center">
                                     <td>{!! $value['id'] !!}</td>
-                                    <td>{!! $value['firstname'] !!}</td>
-                                    <td>{!! $value['lastname'] !!}</td>
+                                    <td>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</td>
                                     <td>{!! $value['username'] !!}</td>
                                     <td>{!! $value['email'] !!}</td>
                                     <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>

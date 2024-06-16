@@ -1,47 +1,78 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<title>Login 04</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<base href="{{asset('')}}">
-<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<title>@lang('lang.title_login')</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<base href="{{asset('')}}">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="loginform/css/style.css">
+	<style>
+		body {
+			background: #f8f9fa;
+			font-family: 'Lato', sans-serif;
+		}
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		.container {
+			margin-top: 100px;
+			padding: 20px;
+		}
 
-<link rel="stylesheet" href="loginform/css/style.css">
+		.wrap {
+			box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+			border-radius: 10px;
+			overflow: hidden;
+			padding: 50px;
+		}
 
+		.login-wrap {
+			background: #fff;
+			padding: 40px;
+			border-radius: 10px;
+		}
+
+		.form-group input {
+			height: 45px;
+			border: 1px solid #ddd;
+			padding-left: 20px;
+		}
+
+		.form-group input:focus {
+			border-color: #007bff;
+		}
+
+		.btn-primary {
+			background: #007bff;
+			border: none;
+			height: 45px;
+			transition: background 0.3s;
+		}
+
+		.btn-primary:hover {
+			background: #0056b3;
+		}
+
+		.alert {
+			margin-top: 10px;
+		}
+	</style>
 </head>
+
 <body>
-<section class="ftco-section">
-	<div class="container">
-		<div class="row justify-content-center">
-			<div class="col-md-6 text-center mb-5">
-				<h2 class="heading-section">ADMIN</h2>
-			</div>
-		</div>
-		<div class="row justify-content-center">
-			<div class="col-md-12 col-lg-10">
-				<div class="wrap d-md-flex">
-					<div class="img" style="background-image: url(loginform/images/bg.jpg);"></div>
-					<div class="login-wrap p-4 p-md-5">
-						<div class="d-flex">
-							<div class="w-100">
-								<h3 class="mb-4">Sign In</h3>
-							</div>
-							<div class="w-100">
-								<p class="social-media d-flex justify-content-end">
-									<a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-facebook"></span></a>
-									<a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-twitter"></span></a>
-								</p>
-							</div>
-						</div>
-						<form action="admin/login"  method="POST">
+	<section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8 col-lg-6">
+					<div class="wrap">
+						<h3 class="mb-4">@lang('lang.title_login')</h3>
+						<form action="admin/login" method="POST">
 							@csrf
 							@if(count($errors) > 0)
 							<div class="alert alert-danger">
 								@foreach($errors->all() as $arr)
-									{{ $arr }}<br>
+								{{ $arr }}<br>
 								@endforeach
 							</div>
 							@endif
@@ -56,41 +87,25 @@
 							</div>
 							@endif
 							<div class="form-group mb-3">
-								<label class="label" for="name">Username</label>
-								<input type="text" name="username" class="form-control" placeholder="Username" >
+								<label class="label" for="name">@lang('lang.username')</label>
+								<input type="text" name="username" class="form-control" placeholder="">
 							</div>
 							<div class="form-group mb-3">
-								<label class="label" for="password">Password</label>
-								<input type="password" name="password" class="form-control" placeholder="Password" >
+								<label class="label" for="password">@lang('lang.password')</label>
+								<input type="password" name="password" class="form-control" placeholder="">
 							</div>
 							<div class="form-group">
-								<button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
-							</div>
-							<div class="form-group d-md-flex">
-								<div class="w-50 text-left">
-									<label class="checkbox-wrap checkbox-primary mb-0">Remember Me
-										<input id="remember" name="remember" type="checkbox" >
-										<span class="checkmark"></span>
-									</label>
-								</div>
-								<div class="w-50 text-md-right">
-									<a href="#">Forgot Password</a>
-								</div>
+								<button type="submit" class="form-control btn btn-primary rounded submit px-3">@lang('lang.sign_in')</button>
 							</div>
 						</form>
-						<p class="text-center">Not a member? <a data-toggle="tab" href="#signup">Sign Up</a></p>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
-
-<script src="loginform/js/jquery.min.js"></script>
-<script src="loginform/js/popper.js"></script>
-<script src="loginform/js/bootstrap.min.js"></script>
-<script src="loginform/js/main.js"></script>
-
+	</section>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
-</html>
 
+</html>

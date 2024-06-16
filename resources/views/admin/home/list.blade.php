@@ -105,8 +105,8 @@
                         </div>
                         <div class="col p-l-5">
                             <h6>{!! $value['users']['lastname'] !!} {!! $value['users']['firstname'] !!}</h6>
-                            <p class="text-muted m-b-0">
-                            <ul class=" ral rating">
+                            <div class="p-l-30">
+                            <ul class="ral rating">
                                 <?php
                                 $count = 0;
                                 while ($count < 5) {
@@ -127,6 +127,8 @@
                                 }
                                 ?>
                             </ul>
+                            </div>
+                            
                             </p>
                             <p class="text-white m-b-0">@lang('lang.products'): {!! $value['products']['name'] !!}</p>
                             <p class="text-white m-b-0">{!! $value['content'] !!}</p>
@@ -155,7 +157,7 @@
             <div class="card-block">
                 @foreach($user as $value)
                 <div class="align-middle m-b-35">
-                    <img src="upload/avatar/{!! $value['image'] !!}" alt="user image" class="img-radius img-40 align-top m-r-15">
+                    <img src="upload/avatar/{!! $value['image'] !!}" alt="user image" class="img-radius img-40 align-top m-r-15" style="box-shadow: none">
                     <div class="d-inline-block">
                         <h6>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</h6>
                         <p class="text-muted m-b-0">{!! $value['email'] !!}!</p>
