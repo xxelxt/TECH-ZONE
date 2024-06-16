@@ -382,30 +382,31 @@ class UserController extends Controller
     public function Getcart()
     {
         // Kiểm tra nếu session có thông tin giỏ hàng
-        if (Cookie::has('cart')) {
-            // Lấy nội dung giỏ hàng từ cookie và giải mã JSON thành mảng
-            $cartContent = json_decode(Cookie::get('cart'), true);
-            // $userId = Auth::id();
-            // print_r($userId);
-            // echo "Dữ liệu trong \$cartContent: <pre>";
-            // print_r($cartContent);
-            // echo "</pre>";
-            // Kiểm tra nếu có dữ liệu trong giỏ hàng
-            if (!empty($cartContent)) {
-                Cart::destroy(); // Xóa giỏ hàng hiện tại
-                // Cookie::forget('cart'); // Xóa cookie có tên là 'cart'
-                foreach ($cartContent as $item) {
-                    // if($userId == $item['current_id']){
-                    Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], $item['weight'], [
-                        'image' => $item['options']['image'],
-                        'price_new' => $item['options']['price_new'],
-                        'size' => $item['options']['size']
-                    ]);
-                    // }
+        if(Auth::check()){
+            if (Cookie::has('cart')) {
+                // Lấy nội dung giỏ hàng từ cookie và giải mã JSON thành mảng
+                $cartContent = json_decode(Cookie::get('cart'), true);
+                // $userId = Auth::id();
+                // print_r($userId);
+                // echo "Dữ liệu trong \$cartContent: <pre>";
+                // print_r($cartContent);
+                // echo "</pre>";
+                // Kiểm tra nếu có dữ liệu trong giỏ hàng
+                if (!empty($cartContent)) {
+                    Cart::destroy(); // Xóa giỏ hàng hiện tại
+                    // Cookie::forget('cart'); // Xóa cookie có tên là 'cart'
+                    foreach ($cartContent as $item) {
+                        // if($userId == $item['current_id']){
+                        Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], $item['weight'], [
+                            'image' => $item['options']['image'],
+                            'price_new' => $item['options']['price_new'],
+                            'size' => $item['options']['size']
+                        ]);
+                        // }
+                    }
                 }
             }
         }
-
         return view('user.pages.product_cart');
     }
 
@@ -454,22 +455,7 @@ class UserController extends Controller
 
 
 
-    // public function addToCart(Request $request)
-    // {
-    //     $productId = $request->input('product_id');
-    //     $product = Products::find($productId); // Giả sử bạn có model Product
 
-    //     if ($product) {
-    //         Cart::add($product->id,1, $product->name, $product->price,550,$product->image,$product->price_new,$product->size);
-    //         return response()->json(['success' => 'Product added to cart']);
-    //     }
-
-    //     return response()->json(['error' => 'Product not found'], 404);
-    // }
-
-
-
-    //-------------------------------------------------------------------------------------------------------------------//
 
 
     // Phương thức để lấy nội dung giỏ hàng
@@ -527,21 +513,10 @@ class UserController extends Controller
     public function order_place(Request $request)
     {
         if (Auth::check()) {
-            // Đặt hàng và chuyển hướng với thông báo thích hợp
-            // if(Cart::content() == null){
-            //     Cart::add(session('cart'));
-            // }
+         
 
             $content = Cart::content();
-            // if($content->isEmpty()){
-            //     if (session()->has('cart')) {
-            //         Cart::add(session('cart'));
-            //         session()->forget('cart');
-            //     } 
-
-            // }
-            //echo $content;
-            //insert orders
+        
             $orders = array();
             $orders['users_id'] = Auth::user()->id;
             $orders['lastname'] = $request->lastname;
@@ -581,8 +556,8 @@ class UserController extends Controller
             //insert orders
             $orders = array();
             $orders['users_id'] = 2;
-            $orders['lastname'] = "null";
-            $orders['firstname'] = "null";
+            $orders['lastname'] = $request->lastname;
+            $orders['firstname'] = $request->firstname;
             $orders['address'] = $request->address;
             $orders['district'] = $request->district;
             $orders['city'] = $request->city;
@@ -590,6 +565,7 @@ class UserController extends Controller
             $orders['email'] = $request->email;
             $orders['content'] = $request->content;
             $orders['total'] = (int)preg_replace("/[,]+/", "", Cart::total(0));
+            $orders['created_at'] =  now();
             // dd((int)preg_replace("/[,]+/", "", Cart::total(0)));
             $orders_id = Orders::insertGetId($orders);
 
@@ -608,7 +584,7 @@ class UserController extends Controller
                 $product->save();
             }
             Cart::destroy();
-            cookie()->forget('cart');
+            // cookie()->forget('cart');
             return redirect('/your_orders')->with('thongbao', 'Successfully');
         }
     }

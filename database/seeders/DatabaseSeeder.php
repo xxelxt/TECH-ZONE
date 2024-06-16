@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'image' => 'avatar.jpg',
             'password' => bcrypt('1'),
             'active' => 1,
+            
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);

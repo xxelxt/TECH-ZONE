@@ -76,7 +76,7 @@ $content = Cart::content();
             </div>
             <div class="col-lg-3">
                 <div class="header__cart">
-                    @if(Auth::check())
+                @auth
                     <ul>               
                         <li><a href="/wishlist_pages">
                             <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
@@ -84,7 +84,16 @@ $content = Cart::content();
                         <li><a href="user/pages/product_cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
                     <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
-                    @endif
+                @else
+                    <ul>               
+                        <li><a href="/wishlist_pages">
+                            <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
+                        </a></li>
+                        <li><a href="user/pages/product_cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
+                    </ul>
+                    <div class="header__cart__price">@lang('lang.item'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
+                @endauth
+
                 </div>
             </div>
         </div>
