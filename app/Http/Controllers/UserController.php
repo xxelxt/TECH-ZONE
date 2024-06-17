@@ -59,7 +59,6 @@ class UserController extends Controller
     // Phương thức để hiển thị trang chủ
     public function home()
     {
-
         return view('user.pages.home');
     }
 
@@ -198,11 +197,11 @@ class UserController extends Controller
         $products = Products::find($id);
 
         $related_products = Products::where('active', 1)
-        ->where('categories_id', $products['categories_id'])
-        ->where('id', '!=', $id)
-        ->inRandomOrder()
-        ->take(4)
-        ->get();
+            ->where('categories_id', $products['categories_id'])
+            ->where('id', '!=', $id)
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
         $wishlist = new Wishlist;
         $countWishlist = $wishlist->countWishlist($products['id']);
@@ -804,16 +803,40 @@ class UserController extends Controller
         Orders::find($id)->update($request->all());
         return redirect()->back()->with('thongbao', "Successfully");
     }
-    public function your_orders()
+    public function your_orders(Request $request)
     {
         if (Auth::check()) {
-            $orders = Orders::all();
+            $query = Orders::where('users_id', Auth::id());
+
+            // Handle sorting logic (only if sort is not empty)
+            if ($request->filled('sort')) {
+                $sort = $request->input('sort');
+                $query->where('status', $sort);
+            }
+
+            // Handle search logic
+            if ($request->has('query')) {
+                $searchQuery = $request->input('query');
+                $query->where(function ($subQuery) use ($searchQuery) {
+                    $subQuery->where('id', 'LIKE', "%$searchQuery%")
+                        ->orWhere('lastname', 'LIKE', "%$searchQuery%")
+                        ->orWhere('firstname', 'LIKE', "%$searchQuery%")
+                        ->orWhere('phone', 'LIKE', "%$searchQuery%")
+                        ->orWhere('address', 'LIKE', "%$searchQuery%")
+                        ->orWhere('district', 'LIKE', "%$searchQuery%")
+                        ->orWhere('city', 'LIKE', "%$searchQuery%")
+                        ->orWhere('content', 'LIKE', "%$searchQuery%");
+                });
+            }
+
+            $orders = $query->get();
+
             return view('user.pages.orders', ['orders' => $orders]);
         } else {
-            $orders = Orders::all();
-            return view('user.pages.orders_no_login', ['orders' => $orders]);
+            return redirect()->route('user.home');
         }
     }
+
     public function delete_orders($id)
     {
         // Tìm đơn hàng
@@ -841,11 +864,23 @@ class UserController extends Controller
             return response()->json(['error' => 'Order not found'], 404);
         }
     }
+    
     public function your_orders_detail($id)
-    {
-        $orders_detail = Orders_Detail::where('orders_id', $id)->get();
-        return view('user.pages.orders_detail', ['orders_detail' => $orders_detail]);
+{
+    $order = Orders::findOrFail($id); // Lấy thông tin đơn hàng từ ID
+    $orders_detail = Orders_Detail::where('orders_id', $id)->get();
+
+    // Kiểm tra xem đơn hàng có thuộc về người dùng hiện tại không
+    if (Auth::check() && $order->users_id !== Auth::id()) {
+        abort(403, 'Unauthorized'); // Hoặc chuyển hướng đến trang khác
     }
+
+    return view('user.pages.orders_detail', [
+        'order' => $order, // Truyền thông tin đơn hàng vào view
+        'orders_detail' => $orders_detail 
+    ]);
+}
+
     public function discount(Request $request)
     {
         $discounts = Discounts::all();

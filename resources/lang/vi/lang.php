@@ -4,6 +4,7 @@ return [
     'lang'=>'Ngôn ngữ',
     'en'=>'Tiếng Anh',
     'vi'=>'Tiếng Việt',
+    'order_id'=>'Mã đơn hàng',
     'title_login'=>'Đăng nhập trang quản trị TechZone',
     'back_to'=>'Quay lại',
     'sign_in'=>'Đăng nhập',

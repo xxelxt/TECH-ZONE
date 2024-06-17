@@ -3,7 +3,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title">
-                    <a href="/product_latest_all"><h2>@lang('lang.latest_product')</h2></a>
+                    <a href="/product_latest_all">
+                        <h2>@lang('lang.latest_product')</h2>
+                    </a>
                 </div>
                 <div class="featured__controls">
 
@@ -32,12 +34,12 @@
                                     <i class="far fa-heart"></i>
                                 </a></li>
                             @endif
-                            <li><a href="/products/{!! $new['id'] !!}"><i class="fa fa-retweet"></i></a></li>      
+                            <li><a href="/products/{!! $new['id'] !!}"><i class="fa fa-retweet"></i></a></li>
                             <!-- <li><button type="submit" href="#"><i class="fa fa-shopping-cart"></i></button></li> -->
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                    @if(isset($new['name']))
+                        @if(isset($new['name']))
                         <h6><a href="/products/{!! $new['id'] !!}">{!! $new['name'] !!}</a></h6>
                         @endif
                         @if(isset($new['price']))
@@ -61,12 +63,12 @@
 @section('script')
 <script>
     totalWishlist();
-    function totalWishlist()
-    {
+
+    function totalWishlist() {
         $.ajax({
             type: 'GET',
             url: '/total_wishlist',
-            success:function(response){
+            success: function(response) {
                 var response = JSON.parse(response);
                 $('.total_wishlist').text(response);
             }

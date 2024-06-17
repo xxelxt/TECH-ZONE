@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\Cookie;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
 Route::get('lang/{locale}',function($locale) {
     if(! in_array($locale,['en','vi']))
     {
@@ -162,7 +164,7 @@ Route::prefix('admin')->group(function(){
     Route::delete('ajax/deleteimages/{id}',[ ProductsController::class, 'Deleteimages']);
     Route::delete('ajax/delete_orders/{id}',[ UserController::class, 'delete_orders']);
     
-    Route::get('/',[UserController::class,'home']);
+    Route::get('/', [UserController::class, 'home'])->name('user.home'); 
     Route::get('/register',[UserController::class,'get_register']);
     Route::post('/register',[UserController::class,'post_register']);
     Route::get('/login',[UserController::class,'get_login']);
@@ -193,15 +195,13 @@ Route::prefix('admin')->group(function(){
     Route::post('/order_place',[UserController::class,'order_place']);
     Route::post('/discount',[UserController::class,'discount']);
     Route::post('/delete_discount',[UserController::class,'delete_discount']);
-    Route::get('/your_orders',[UserController::class,'your_orders']);
+
+    Route::get('/your_orders', [UserController::class, 'your_orders']);
+
     Route::get('/your_orders_detail/{id}',[UserController::class,'your_orders_detail']);
     
 
     Route::get('/check-cart-cookie', 'CartController@checkCartCookie');
-
-    
-    Route::prefix('/')->middleware('admin','role:user')->group(function(){
-    });
 
 
     // xử lý quên mk

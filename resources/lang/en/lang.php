@@ -4,6 +4,7 @@ return [
     'lang'=>'Language',
     'en'=>'English',
     'vi'=>'Vietnamese',
+    'order_id'=>'Order ID',
     'title_login'=>'Login to TechZone admin page',
     'all_headline'=>'There are',
     'number_all_products'=>'products available',

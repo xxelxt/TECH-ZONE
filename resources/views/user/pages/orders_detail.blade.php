@@ -1,13 +1,11 @@
 @extends('user.layout.index')
 @section('content')
 @include('user.layout.menu_product')
-<?php
-
-use Gloudemans\Shoppingcart\Facades\Cart;
-
-$content = Cart::content();
-
-?>
+<style>
+  p {
+    font-size: 17px;
+  }
+</style>
 
 <body>
 
@@ -16,10 +14,11 @@ $content = Cart::content();
       <div class="row">
         <div class="col-lg-12 text-center">
           <div class="breadcrumb__text">
-            <h2>@lang('lang.order')</h2>
+            <h2>@lang('lang.order_detail')</h2>
             <div class="breadcrumb__option">
               <a href="./index.html">@lang('lang.home')</a>
-              <span>@lang('lang.order')</span>
+              <span href="./your_orders"> > @lang('lang.orders') <span/>
+              <span> > {{ $order->id }}</span>
             </div>
           </div>
         </div>
@@ -27,31 +26,59 @@ $content = Cart::content();
     </div>
   </section>
 
-  <section class="shoping-cart spad">
+  <section class="shoping-cart spad" style="padding-top: 60px">
     <div class="container">
+      <h2 style="margin-bottom: 20px;"><b>Thông tin đơn hàng</b></h2>
       <div class="row">
+        <div class="col-md-6">
+          <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
+          <p><strong>Ngày đặt hàng:</strong> {{ $order->created_at }}</p>
+          <p><strong>Ngày cập nhật:</strong> {{ $order->updated_at }}</p>
+          <p><strong>Tổng tiền:</strong> {{ number_format($order->total) }}đ</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Khách hàng:</strong> {{ $order->lastname }} {{ $order->firstname }}</p>
+          <p><strong>Số điện thoại:</strong> {{ $order->phone }}</p>
+          <p><strong>Email:</strong> {{ $order->email }}</p>
+          <p><strong>Địa chỉ:</strong> {{ $order->address }}, {{ $order->district }}, {{ $order->city }}</p>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <p><strong>Ghi chú:</strong> {{ $order->content }}</p>
+          <p><strong>Trạng thái:</strong>
+            <span class="{{ $order->status == 1 ? 'text-warning' : ($order->status == 2 ? 'text-primary' : ($order->status == 3 ? 'text-success' : 'text-danger')) }}">
+              @if($order->status == 1) @lang('lang.processing')
+              @elseif($order->status == 2) @lang('lang.delivery')
+              @elseif($order->status == 3) @lang('lang.success')
+              @elseif($order->status == 4) @lang('lang.denied')
+              @endif
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <h2 class="mt-4" style="margin-bottom: 20px;"><b>Chi tiết sản phẩm</b></h2>
+      <div class="row mt-6">
         <div class="col-lg-12">
           <div class="shoping__cart__table">
-            <table class="table table-striped table-bordered nowrap">
+            <table class="table table-hover nowrap">
               <thead>
                 <tr>
                   <th>@lang('lang.products')</th>
                   <th>@lang('lang.image')</th>
                   <th>@lang('lang.quanty')</th>
                   <th>@lang('lang.price')</th>
-                  <th>@lang('lang.created')</th>
-                  <th>@lang('lang.updated')</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($orders_detail as $value)
                 <tr>
                   <td>{!! $value['name'] !!}</td>
-                  <td><img style="width: 200px" src="user_asset/images/products/{!! $value['image'] !!}" alt=""></td>
+                  <td><img style="width: 100px" src="user_asset/images/products/{!! $value['image'] !!}" alt=""></td>
                   <td>{!! $value['quantity'] !!}</td>
                   <td>{!! number_format($value['price']) !!} đ</td>
-                  <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                  <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
                 </tr>
                 @endforeach
               </tbody>
