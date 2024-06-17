@@ -57,7 +57,7 @@
           </div>
           <div class="featured__item__text">
             @if(isset($pro['name']))
-            <h5><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h5>
+            <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
             @endif
             @if(isset($pro['price'])&& isset($pro['price_new']))
             <div class="product__discount__item__text">

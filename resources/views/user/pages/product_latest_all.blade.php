@@ -1,24 +1,22 @@
 @extends('user.layout.index')
 @section('content')
 @include('user.layout.menu_product')
-<!-- Breadcrumb Section Begin -->
+
 <section class="breadcrumb-section set-bg" data-setbg="user_asset/images/breadcrumb.jpg">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="breadcrumb__text">
-                    <h2>{!! $about['name'] !!}</h2>
+                    <h2>@lang('lang.latest_product')</h2> {{-- Sửa tên cho phù hợp --}}
                     <div class="breadcrumb__option">
-                    <a href="/">@lang('lang.home') </a>
-                        <span>@lang('lang.latest_product')</span>
+                        <a href="/">@lang('lang.home')</a>
+                        <span> > @lang('lang.latest_product')</span> {{-- Sửa đường dẫn cho phù hợp --}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Breadcrumb Section End -->
-<!-- Product Section Begin -->
 <section class="product spad">
     <div class="container">
         <div class="row">
@@ -32,124 +30,88 @@
                             @endforeach
                         </ul>
                     </div>
-                    <!-- <div class="sidebar__item">
-                        <h4>Price</h4>
-                        <div class="price-range-wrap">
-                            <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="10" data-max="540">
-                                <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
-                            </div>
-                            <div class="range-slider">
-                                <div class="price-input">
-                                    <input type="text" id="minamount">
-                                    <input type="text" id="maxamount">
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- <div class="sidebar__item">
-                        <h4>Popular Size</h4>
-                        <div class="sidebar__item__size">
-                            <label for="large">
-                                Large
-                                <input type="radio" id="large">
-                            </label>
-                        </div>
-                        <div class="sidebar__item__size">
-                            <label for="medium">
-                                Medium
-                                <input type="radio" id="medium">
-                            </label>
-                        </div>
-                        <div class="sidebar__item__size">
-                            <label for="small">
-                                Small
-                                <input type="radio" id="small">
-                            </label>
-                        </div>
-                        <div class="sidebar__item__size">
-                            <label for="tiny">
-                                Tiny
-                                <input type="radio" id="tiny">
-                            </label>
-                        </div>
-                    </div> -->
                 </div>
             </div>
             <div class="col-lg-9 col-md-7">
-                <div class="filter__item">
+                <div class="filter__item"> 
                     <div class="row">
-                        <div class="col-lg-4 col-md-5">
-                            <!-- <div class="filter__sort">
-                                <span>Sort By</span>
-                                <select>
-                                    <option value="0">Default</option>
-                                    <option value="0">Default</option>
-                                </select>
-                            </div> -->
+                        <div class="col-lg-4 col-md-3 d-flex"> 
+                            <div class="filter__option">
+                                <span class="icon_grid-2x2"></span>
+                                <span class="icon_ul"></span>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4">
                             <div class="filter__found">
-                                <h6><span>{!! $count !!}</span> @lang('lang.products') @lang('lang.found')</h6>
+                                <h6><span>{!! $count !!}</span> @lang('lang.found_products')</h6> 
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-3">
-                            <!-- <div class="filter__option">
-                                <span class="icon_grid-2x2"></span>
-                                <span class="icon_ul"></span>
-                            </div> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    @foreach($products as $pro)
-                    <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
-                                <ul class="product__item__pic__hover">
-                                    @if(Auth::check())
-                                    @php 
-                                    $countWishlist =$wishlist->countWishlist($pro['id']);
-                                    @endphp
-                                    <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
-                                            @if($countWishlist >0)
-                                            <i class="fas fa-heart"></i>
-                                            @else
-                                            <i class="far fa-heart"></i>
-                                            @endif
-                                        </a></li>
-                                    @else
-                                    <li><a href="/login" data-productid="{!! $pro['id'] !!}" class="wishlist">
-                                            <i class="far fa-heart"></i>
-                                        </a></li>
-                                    @endif
-                                    <li><a href="/products/{!! $pro['id'] !!}"><i class="fa fa-retweet"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">{!! $pro['name'] !!}</a></h6>
-                                @if(isset($pro['price']))
-                                <h5>{!! number_format($pro['price']) !!}</h5>
-                                @else
-                                <h5>{!! number_format($pro['price_new']) !!}</h5>
-                                @endif
+                        <div class="col-lg-4 col-md-5 d-flex justify-content-end">
+                            <div class="filter__sort">
+                                <form action="{{ request()->url() }}" method="GET">
+                                    @csrf
+                                    <span>Sắp xếp theo</span>
+                                    <select name="sort" id="sort" onchange="this.form.submit()">
+                                        <option value="">Mặc định</option>
+                                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
+                                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm dần</option>
+                                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>A -> Z</option>
+                                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Z -> A</option>
+                                    </select>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    @endforeach
                 </div>
-                <!-- <div class="product__pagination">
-                    <a href="#">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#"><i class="fa fa-long-arrow-right"></i></a>
-                </div> -->
-              
+                <div class="row product-list" id="product-list">
+          @foreach($products as $pro)
+          <div class="col-lg-4 col-md-6 col-sm-6">
+            <div class="product__item">
+              <div class="product__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
+                <ul class="product__item__pic__hover">
+                  @if(Auth::check())
+                  @php
+                  $countWishlist =$wishlist->countWishlist($pro['id']);
+                  @endphp
+                  <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
+                      @if($countWishlist >0)
+                      <i class="fas fa-heart"></i>
+                      @else
+                      <i class="far fa-heart"></i>
+                      @endif
+                    </a></li>
+                  @else
+                  <li><a href="/login" data-productid="{!! $pro['id'] !!}" class="wishlist">
+                      <i class="far fa-heart"></i>
+                    </a></li>
+                  @endif
+                  <li><a href="/products/{!! $pro['id'] !!}"><i class="fa fa-retweet"></i></a></li>
+                </ul>
+              </div>
+              <div class="product__item__text">
+              @if(isset($pro['name']))
+                <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
+                @endif
+                @if(isset($pro['price']))
+                @if(isset($pro['price_new']))
+                <div class="product__discount__item__text">
+                  <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price_new']) !!}đ<span>{!! number_format($pro['price']) !!}đ</span></div>
+                </div>
+                @else
+                <div class="product__discount__item__text">
+                  <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price']) !!}đ</div>
+                </div>
+                @endif
+                @endif
+              </div>
             </div>
+          </div>
+          @endforeach
         </div>
+        {!! $products->links() !!}
+      </div>
     </div>
+  </div>
 </section>
 @endsection
 @section('script')

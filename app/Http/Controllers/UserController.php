@@ -196,7 +196,14 @@ class UserController extends Controller
         // Lấy và hiển thị chi tiết sản phẩm cùng với các sản phẩm liên quan và đánh giá
         $pro = Products::all();
         $products = Products::find($id);
-        $related_products = Products::where('sub_id', $products['sub_id'])->take(4)->get();
+
+        $related_products = Products::where('active', 1)
+        ->where('categories_id', $products['categories_id'])
+        ->where('id', '!=', $id)
+        ->inRandomOrder()
+        ->take(4)
+        ->get();
+
         $wishlist = new Wishlist;
         $countWishlist = $wishlist->countWishlist($products['id']);
         $ratings = Rating::where('products_id', $id)->orderBy('id', 'DESC')->get();
@@ -215,10 +222,34 @@ class UserController extends Controller
         // Hiển thị trang lưới sản phẩm theo danh mục
         $danhmuc = Categories::find($id);
         $categories = Categories::all();
-        $products = Products::where('active', 1)->where('categories_id', $id)->orderBy('id', 'ASC')->Paginate(12);
-        $count = count($products);
+
+        // Thêm điều kiện lọc và sắp xếp giống như hàm product_all
+        $query = Products::where('active', 1)->where('categories_id', $id);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC');
+        }
+
+        $products = $query->paginate(12);
+        $count = $products->total(); // Sử dụng total() để lấy tổng số sản phẩm
+
         $wishlist = new Wishlist;
-        return view('user.pages.product_grid', ['danhmuc' => $danhmuc, 'categories' => $categories, 'products' => $products, 'count' => $count, 'wishlist' => $wishlist]);
+
+        return view('user.pages.product_grid', [
+            'danhmuc' => $danhmuc,
+            'categories' => $categories,
+            'products' => $products,
+            'count' => $count,
+            'wishlist' => $wishlist
+        ]);
     }
 
     // Phương thức để hiển thị trang lưới sản phẩm theo danh mục phụ
@@ -227,10 +258,34 @@ class UserController extends Controller
         // Hiển thị trang lưới sản phẩm theo danh mục phụ
         $danhmuc = SubCategories::find($id);
         $categories = Categories::all();
-        $products = Products::where('active', 1)->where('sub_id', $id)->orderBy('id', 'ASC')->Paginate(12);
-        $count = count($products);
+
+        // Thêm điều kiện lọc và sắp xếp giống như hàm product_all
+        $query = Products::where('active', 1)->where('sub_id', $id);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC');
+        }
+
+        $products = $query->paginate(12);
+        $count = $products->total(); // Sử dụng total() để lấy tổng số sản phẩm
+
         $wishlist = new Wishlist;
-        return view('user.pages.product_grid_sub', ['danhmuc' => $danhmuc, 'categories' => $categories, 'products' => $products, 'count' => $count, 'wishlist' => $wishlist]);
+
+        return view('user.pages.product_grid_sub', [
+            'danhmuc' => $danhmuc,
+            'categories' => $categories,
+            'products' => $products,
+            'count' => $count,
+            'wishlist' => $wishlist
+        ]);
     }
 
     // Phương thức để xử lý thêm/xóa sản phẩm vào/khỏi danh sách yêu thích
@@ -261,23 +316,29 @@ class UserController extends Controller
         echo json_encode($total_wishlist);
     }
 
-    // Phương thức để hiển thị trang sản phẩm nổi bật
-    public function product_featured_all()
-    {
-        // Hiển thị trang sản phẩm nổi bật
-        $categories = Categories::all();
-        $products = Products::where('active', 1)->where('featured_product', 1)->orderBy('id', 'ASC')->Paginate(12);
-        $count = count($products);
-        return view('user.pages.product_featured_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
-    }
-
-    // Phương thức để hiển thị trang sản phẩm mới nhất
     public function product_latest_all()
     {
         // Hiển thị trang sản phẩm mới nhất
         $categories = Categories::all();
-        $products = Products::get()->where('active', 1)->sortByDesc('created_at')->take(21);
-        $count = count($products);
+
+        // Lọc và sắp xếp giống như các hàm trước
+        $query = Products::where('active', 1);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('created_at', 'DESC'); // Mặc định sắp xếp theo ngày tạo mới nhất
+        }
+
+        $products = $query->paginate(12);
+        $count = $products->total();
+
         return view('user.pages.product_latest_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
     }
 
@@ -286,22 +347,91 @@ class UserController extends Controller
     {
         // Hiển thị trang sản phẩm giảm giá
         $categories = Categories::all();
-        $products = Products::where('active', 1)->orderBy('id', 'ASC')->Paginate(12);
-        $count = count($products);
+
+        // Lọc sản phẩm có giá sale (giả sử có trường 'sale_price' trong bảng Products) và sắp xếp
+        $query = Products::where('active', 1)->whereNotNull('price_new'); // Chỉ lấy sản phẩm có giá sale
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price_new', 'ASC'); // Sắp xếp theo giá sale
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price_new', 'DESC'); // Sắp xếp theo giá sale
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC'); // Mặc định sắp xếp theo id tăng dần
+        }
+
+        $products = $query->paginate(12);
+        $count = $products->total();
+
         return view('user.pages.product_sale_all', ['count' => $count, 'products' => $products, 'categories' => $categories]);
     }
 
+    public function product_featured_all()
+    {
+        // Hiển thị trang sản phẩm nổi bật
+        $categories = Categories::all();
+
+        // Lọc và sắp xếp giống như các hàm trước
+        $query = Products::where('active', 1)->where('featured_product', 1);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC');
+        }
+
+        $products = $query->paginate(12);
+        $count = $products->total();
+
+        return view('user.pages.product_featured_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
+    }
 
     // Phương thức để hiển thị trang tất cả sản phẩm
-    public function product_all()
+    public function product_all(Request $request)
     {
-        // Hiển thị trang tất cả sản phẩm
-
         $categories = Categories::all();
-        $search = Products::where('active', 1)->orderBy('id', 'ASC')->Paginate(15);
-        $count = count($search);
         $wishlist = new Wishlist;
-        return view('user.pages.product_all', ['categories' => $categories, 'search' => $search, 'count' => $count, 'wishlist' => $wishlist]);
+
+        $query = Products::where('active', 1);
+
+        // Handle sorting logic
+        if ($request->has('sort')) {
+            switch ($request->input('sort')) {
+                case 'price_asc':
+                    $query->orderBy('price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('price', 'desc');
+                    break;
+                case 'name_asc':
+                    $query->orderBy('name', 'asc');
+                    break;
+                case 'name_desc':
+                    $query->orderBy('name', 'desc');
+                    break;
+                    // Add more sorting options as needed
+            }
+        }
+
+        // Fetch the paginated results after applying sorting
+        $search = $query->paginate(15);
+        $count = $search->total();
+
+        return view('user.pages.product_all', [
+            'categories' => $categories,
+            'search'     => $search,
+            'count'      => $count,
+            'wishlist'   => $wishlist,
+        ]);
     }
 
     // Phương thức để xử lý tìm kiếm người dùng
@@ -324,10 +454,33 @@ class UserController extends Controller
         // Hiển thị trang sản phẩm theo thương hiệu
         $danhmuc = Brands::find($id);
         $categories = Categories::all();
-        $products = Products::where('active', 1)->where('brands_id', $id)->orderBy('id', 'ASC')->Paginate(15);
-        $count = count($products);
         $wishlist = new Wishlist;
-        return view('user.pages.product_brand', ['categories' => $categories, 'danhmuc' => $danhmuc, 'products' => $products, 'count' => $count, 'wishlist' => $wishlist]);
+
+        // Thêm điều kiện lọc và sắp xếp giống như các hàm khác
+        $query = Products::where('active', 1)->where('brands_id', $id);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC'); // Mặc định sắp xếp theo id tăng dần
+        }
+
+        $products = $query->paginate(15); // Phân trang kết quả
+        $count = $products->total(); // Lấy tổng số sản phẩm
+
+        return view('user.pages.product_brand', [
+            'categories' => $categories,
+            'danhmuc' => $danhmuc,
+            'products' => $products,
+            'count' => $count,
+            'wishlist' => $wishlist // Truyền wishlist vào view
+        ]);
     }
 
     // Phương thức để hiển thị trang yêu thích
@@ -382,7 +535,7 @@ class UserController extends Controller
     public function Getcart()
     {
         // Kiểm tra nếu session có thông tin giỏ hàng
-        if(Auth::check()){
+        if (Auth::check()) {
             if (Cookie::has('cart')) {
                 // Lấy nội dung giỏ hàng từ cookie và giải mã JSON thành mảng
                 $cartContent = json_decode(Cookie::get('cart'), true);
@@ -411,7 +564,6 @@ class UserController extends Controller
 
     public function Postcart(Request $request)
     {
-
         // Hiển thị trang giỏ hàng
         // echo ($request);
         // Cart::destroy();
@@ -451,11 +603,6 @@ class UserController extends Controller
 
         return redirect('/cart')->with('thongbao', 'Sucessfully');
     }
-
-
-
-
-
 
     // Phương thức để lấy nội dung giỏ hàng
     public function index()
@@ -512,10 +659,10 @@ class UserController extends Controller
     public function order_place(Request $request)
     {
         if (Auth::check()) {
-         
+
 
             $content = Cart::content();
-        
+
             $orders = array();
             $orders['users_id'] = Auth::user()->id;
             $orders['lastname'] = $request->lastname;

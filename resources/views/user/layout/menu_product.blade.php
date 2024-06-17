@@ -35,7 +35,7 @@
                         <form action="/search" >
                         <a href="/all_products">
                             <div class="hero__search__categories">
-                                -> @lang('lang.all') @lang('lang.products') <-
+                                @lang('lang.all') @lang('lang.products')
                             </div>
                         </a>
                             <input type="search" name="search" value="{!! Request::get('search') !!}" placeholder="@lang('lang.search')...">

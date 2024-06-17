@@ -45,15 +45,19 @@
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        <!-- Kiểm tra nếu tên sản phẩm tồn tại -->
                         @if(isset($pro['name']))
-                        <h5><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h5> <!-- Hiển thị tên sản phẩm -->
+                        <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
                         @endif
-                        @if(isset($pro['price'])) <!-- Kiểm tra nếu giá sản phẩm tồn tại -->
+                        @if(isset($pro['price']))
+                        @if(isset($pro['price_new']))
                         <div class="product__discount__item__text">
-                            <div class="product__item__price">{!! number_format($pro['price']) !!}đ</div>
+                            <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price_new']) !!}đ<span>{!! number_format($pro['price']) !!}đ</span></div>
                         </div>
-                        <!-- Hiển thị giá sản phẩm -->
+                        @else
+                        <div class="product__discount__item__text">
+                            <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price']) !!}đ</div>
+                        </div>
+                        @endif
                         @endif
                     </div>
                 </div>

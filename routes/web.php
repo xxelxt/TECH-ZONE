@@ -183,6 +183,7 @@ Route::prefix('admin')->group(function(){
     Route::get('/wishlist_pages',[UserController::class,'wishlist_pages']);
     Route::get('/cart',[UserController::class,'Getcart']);
     Route::post('/cart', [UserController::class, 'Postcart']);
+    Route::post('/cart/add', [UserController::class, 'Postcart']);
     Route::get('/checkout',[UserController::class,'checkout']);
     Route::get('/delete_cart/{rowId}',[UserController::class,'delete_cart']);
     Route::post('/update_cart',[UserController::class,'update_cart']);

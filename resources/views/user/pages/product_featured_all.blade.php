@@ -1,24 +1,23 @@
 @extends('user.layout.index')
 @section('content')
 @include('user.layout.menu_product')
-<!-- Breadcrumb Section Begin -->
+
 <section class="breadcrumb-section set-bg" data-setbg="user_asset/images/breadcrumb.jpg">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="breadcrumb__text">
-                    <h2>{!! $about['name'] !!}</h2>
+                    <h2>@lang('lang.featured_product')</h2> {{-- Sửa tên cho phù hợp --}}
                     <div class="breadcrumb__option">
-                    <a href="/">@lang('lang.home') </a>
-                        <span>@lang('lang.featured_product')</span>
+                        <a href="/">@lang('lang.home')</a>
+                        <span> > @lang('lang.featured_product')</span> {{-- Sửa đường dẫn cho phù hợp --}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- Breadcrumb Section End -->
-<!-- Product Section Begin -->
+
 <section class="product spad">
     <div class="container">
         <div class="row">
@@ -34,33 +33,46 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-9 col-md-7">
                 <div class="filter__item">
                     <div class="row">
-                        <div class="col-lg-4 col-md-5">
-
+                        <div class="col-lg-4 col-md-3 d-flex">
+                            <div class="filter__option">
+                                <span class="icon_grid-2x2"></span>
+                                <span class="icon_ul"></span>
+                            </div>
                         </div>
                         <div class="col-lg-4 col-md-4">
                             <div class="filter__found">
-                                <h6><span>{!! $count !!}</span>@lang('lang.products') @lang('lang.found')</h6>
+                                <h6><span>{!! $count !!}</span> @lang('lang.found_products')</h6>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-3">
-                            <!-- <div class="filter__option">
-                                <span class="icon_grid-2x2"></span>
-                                <span class="icon_ul"></span>
-                            </div> -->
+                        <div class="col-lg-4 col-md-5 d-flex justify-content-end">
+                            <div class="filter__sort">
+                                <form action="{{ request()->url() }}" method="GET">
+                                    @csrf
+                                    <span>Sắp xếp theo</span>
+                                    <select name="sort" id="sort" onchange="this.form.submit()">
+                                        <option value="">Mặc định</option>
+                                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
+                                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm dần</option>
+                                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>A -> Z</option>
+                                        <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Z -> A</option>
+                                    </select>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row product-list" id="product-list">
                     @foreach($products as $pro)
                     <div class="col-lg-4 col-md-6 col-sm-6">
                         <div class="product__item">
                             <div class="product__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
                                 <ul class="product__item__pic__hover">
                                     @if(Auth::check())
-                                    @php 
+                                    @php
                                     $countWishlist =$wishlist->countWishlist($pro['id']);
                                     @endphp
                                     <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
@@ -76,27 +88,28 @@
                                         </a></li>
                                     @endif
                                     <li><a href="/products/{!! $pro['id'] !!}"><i class="fa fa-retweet"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
                                 </ul>
                             </div>
                             <div class="product__item__text">
+                                @if(isset($pro['name']))
                                 <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
+                                @endif
                                 @if(isset($pro['price']))
-                                <h5>{!! number_format($pro['price']) !!}</h5>
+                                @if(isset($pro['price_new']))
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price_new']) !!}đ<span>{!! number_format($pro['price']) !!}đ</span></div>
+                                </div>
                                 @else
-                                <h5>{!! number_format($pro['price_new']) !!}</h5>
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price']) !!}đ</div>
+                                </div>
+                                @endif
                                 @endif
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
-                <!-- <div class="product__pagination">
-                    <a href="#">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#"><i class="fa fa-long-arrow-right"></i></a>
-                </div> -->
                 {!! $products->links() !!}
             </div>
         </div>
@@ -106,12 +119,12 @@
 @section('script')
 <script>
     totalWishlist();
-    function totalWishlist()
-    {
+
+    function totalWishlist() {
         $.ajax({
             type: 'GET',
             url: '/total_wishlist',
-            success:function(response){
+            success: function(response) {
                 var response = JSON.parse(response);
                 $('.total_wishlist').text(response);
             }

@@ -219,9 +219,8 @@ ol {
 .primary-btn {
 	display: inline-block;
 	font-size: 14px;
-	padding: 10px 28px 10px;
+	padding: 14px 28px 14px;
 	color: #ffffff;
-	text-transform: uppercase;
 	font-weight: 700;
 	background: #091d5e;
 	letter-spacing: 2px;
@@ -882,8 +881,8 @@ ol {
 -----------------------*/
 
 .featured {
-	padding-top: 50px;
-	padding-bottom: 15px;
+	padding-top: 40px;
+	padding-bottom: 40px;
 }
 
 .featured__controls {
@@ -1126,7 +1125,6 @@ ol {
 	font-size: 16px;
 	color: #ffffff;
 	font-weight: 700;
-	margin-right: 20px;
 	position: relative;
 }
 
@@ -1137,7 +1135,6 @@ ol {
 	height: 1px;
 	width: 10px;
 	background: #ffffff;
-	content: "";
 }
 
 .breadcrumb__option span {
@@ -1201,13 +1198,13 @@ ol {
 	top: 13px;
 	height: 1px;
 	width: 5px;
-	background: #dd2222;
+	background: #06121a;
 	content: "";
 }
 
 .price-range-wrap .range-slider .price-input input {
 	font-size: 16px;
-	color: #dd2222;
+	color: #06121a;
 	font-weight: 700;
 	max-width: 20%;
 	border: none;
@@ -1237,12 +1234,12 @@ ol {
 }
 
 .price-range-wrap .price-range .ui-slider-range {
-	background: #dd2222;
+	background: #06121a;
 	border-radius: 0;
 }
 
 .price-range-wrap .price-range .ui-slider-range.ui-corner-all.ui-widget-header:last-child {
-	background: #dd2222;
+	background: #06121a;
 }
 
 .sidebar__item__color {
@@ -1325,8 +1322,8 @@ ol {
 -----------------------*/
 
 .product {
-	padding-top: 80px;
-	padding-bottom: 80px;
+	padding-top: 40px;
+	padding-bottom: 8product__discount__item__text0px;
 }
 
 .product__discount {
@@ -1360,7 +1357,7 @@ ol {
 .product__discount__item__pic .product__discount__percent {
 	height: 45px;
 	width: 45px;
-	background: #dd2222;
+	background: #06121a;
 	border-radius: 50%;
 	font-size: 14px;
 	color: #ffffff;
@@ -1434,7 +1431,7 @@ ol {
 
 .product__discount__item__text {
 	text-align: center;
-	padding-top: 10px;
+	/* padding-top: 10px; */
 }
 
 .product__discount__item__text span {
@@ -1492,8 +1489,7 @@ ol {
 }
 
 .filter__item {
-	padding-top: 45px;
-	border-top: 1px solid #ebebeb;
+	/* padding-top: 20px; */
 	padding-bottom: 20px;
 }
 
@@ -1731,7 +1727,7 @@ ol {
 -----------------------*/
 
 .product-details {
-	padding-top: 80px;
+	padding-top: 40px;
 }
 
 .product__details__pic__item {
@@ -1767,13 +1763,13 @@ ol {
 }
 
 .product__details__text .product__details__rating span {
-	color: #dd2222;
+	color: #06121a;
 	margin-left: 4px;
 }
 
 .product__details__text .product__details__price {
 	font-size: 30px;
-	color: #dd2222;
+	color: #06121a;
 	font-weight: 600;
 	margin-bottom: 15px;
 }
@@ -1783,15 +1779,13 @@ ol {
 }
 
 .product__details__text .primary-btn {
-	padding: 16px 28px 14px;
 	margin-right: 6px;
-	margin-bottom: 5px;
 	border-radius: 6px;
 	transition: all 0.8s;
 }
 
 .product__details__text .primary-btn:hover {
-	box-shadow: 5px 5px 5px #ed9792;
+	box-shadow: 5px 5px 5px #84b2cf;
 }
 
 .product__details__text .heart-icon {
@@ -1803,9 +1797,8 @@ ol {
 }
 
 .product__details__text ul {
-	border-top: 1px solid #ebebeb;
-	padding-top: 40px;
-	margin-top: 50px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .product__details__text ul li {
@@ -1822,7 +1815,7 @@ ol {
 }
 
 .product__details__text ul li span samp {
-	color: #dd2222;
+	color: #06121a;
 }
 
 .product__details__text ul li .share {
@@ -1875,7 +1868,7 @@ ol {
 }
 
 .product__details__tab {
-	padding-top: 85px;
+	padding-top: 60px;
 }
 
 .product__details__tab .nav-tabs {
@@ -1914,7 +1907,7 @@ ol {
 }
 
 .product__details__tab .nav-tabs li a {
-	font-size: 16px;
+	font-size: 18px;
 	color: #999999;
 	font-weight: 700;
 	border: none;
@@ -2132,7 +2125,7 @@ ol {
 
 .shoping__checkout ul li span {
 	font-size: 18px;
-	color: #dd2222;
+	color: #06121a;
 	float: right;
 }
 
@@ -2192,7 +2185,7 @@ ol {
 }
 
 .checkout__input p span {
-	color: #dd2222;
+	color: #06121a;
 }
 
 .checkout__input input {
@@ -2336,7 +2329,7 @@ ol {
 
 .checkout__order .checkout__order__total span {
 	float: right;
-	color: #dd2222;
+	color: #06121a;
 }
 
 .checkout__order button {
@@ -3752,7 +3745,6 @@ p.item-show_item-head {
 
 .bannerslideshow {
 	position: relative;
-
 }
 
 .prevbanner,
@@ -3812,19 +3804,18 @@ p.item-show_item-head {
 }
 
 .btndanhgia {
+	padding: 10px 15px;
 	background-color: transparent;
-	color: red;
-	width: 200px;
-	height: 40px;
-	border: 1px solid rgb(243 52 52);
-	border-radius: 20px;
+	color: #06121a;
+	border: 1px solid #06121a;
+	border-radius: 8px;
 	transition: all, 0.5s
 }
 
 .btndanhgia:hover {
 	background: #091d5e;
 	color: white;
-	box-shadow: 5px 5px 5px #ed9792;
+	box-shadow: 5px 5px 5px #84b2cf;
 }
 
 .formdanhgia .rating input {
@@ -3868,8 +3859,8 @@ p.item-show_item-head {
 }
 
 .formdanhgia .nutguibl {
-	border: 1px solid rgb(243 52 52);
-	color: red;
+	border: 1px solid #06121a;
+	color: #06121a;
 	width: 60%;
 	font-weight: 500;
 	border-radius: 20px;
@@ -3879,7 +3870,7 @@ p.item-show_item-head {
 .formdanhgia .nutguibl:hover {
 	background: #091d5e;
 	color: white;
-	box-shadow: 5px 5px 5px #ed9792;
+	box-shadow: 5px 5px 5px #84b2cf;
 
 }
 

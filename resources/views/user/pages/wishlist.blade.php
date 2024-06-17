@@ -40,15 +40,15 @@
                                         </a></li>
                                     @endif
                                     <li><a href="/products/{!! $pro['products']['id'] !!}"><i class="fa fa-retweet"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                                    <!-- <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li> -->
                                 </ul>
                             </div>
                             <div class="product__item__text">
                                 <h6><a href="#">{!! $pro['products']['name'] !!}</a></h6>
                                 @if(isset($pro['products']['price']))
-                                <h5>{!! number_format($pro['products']['price']) !!}</h5>
+                                <h5>{!! number_format($pro['products']['price']) !!}đ</h5>
                                 @else
-                                <h5>{!! number_format($pro['products']['price_new']) !!}</h5>
+                                <h5>{!! number_format($pro['products']['price_new']) !!}đ</h5>
                                 @endif
                             </div>
                         </div>
@@ -56,12 +56,6 @@
                     @endif
                     @endforeach
                 </div>
-                <!-- <div class="product__pagination">
-                    <a href="#">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#"><i class="fa fa-long-arrow-right"></i></a>
-                </div> -->
                 {!! $products->links() !!}
             </div>
         </div>

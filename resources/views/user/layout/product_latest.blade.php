@@ -37,13 +37,19 @@
                         </ul>
                     </div>
                     <div class="featured__item__text">
-                        @if(isset($new['name']))
-                        <h5><a href="/products/{!! $new['id'] !!}">{!! $new['name'] !!}</a></h5>
+                    @if(isset($new['name']))
+                        <h6><a href="/products/{!! $new['id'] !!}">{!! $new['name'] !!}</a></h6>
                         @endif
                         @if(isset($new['price']))
+                        @if(isset($new['price_new']))
                         <div class="product__discount__item__text">
-                            <div class="product__item__price">{!! number_format($new['price']) !!}đ</div>
+                            <div class="product__item__price" style="color: #06121a">{!! number_format($new['price_new']) !!}đ<span>{!! number_format($new['price']) !!}đ</span></div>
                         </div>
+                        @else
+                        <div class="product__discount__item__text">
+                            <div class="product__item__price" style="color: #06121a">{!! number_format($new['price']) !!}đ</div>
+                        </div>
+                        @endif
                         @endif
                     </div>
                 </div>
