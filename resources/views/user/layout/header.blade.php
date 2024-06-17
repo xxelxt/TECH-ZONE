@@ -81,12 +81,12 @@ $content = Cart::content();
                         </a></li>
                         <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
-                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
+                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').'đ' !!}</span></div>
                 @else
                     <ul>               
                         <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
                     </ul>
-                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').' '.'đ' !!}</span></div>
+                    <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').'đ' !!}</span></div>
                 @endauth
 
                 </div>

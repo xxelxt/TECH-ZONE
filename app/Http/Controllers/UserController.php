@@ -659,7 +659,6 @@ class UserController extends Controller
     {
         if (Auth::check()) {
 
-
             $content = Cart::content();
 
             $orders = array();
@@ -732,7 +731,7 @@ class UserController extends Controller
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
             // cookie()->forget('cart');
-            return redirect('/your_orders')->with('thongbao', 'Successfully');
+            return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
         }
     }
     //-------------------------------------------------------------------------------------------------------//

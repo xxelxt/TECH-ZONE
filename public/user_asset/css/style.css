@@ -223,7 +223,7 @@ ol {
 	color: #ffffff;
 	font-weight: 700;
 	background: #091d5e;
-	letter-spacing: 2px;
+	letter-spacing: 1px;
 }
 
 .site-btn {
@@ -1983,7 +1983,7 @@ ol {
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__item {
-	width: 630px;
+	width: 580px;
 	text-align: left;
 }
 
@@ -2001,14 +2001,14 @@ ol {
 	font-size: 18px;
 	color: #1c1c1c;
 	font-weight: 700;
-	width: 100px;
+	width: 140px;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__total {
 	font-size: 18px;
 	color: #1c1c1c;
 	font-weight: 700;
-	width: 110px;
+	width: 140px;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__item__close {
@@ -2057,7 +2057,7 @@ ol {
 }
 
 .shoping__discount {
-	margin-top: 45px;
+	margin-top: 10px;
 }
 
 .shoping__discount h5 {
@@ -2069,31 +2069,32 @@ ol {
 
 .shoping__discount form input {
 	width: 255px;
-	height: 46px;
-	border: 1px solid #cccccc;
+	height: 52px;
+	border: 1px solid #c2c2c2;
 	font-size: 16px;
-	color: #b2b2b2;
-	text-align: center;
+	color: #aeaeae;
 	display: inline-block;
 	margin-right: 15px;
+	
 }
 
 .shoping__discount form input::placeholder {
-	color: #b2b2b2;
+	color: #aeaeae;
+	padding-left: 10px;
 }
 
 .shoping__discount form button {
-	padding: 15px 30px 11px;
-	font-size: 12px;
-	letter-spacing: 4px;
-	background: #6f6f6f;
+	padding: 15px 30px 15px;
+	font-size: 14px;
+	letter-spacing: 1px;
+	background: #112464;
 }
 
 .shoping__checkout {
 	background: #f5f5f5;
 	padding: 30px;
 	padding-top: 20px;
-	margin-top: 50px;
+	margin-top: 10px;
 }
 
 .shoping__checkout h5 {
@@ -2133,6 +2134,12 @@ ol {
 .shoping__checkout .primary-btn {
 	display: block;
 	text-align: center;
+	transition: all 0.3s;
+}
+
+.shoping__checkout .primary-btn:hover {
+	box-shadow: 3px 3px 3px #cccccc;
+	color: #f5f5f5
 }
 
 /*---------------------
@@ -2140,8 +2147,8 @@ ol {
 -----------------------*/
 
 .checkout {
-	padding-top: 80px;
-	padding-bottom: 60px;
+	padding-top: 60px;
+	padding-bottom: 80px;
 }
 
 .checkout h6 {
@@ -2186,7 +2193,7 @@ ol {
 }
 
 .checkout__input p span {
-	color: #06121a;
+	color: rgb(204, 32, 32);
 }
 
 .checkout__input input {
@@ -2335,7 +2342,7 @@ ol {
 
 .checkout__order button {
 	font-size: 18px;
-	letter-spacing: 2px;
+	letter-spacing: 0.5px;
 	width: 100%;
 	margin-top: 10px;
 }

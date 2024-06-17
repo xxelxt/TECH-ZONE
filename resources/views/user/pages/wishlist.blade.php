@@ -44,11 +44,19 @@
                                 </ul>
                             </div>
                             <div class="product__item__text">
-                                <h6><a href="#">{!! $pro['products']['name'] !!}</a></h6>
+                            @if(isset($pro['products']['name']))
+                                <h6><a href="/products/{!! $pro['products']['id'] !!}">{!! $pro['products']['name'] !!}</a></h6>
+                                @endif
                                 @if(isset($pro['products']['price']))
-                                <h5>{!! number_format($pro['products']['price']) !!}đ</h5>
+                                @if(isset($pro['products']['price_new']))
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['products']['price_new']) !!}đ<span>{!! number_format($pro['products']['price']) !!}đ</span></div>
+                                </div>
                                 @else
-                                <h5>{!! number_format($pro['products']['price_new']) !!}đ</h5>
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['products']['price']) !!}đ</div>
+                                </div>
+                                @endif
                                 @endif
                             </div>
                         </div>

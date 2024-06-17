@@ -10,7 +10,7 @@
                     <h2>{!! $about['name'] ?? __('lang.all_products') !!}</h2>
                     <div class="breadcrumb__option">
                         <a href="/">@lang('lang.home')</a>
-                        <span> > @lang('lang.all') {!! $danhmuc['name'] !!}</span> 
+                        <span> > @lang('lang.all') {!! $danhmuc['name'] !!}</span>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="col-lg-9 col-md-7">
                 <div class="filter__item">
                     <div class="row">
-                        <div class="col-lg-4 col-md-3 d-flex"> 
+                        <div class="col-lg-4 col-md-3 d-flex">
                             <div class="filter__option">
                                 <span class="icon_grid-2x2"></span>
                                 <span class="icon_ul"></span>
@@ -66,47 +66,47 @@
 
                 <div class="row product-list" id="product-list">
                     @foreach($products as $pro)
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
-                                <div class="product__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
-                                    <ul class="product__item__pic__hover">
-                                        @if(Auth::check())
-                                        @php
-                                            $countWishlist =$wishlist->countWishlist($pro['id']);
-                                        @endphp
-                                        <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
+                                <ul class="product__item__pic__hover">
+                                    @if(Auth::check())
+                                    @php
+                                    $countWishlist =$wishlist->countWishlist($pro['id']);
+                                    @endphp
+                                    <li><a href="javascript:void(0)" data-productid="{!! $pro['id'] !!}" class="wishlist">
                                             @if($countWishlist >0)
                                             <i class="fas fa-heart"></i>
                                             @else
                                             <i class="far fa-heart"></i>
                                             @endif
                                         </a></li>
-                                        @else
-                                        <li><a href="/login" data-productid="{!! $pro['id'] !!}" class="wishlist">
+                                    @else
+                                    <li><a href="/login" data-productid="{!! $pro['id'] !!}" class="wishlist">
                                             <i class="far fa-heart"></i>
                                         </a></li>
-                                        @endif
-                                        <li><a href="/products/{!! $pro['id'] !!}"><i class="fa fa-retweet"></i></a></li>
-                                    </ul>
-                                </div>
-                                <div class="product__item__text">
+                                    @endif
+                                    <li><a href="/products/{!! $pro['id'] !!}"><i class="fa fa-retweet"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
                                 @if(isset($pro['name']))
-                <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
-                @endif
-                @if(isset($pro['price']))
-                @if(isset($pro['price_new']))
-                <div class="product__discount__item__text">
-                  <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price_new']) !!}đ<span>{!! number_format($pro['price']) !!}đ</span></div>
-                </div>
-                @else
-                <div class="product__discount__item__text">
-                  <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price']) !!}đ</div>
-                </div>
-                @endif
-                @endif
+                                <h6><a href="/products/{!! $pro['id'] !!}">{!! $pro['name'] !!}</a></h6>
+                                @endif
+                                @if(isset($pro['price']))
+                                @if(isset($pro['price_new']))
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price_new']) !!}đ<span>{!! number_format($pro['price']) !!}đ</span></div>
                                 </div>
+                                @else
+                                <div class="product__discount__item__text">
+                                    <div class="product__item__price" style="color: #06121a">{!! number_format($pro['price']) !!}đ</div>
+                                </div>
+                                @endif
+                                @endif
                             </div>
                         </div>
+                    </div>
                     @endforeach
                 </div>
                 {!! $products->links() !!}

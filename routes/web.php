@@ -198,7 +198,7 @@ Route::prefix('admin')->group(function(){
 
     Route::get('/your_orders', [UserController::class, 'your_orders']);
 
-    Route::get('/your_orders_detail/{id}',[UserController::class,'your_orders_detail']);
+    Route::get('/your_orders_detail/{id}',[UserController::class,'your_orders_detail'])->name('your_orders_detail');
     
 
     Route::get('/check-cart-cookie', 'CartController@checkCartCookie');
