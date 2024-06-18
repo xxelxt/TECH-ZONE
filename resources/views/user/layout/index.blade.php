@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
 <head>
@@ -40,14 +40,19 @@
     @include('user.layout.header')
     <!-- Header Section End -->
     @if (session('thongbao'))
-    <div class="alert alert-success">
-        {{ session('thongbao') }}
+    <div class="container">
+        <div class="alert alert-success">
+            {{ session('thongbao') }}
+        </div>
     </div>
     @endif
     @if (session('canhbao'))
-    <div class="alert alert-warning">
-        {{ session('canhbao') }}
+    <div class="container">
+        <div class="alert alert-warning">
+            {{ session('canhbao') }}
+        </div>
     </div>
+
     @endif
     <!-- Hero Section Begin -->
     <div id="notifDiv"></div>

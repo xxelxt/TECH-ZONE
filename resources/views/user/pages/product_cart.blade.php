@@ -47,7 +47,7 @@ $content = Cart::content();
                 <tr>
                   <td class="shoping__cart__item">
                     <img src="user_asset/images/products/{!! $value->options->image !!}" width="75px" alt="">
-                    <h5>{!! $value->name !!}</h5>
+                    <h5><a href="{{ url('products/'.$value->id) }}">{!! $value->name !!}</a></h5>
                   </td>
                   <td class="shoping__cart__price">
                     @if($value->options->price_new)

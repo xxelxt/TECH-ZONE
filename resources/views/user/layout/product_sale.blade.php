@@ -1,13 +1,3 @@
-<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css'>
-<style>
-  .bi-arrow-up::before {
-    content: "\f148";
-    position: absolute;
-    border-radius: 50%;
-    background: #379f37;
-    left: 0;
-  }
-</style>
 <section class="featured spad">
   <div class="container">
     <div class="row">

@@ -16,7 +16,10 @@
             @foreach($new_products as $new)
             <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
                 <div class="featured__item">
-                    <div class="featured__item__pic set-bg" data-setbg="user_asset/images/products/{!! $new['image'] !!}">
+                    <div class="featured__item__pic set-bg">
+                        <a href="{{ url('products/'.$new['id']) }}">
+                            <img src="user_asset/images/products/{!! $new['image'] !!}" alt="{!! $new['name'] !!}" class="product-image">
+                        </a>
                         <ul class="featured__item__pic__hover">
                             @if(Auth::check())
                             @php

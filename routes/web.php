@@ -195,9 +195,9 @@ Route::get('/check-cart-cookie', 'CartController@checkCartCookie');
 
 
 // xử lý quên mk
-Route::get('/forgetpassword', [MailController::class, 'forgetpassword']);
+Route::get('/forgetpassword', [UserController::class, 'forgetpassword']);
 // Route::post('/send_email',[MailController::class,'send_passreset_token']);
-Route::post('/send_email', [MailController::class, 'send_passreset_token']);
+Route::post('/send_email', [UserController::class, 'send_passreset_token']);
 // Route::get('/', function () {
 //     return view('welcome');
 // });

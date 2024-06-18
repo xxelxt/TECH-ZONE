@@ -3906,3 +3906,14 @@ p.item-show_item-head {
 .formdanhgia.active {
 	display: block;
 }
+
+.featured__item__pic {
+	overflow: hidden; /* Ẩn phần ảnh bị tràn ra ngoài */
+}
+
+.product-image {
+	height: 100%;  /* Tự động điều chỉnh chiều cao để giữ tỷ lệ ảnh */
+	width: auto;   /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của ô */
+	display: block; /* Loại bỏ khoảng trắng thừa dưới ảnh */
+	object-fit: cover; /* Vừa khít ảnh vào ô, có thể cắt bớt phần thừa */
+}

@@ -75,7 +75,10 @@ return [
     'social_network'=>'SNS',
     'phone'=>'Số điện thoại',
     'password'=>'Mật khẩu',
+    'password_low'=>'mật khẩu',
     'password_again'=>'Nhập lại mật khẩu',
+    'register_acc'=>'Đăng ký tài khoản',
+    'already_account'=>'Đã có tài khoản',
     'exit'=>'Thoát',
     'select_all'=>'Chọn tất cả',
     'unselect_all'=>'Bỏ chọn tất cả',
@@ -84,11 +87,13 @@ return [
     'about'=>'Giới thiệu',
     'web_name'=>'Tên trang web',
     'title'=>'Tiêu đề',
+    'recover_pass'=>'Khôi phục mật khẩu',
     'address'=>'Địa chỉ',
     'worktime'=>'Thời gian làm việc',
     'no_support'=>'Không hỗ trợ',
     'warning'=>'Cảnh báo',
     'login'=>'Đăng nhập',
+    'login_user_prompt'=>'Đăng nhập tài khoản',
     'unsuccess'=>'Không thành công',
     'firstname.required'=>'Vui lòng nhập tên',
     'firstname.min'=>'Tên phải chứa ít nhất 1 kí tự',
@@ -160,7 +165,7 @@ return [
     'register'=>'Đăng ký',
     'give_email'=>"Gửi Email",
     'activepass'=>"Kích hoạt lại mật khẩu",
-    'enter_registered_gmail'=>'Nhập gmail đã đăng ký',
-    'give_password'=>'Lấy lại mật khẩu'
-
+    'enter_registered_gmail'=>'Nhập Email đã đăng ký tài khoản',
+    'give_password'=>'Lấy lại mật khẩu',
+    'back_to_login'=>'Quay lại đăng nhập'
 ];

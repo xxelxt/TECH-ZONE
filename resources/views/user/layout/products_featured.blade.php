@@ -18,7 +18,10 @@
             @if($pro['featured_product'] == 1) <!-- Kiểm tra nếu sản phẩm là sản phẩm nổi bật -->
             <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
                 <div class="featured__item">
-                    <div class="featured__item__pic set-bg" data-setbg="user_asset/images/products/{!! $pro['image'] !!}">
+                <div class="featured__item__pic set-bg">
+                        <a href="{{ url('products/'.$pro['id']) }}">
+                            <img src="user_asset/images/products/{!! $pro['image'] !!}" alt="{!! $pro['name'] !!}" class="product-image">
+                        </a>
                         <!-- Đặt hình nền cho sản phẩm bằng hình ảnh từ dữ liệu -->
                         <!-- <img src="user_asset/images/products/{!! $pro['image'] !!}" alt=""> -->
                         <ul class="featured__item__pic__hover">
