@@ -163,6 +163,7 @@ class UserController extends Controller
         ]);
 
         if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
+            Cookie::queue(Cookie::forget('cart')); // Xóa cookie cart
             return redirect('/');
         } else {
             return redirect('/login')->with('canhbao', 'Sign in unsuccessfully');
@@ -545,6 +546,7 @@ class UserController extends Controller
                 // echo "</pre>";
                 // Kiểm tra nếu có dữ liệu trong giỏ hàng
                 if (!empty($cartContent)) {
+                    Cart::destroy(); // Xóa giỏ hàng hiện tại
                     // Cookie::forget('cart'); // Xóa cookie có tên là 'cart'
                     foreach ($cartContent as $item) {
                         // if($userId == $item['current_id']){
@@ -558,6 +560,9 @@ class UserController extends Controller
                 }
             }
         }
+        
+        Cart::setGlobalTax(0);
+        
         return view('user.pages.product_cart');
     }
 
@@ -590,9 +595,8 @@ class UserController extends Controller
             // Cart::destroy();
             Cart::setGlobalTax(0);
             if (Auth::check()) {
-                // session()->put('cart', Cart::content());
                 $cartContent = Cart::content();
-                Cookie::queue('cart', $cartContent, 43200); // 30 ngày
+                Cookie::queue('cart', $cartContent, 43200);
             }
             // $cartContent = json_decode(Cookie::get('cart'), true);
             // echo "Dữ liệu trong \$cartContent: <pre>";
@@ -694,7 +698,7 @@ class UserController extends Controller
             Cookie::queue(Cookie::forget('cart'));
             // session()->forget('cart');
             cookie()->forget('cart');
-            return redirect('/your_orders')->with('thongbao', 'Successfully');
+            return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
         } else {
             $content = Cart::content();
             //echo $content;
@@ -863,22 +867,22 @@ class UserController extends Controller
             return response()->json(['error' => 'Order not found'], 404);
         }
     }
-    
+
     public function your_orders_detail($id)
-{
-    $order = Orders::findOrFail($id); // Lấy thông tin đơn hàng từ ID
-    $orders_detail = Orders_Detail::where('orders_id', $id)->get();
+    {
+        $order = Orders::findOrFail($id); // Lấy thông tin đơn hàng từ ID
+        $orders_detail = Orders_Detail::where('orders_id', $id)->get();
 
-    // Kiểm tra xem đơn hàng có thuộc về người dùng hiện tại không
-    if (Auth::check() && $order->users_id !== Auth::id()) {
-        abort(403, 'Unauthorized'); // Hoặc chuyển hướng đến trang khác
+        // Kiểm tra xem đơn hàng có thuộc về người dùng hiện tại không
+        if (Auth::check() && $order->users_id !== Auth::id()) {
+            abort(403, 'Unauthorized'); // Hoặc chuyển hướng đến trang khác
+        }
+
+        return view('user.pages.orders_detail', [
+            'order' => $order, // Truyền thông tin đơn hàng vào view
+            'orders_detail' => $orders_detail
+        ]);
     }
-
-    return view('user.pages.orders_detail', [
-        'order' => $order, // Truyền thông tin đơn hàng vào view
-        'orders_detail' => $orders_detail 
-    ]);
-}
 
     public function discount(Request $request)
     {
@@ -900,5 +904,129 @@ class UserController extends Controller
     {
         Cart::setGlobalDiscount(0);
         return redirect()->back()->with('thongbao', 'Delete Coupon Successfully');
+    }
+
+    public function vnpay_payment(Request $request)
+    {
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+        $vnp_Returnurl = route('vnpay.check'); // Success URL
+        $vnp_TmnCode = "0YKCXJ3P"; //Mã website tại VNPAY 
+        $vnp_HashSecret = "2YV8L7KX9HRPTBF2YNXMSAEIBZE6BO2R"; //Chuỗi bí mật
+
+        // Lấy thông tin đơn hàng từ giỏ hàng (Cart)
+        $cartContent = Cart::content();
+        $this->order_place($request);
+        $latestOrder = Orders::orderBy('created_at', 'desc')->first(); // Tìm đơn hàng mới nhất
+        $vnp_TxnRef = $latestOrder->id; // Lấy ID của đơn hàng mới nhất
+        $vnp_OrderInfo = "Thanh toán đơn hàng #" . $vnp_TxnRef;
+        $vnp_OrderType = "billpayment";
+
+        $vnp_Amount = Cart::total(0, '', '') * 100; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
+        $vnp_Locale = 'vn';
+        $vnp_BankCode = 'NCB';
+        $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+        //Add Params of 2.0.1 Version
+        // $vnp_ExpireDate = $_POST['txtexpire'];
+
+        $inputData = array(
+            "vnp_Version" => "2.1.0",
+            "vnp_TmnCode" => $vnp_TmnCode,
+            "vnp_Amount" => $vnp_Amount,
+            "vnp_Command" => "pay",
+            "vnp_CreateDate" => date('YmdHis'),
+            "vnp_CurrCode" => "VND",
+            "vnp_IpAddr" => $vnp_IpAddr,
+            "vnp_Locale" => $vnp_Locale,
+            "vnp_OrderInfo" => $vnp_OrderInfo,
+            "vnp_OrderType" => $vnp_OrderType,
+            "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_TxnRef" => $vnp_TxnRef,
+            // "vnp_ExpireDate"=>$vnp_ExpireDate,
+        );
+
+        if (isset($vnp_BankCode) && $vnp_BankCode != "") {
+            $inputData['vnp_BankCode'] = $vnp_BankCode;
+        }
+        if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
+            $inputData['vnp_Bill_State'] = $vnp_Bill_State;
+        }
+
+        //var_dump($inputData);
+        ksort($inputData);
+        $query = "";
+        $i = 0;
+        $hashdata = "";
+        foreach ($inputData as $key => $value) {
+            if ($i == 1) {
+                $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+            } else {
+                $hashdata .= urlencode($key) . "=" . urlencode($value);
+                $i = 1;
+            }
+            $query .= urlencode($key) . "=" . urlencode($value) . '&';
+        }
+
+        $vnp_Url = $vnp_Url . "?" . $query;
+        if (isset($vnp_HashSecret)) {
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+            $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
+        }
+        $returnData = array(
+            'code' => '00', 'message' => 'success', 'data' => $vnp_Url
+        );
+        if (isset($_POST['redirect'])) {
+            header('Location: ' . $vnp_Url);
+            die();
+        } else {
+            echo json_encode($returnData); // Initial request, not a response from VNPay
+        }
+        // vui lòng tham khảo thêm tại code demo
+    }
+
+    public function vnpay_check(Request $request)
+    {
+        // Get response code and transaction reference
+        $vnp_ResponseCode = $request->get('vnp_ResponseCode');
+        $vnp_TxnRef = $request->get('vnp_TxnRef');
+
+        // Check response code and handle accordingly
+        if ($vnp_ResponseCode === '00') { // Success
+            $this->handleVnpaySuccess($vnp_TxnRef);
+            return redirect()->route('your_orders_detail', $vnp_TxnRef)->with('thongbao', 'Đặt hàng thành công');
+        } else { // Failure or cancellation
+            $this->handleVnpayFailure($vnp_TxnRef);
+            return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
+        }
+    }
+
+    // Hàm xử lý khi thanh toán thành công
+    private function handleVnpaySuccess($orderId)
+    {
+        // Tìm đơn hàng dựa trên ID
+        $order = Orders::find($orderId);
+
+        if ($order) {
+            $order->payment_status = 2; // Set payment_status to 2 (paid)
+            $order->save();
+
+            // Xóa giỏ hàng và cookie
+            Cart::destroy();
+            Cookie::queue(Cookie::forget('cart'));
+        } else {
+            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
+        }
+    }
+
+    // Hàm xử lý khi thanh toán thất bại hoặc bị hủy
+    private function handleVnpayFailure($orderId)
+    {
+        // Tìm đơn hàng dựa trên ID
+        $order = Orders::find($orderId);
+
+        if ($order) {
+            $order->delete(); // Xóa đơn hàng
+        } else {
+            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
+        }
     }
 }

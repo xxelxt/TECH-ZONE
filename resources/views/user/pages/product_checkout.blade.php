@@ -29,7 +29,7 @@ $content = Cart::content();
         <div class="container">
             <div class="checkout__form">
                 <h4>@lang('lang.billing_details')</h4>
-                <form action="/order_place" method="post">
+                <form id="checkoutForm" action="/order_place" method="post">
                     @csrf
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
@@ -129,7 +129,7 @@ $content = Cart::content();
                                     <input type="radio" name="payment_method" id="payment_method_vnpay" value="vnpay">
                                     <label for="payment_method_vnpay">VNPAY</label>
                                 </div>
-                                <button type="submit" class="site-btn">@lang('lang.place_order')</button>
+                                <button type="submit" id="placeOrderBtn" class="site-btn">@lang('lang.place_order')</button>
                             </div>
                         </div>
                     </div>
@@ -140,6 +140,26 @@ $content = Cart::content();
 </body>
 @endsection
 @section('script')
+<script>
+    $(document).ready(function() {
+        $('#checkoutForm').submit(function(event) {
+            const selectedPaymentMethod = $('input[name="payment_method"]:checked').val();
+
+            if (selectedPaymentMethod === 'vnpay') {
+                event.preventDefault();
+                // Dynamically create and append the hidden input
+                var redirectInput = $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'redirect')
+                    .val('1'); // Or any value you want to indicate the redirect
+
+                $(this).append(redirectInput);
+                this.action = "{{ route('vnpay_payment') }}";
+                this.submit();
+            }
+        });
+    });
+</script>
 <script>
     totalWishlist();
 

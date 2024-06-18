@@ -31,28 +31,35 @@
       <h2 style="margin-bottom: 20px;"><b>Thông tin đơn hàng</b></h2>
       <div class="row">
         <div class="col-md-6">
-          <p><strong>Mã đơn hàng:</strong> {{ $order->id }}</p>
-          <p><strong>Ngày đặt hàng:</strong> {{ $order->created_at }}</p>
-          <p><strong>Ngày cập nhật:</strong> {{ $order->updated_at }}</p>
-          <p><strong>Tổng tiền:</strong> {{ number_format($order->total) }}đ</p>
+          <p><strong>@lang('lang.order_id'):</strong> {{ $order->id }}</p>
+          <p><strong>@lang('lang.created'):</strong> {{ $order->created_at }}</p>
+          <p><strong>@lang('lang.updated'):</strong> {{ $order->updated_at }}</p>
+          <p><strong>@lang('lang.total_price'):</strong> {{ number_format($order->total) }}đ</p>
         </div>
         <div class="col-md-6">
-          <p><strong>Khách hàng:</strong> {{ $order->lastname }} {{ $order->firstname }}</p>
-          <p><strong>Số điện thoại:</strong> {{ $order->phone }}</p>
+          <p><strong>@lang('lang.customer'):</strong> {{ $order->lastname }} {{ $order->firstname }}</p>
+          <p><strong>@lang('lang.phone'):</strong> {{ $order->phone }}</p>
           <p><strong>Email:</strong> {{ $order->email }}</p>
-          <p><strong>Địa chỉ:</strong> {{ $order->address }}, {{ $order->district }}, {{ $order->city }}</p>
+          <p><strong>@lang('lang.address'):</strong> {{ $order->address }}, {{ $order->district }}, {{ $order->city }}</p>
         </div>
       </div>
 
       <div class="row mt-3">
         <div class="col-md-12">
-          <p><strong>Ghi chú:</strong> {{ $order->content }}</p>
-          <p><strong>Trạng thái:</strong>
+          <p><strong>@lang('lang.content'):</strong> {{ $order->content }}</p>
+          <p><strong>@lang('lang.active'):</strong>
             <span class="{{ $order->status == 1 ? 'text-warning' : ($order->status == 2 ? 'text-primary' : ($order->status == 3 ? 'text-success' : 'text-danger')) }}">
               @if($order->status == 1) @lang('lang.processing')
               @elseif($order->status == 2) @lang('lang.delivery')
               @elseif($order->status == 3) @lang('lang.success')
               @elseif($order->status == 4) @lang('lang.denied')
+              @endif
+            </span>
+          </p>
+          <p><strong>@lang('lang.payment_status'):</strong>
+            <span class="{{ $order->payment_status == 1 ? 'text-warning' : 'text-success' }}">
+              @if($order->payment_status == 1) @lang('lang.unpaid')
+              @elseif($order->payment_status == 2) @lang('lang.paid')
               @endif
             </span>
           </p>

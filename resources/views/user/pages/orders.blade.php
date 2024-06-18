@@ -65,6 +65,7 @@
                     <th>@lang('lang.content')</th>
                     <th>@lang('lang.total_price')</th>
                     <th>@lang('lang.active')</th>
+                    <th>@lang('lang.payment_status')</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -85,6 +86,11 @@
                       @elseif($value['status'] == 2) @lang('lang.delivery')
                       @elseif($value['status'] == 3) @lang('lang.success')
                       @elseif($value['status'] == 4) @lang('lang.denied')
+                      @endif
+                    </td>
+                    <td class="{{ $value['payment_status'] == 1 ? 'text-warning' : 'text-success' }}">
+                      @if($value['payment_status'] == 1) @lang('lang.unpaid')
+                      @elseif($value['payment_status'] == 2) @lang('lang.paid')
                       @endif
                     </td>
                     <td><a href="/your_orders_detail/{!! $value['id'] !!}" class="btn btn-info">@lang('lang.detail')</a></td>

@@ -20,7 +20,8 @@ class Orders extends Model // Khai báo lớp Orders kế thừa từ lớp Mode
         'email', // Địa chỉ email của khách hàng
         'content', // Nội dung của đơn hàng
         'total', // Tổng số tiền của đơn hàng
-        'status' // Trạng thái của đơn hàng
+        'status', // Trạng thái của đơn hàng
+        'payment_status' // Trạng thái thanh toán của đơn hàng
     ];
 
     public function users() // Định nghĩa phương thức quan hệ với model User
