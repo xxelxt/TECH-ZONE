@@ -204,3 +204,6 @@ Route::post('/send_email', [UserController::class, 'send_passreset_token']);
 
 Route::post('/vnpay_payment', [UserController::class, 'vnpay_payment'])->name('vnpay_payment');
 Route::get('/vnpay_check', [UserController::class, 'vnpay_check'])->name('vnpay.check');
+
+Route::post('/momo_payment', [UserController::class, 'momo_payment'])->name('momo_payment');
+Route::get('/momo_check', [UserController::class, 'momo_check'])->name('momo.check');

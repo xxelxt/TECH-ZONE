@@ -129,6 +129,10 @@ $content = Cart::content();
                                     <input type="radio" name="payment_method" id="payment_method_vnpay" value="vnpay">
                                     <label for="payment_method_vnpay">VNPAY</label>
                                 </div>
+                                <div class="checkout__input__checkbox">
+                                    <input type="radio" name="payment_method" id="payment_method_momo" value="momo">
+                                    <label for="payment_method_momo">MoMo</label>
+                                </div>
                                 <button type="submit" id="placeOrderBtn" class="site-btn">@lang('lang.place_order')</button>
                             </div>
                         </div>
@@ -155,6 +159,17 @@ $content = Cart::content();
 
                 $(this).append(redirectInput);
                 this.action = "{{ route('vnpay_payment') }}";
+                this.submit();
+            } else if (selectedPaymentMethod === 'momo') {
+                event.preventDefault();
+                // Dynamically create and append the hidden input
+                var redirectInput = $('<input>')
+                    .attr('type', 'hidden')
+                    .attr('name', 'payUrl')
+                    .val('1'); // Or any value you want to indicate the redirect
+
+                $(this).append(redirectInput);
+                this.action = "{{ route('momo_payment') }}";
                 this.submit();
             }
         });

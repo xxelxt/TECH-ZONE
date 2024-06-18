@@ -561,9 +561,9 @@ class UserController extends Controller
                 }
             }
         }
-        
+
         Cart::setGlobalTax(0);
-        
+
         return view('user.pages.product_cart');
     }
 
@@ -907,6 +907,139 @@ class UserController extends Controller
         return redirect()->back()->with('thongbao', 'Delete Coupon Successfully');
     }
 
+    public function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+    public function momo_payment(Request $request)
+    {
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua MoMo";
+
+        $cartContent = Cart::content();
+        $amount = Cart::total(0, '', '');
+        $orderId = uniqid(); // Lấy ID của đơn hàng mới nhất
+
+        $redirectUrl = route('momo.check'); // Success URL
+        $ipnUrl = route('momo.check'); // Success URL
+        $requestId = uniqid();
+        $requestType = "payWithATM";
+        $extraData = "";
+
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        $data = array(
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        );
+
+        $cartContent = Cart::content()->toJson(); // Chuyển nội dung giỏ hàng thành JSON
+        Cookie::queue('cart_backup', $cartContent, 43200);
+
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true);  // decode json
+
+        $this->order_place($request);
+        return redirect($jsonResult['payUrl']);
+    }
+
+    public function momo_check(Request $request)
+    {
+        $resultCode = $request->get('resultCode');
+        $latestOrder = Orders::orderBy('created_at', 'desc')->first(); // Tìm đơn hàng mới nhất
+        $orderId = $latestOrder->id; // Lấy ID của đơn hàng mới nhất
+
+        if ($resultCode === '0') { // Success
+            $this->handleMomoSuccess($orderId);
+            return redirect()->route('your_orders_detail', $orderId)->with('thongbao', 'Đặt hàng thành công');
+        } else { // Failure or cancellation
+            $this->handleMomoFailure($orderId);
+            return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
+        }
+    }
+
+    private function handleMomoSuccess($orderId)
+    {
+        // Tìm đơn hàng dựa trên ID
+        $order = Orders::find($orderId);
+
+        if ($order) {
+            $order->payment_status = 2; // Set payment_status to 2 (paid)
+            $order->save();
+
+            // Xóa giỏ hàng và cookie
+            Cart::destroy();
+            Cookie::queue(Cookie::forget('cart'));
+            session()->forget('cart');
+        } else {
+            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
+        }
+    }
+
+    // Hàm xử lý khi thanh toán thất bại hoặc bị hủy
+    private function handleMomoFailure($orderId)
+    {
+        // Tìm đơn hàng dựa trên ID
+        $order = Orders::find($orderId);
+
+        if ($order) {
+            $orderDetails = Orders_Detail::where('orders_id', $orderId)->get();
+            foreach ($orderDetails as $orderDetail) {
+                $product = Products::find($orderDetail->product_id);
+                if ($product) {
+                    $product->quantity += $orderDetail->quantity;
+                    $product->save();
+                }
+            }
+
+            // Xóa đơn hàng
+            $order->delete();
+        } else {
+            if (Cookie::has('cart_backup')) {
+                $cartContent = json_decode(Cookie::get('cart_backup'), true);
+                Cart::destroy(); // Xóa giỏ hàng hiện tại
+                foreach ($cartContent as $item) {
+                    Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], 0, $item['options']);
+                }
+                Cookie::queue(Cookie::forget('cart_backup')); // Xóa cookie sau khi đã khôi phục
+            }
+        }
+    }
+
+
     public function vnpay_payment(Request $request)
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -916,13 +1049,12 @@ class UserController extends Controller
 
         // Lấy thông tin đơn hàng từ giỏ hàng (Cart)
         $cartContent = Cart::content();
-        $this->order_place($request);
-        $latestOrder = Orders::orderBy('created_at', 'desc')->first(); // Tìm đơn hàng mới nhất
-        $vnp_TxnRef = $latestOrder->id; // Lấy ID của đơn hàng mới nhất
+
+        $vnp_TxnRef = uniqid(); // Lấy ID của đơn hàng mới nhất
         $vnp_OrderInfo = "Thanh toán đơn hàng #" . $vnp_TxnRef;
         $vnp_OrderType = "billpayment";
 
-        $vnp_Amount = Cart::total(0, '', '') * 100; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
+        $vnp_Amount = Cart::total(0, '', '') * 1; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
         $vnp_Locale = 'vn';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -975,7 +1107,12 @@ class UserController extends Controller
         $returnData = array(
             'code' => '00', 'message' => 'success', 'data' => $vnp_Url
         );
+
+        $cartContent = Cart::content()->toJson(); // Chuyển nội dung giỏ hàng thành JSON
+        Cookie::queue('cart_backup', $cartContent, 43200);
+
         if (isset($_POST['redirect'])) {
+            $this->order_place($request);
             header('Location: ' . $vnp_Url);
             die();
         } else {
@@ -988,14 +1125,15 @@ class UserController extends Controller
     {
         // Get response code and transaction reference
         $vnp_ResponseCode = $request->get('vnp_ResponseCode');
-        $vnp_TxnRef = $request->get('vnp_TxnRef');
+        $latestOrder = Orders::orderBy('created_at', 'desc')->first(); // Tìm đơn hàng mới nhất
+        $orderId = $latestOrder->id;
 
         // Check response code and handle accordingly
         if ($vnp_ResponseCode === '00') { // Success
-            $this->handleVnpaySuccess($vnp_TxnRef);
-            return redirect()->route('your_orders_detail', $vnp_TxnRef)->with('thongbao', 'Đặt hàng thành công');
+            $this->handleVnpaySuccess($orderId);
+            return redirect()->route('your_orders_detail', $orderId)->with('thongbao', 'Đặt hàng thành công');
         } else { // Failure or cancellation
-            $this->handleVnpayFailure($vnp_TxnRef);
+            $this->handleVnpayFailure($orderId);
             return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
         }
     }
@@ -1013,6 +1151,7 @@ class UserController extends Controller
             // Xóa giỏ hàng và cookie
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
+            session()->forget('cart');
         } else {
             // Xử lý khi không tìm thấy đơn hàng (nếu cần)
         }
@@ -1025,16 +1164,33 @@ class UserController extends Controller
         $order = Orders::find($orderId);
 
         if ($order) {
-            $order->delete(); // Xóa đơn hàng
+            $orderDetails = Orders_Detail::where('orders_id', $orderId)->get();
+            foreach ($orderDetails as $orderDetail) {
+                $product = Products::find($orderDetail->product_id);
+                if ($product) {
+                    $product->quantity += $orderDetail->quantity;
+                    $product->save();
+                }
+            }
+
+            // Xóa đơn hàng
+            $order->delete();
         } else {
-            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
+            if (Cookie::has('cart_backup')) {
+                $cartContent = json_decode(Cookie::get('cart_backup'), true);
+                Cart::destroy(); // Xóa giỏ hàng hiện tại
+                foreach ($cartContent as $item) {
+                    Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], 0, $item['options']);
+                }
+                Cookie::queue(Cookie::forget('cart_backup')); // Xóa cookie sau khi đã khôi phục
+            }
         }
     }
 
     public function forgetpassword()
     {
         $about = About::first(); // Fetch the About information
-        return view('user.forgetpassword', compact('about')); 
+        return view('user.forgetpassword', compact('about'));
     }
 
     public function send_passreset_token(Request $request)
@@ -1045,7 +1201,7 @@ class UserController extends Controller
 
         $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y');
         $title = 'Lấy lại mật khẩu / Password retrieval';
-        
+
         $user = User::where('email', $data['gmail'])->first();
 
         if (!$user) {
