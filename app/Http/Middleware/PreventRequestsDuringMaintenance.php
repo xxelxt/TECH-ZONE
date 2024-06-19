@@ -7,11 +7,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Mi
 class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
-     * Các URI mà nên có thể truy cập khi chế độ bảo trì được kích hoạt.
-     *
-     * @var array<int, string>
+     * Các URI có thể truy cập khi hệ thống đang bảo trì.
      */
-    protected $except = [
-        //
-    ];
+    protected $except = [];
 }

@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Providers; // Khai báo namespace cho App\Providers
+namespace App\Providers;
 
-use Illuminate\Support\Facades\Broadcast; // Import Broadcast facade
-use Illuminate\Support\ServiceProvider; // Import ServiceProvider class
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\ServiceProvider;
 
-class BroadcastServiceProvider extends ServiceProvider // Khai báo lớp BroadcastServiceProvider kế thừa từ lớp ServiceProvider
+class BroadcastServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap any application services.
-     *
-     * @return void
+     * Khởi động các dịch vụ broadcast của ứng dụng.
      */
-    public function boot() // Phương thức để khởi động các dịch vụ của ứng dụng
+    public function boot()
     {
-        Broadcast::routes(); // Đăng ký các tuyến đường liên quan đến Broadcast
+        Broadcast::routes(); // Đăng ký các tuyến đường mặc định cho Broadcast
 
-        require base_path('routes/channels.php'); // Đưa vào các tuyến đường của các kênh Broadcast
+        // 'channels.php' chứa các định nghĩa cho các kênh broadcast riêng tư (yêu cầu xác thực người dùng).
+        require base_path('routes/channels.php');
     }
 }
-

@@ -8,32 +8,21 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
-     * Define the application's command schedule.
-     * Định nghĩa lịch trình cho các lệnh của ứng dụng.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * Định nghĩa lịch trình chạy các lệnh của ứng dụng.
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        // Định nghĩa một lệnh 'inspire' sẽ chạy mỗi giờ.
-        // Dòng này bị comment nên không thực hiện lệnh nào.
+        // Lên lịch chạy tự động.
+        // $schedule->command('tên_lệnh:của_bạn')->hourly();
     }
 
     /**
-     * Register the commands for the application.
      * Đăng ký các lệnh cho ứng dụng.
-     *
-     * @return void
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
-        // Tải tất cả các lệnh được định nghĩa trong thư mục 'app/Console/Commands'.
+        $this->load(__DIR__ . '/Commands'); // Tự động tải các lệnh từ thư mục Commands
 
-        require base_path('routes/console.php');
-        // Yêu cầu (require) file 'routes/console.php', nơi bạn có thể định nghĩa các lệnh bổ sung.
+        require base_path('routes/console.php'); // Tải các lệnh bổ sung từ file console.php
     }
 }
-

@@ -5,44 +5,32 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
 
-// Middleware này được sử dụng để đánh dấu các proxy mà ứng dụng của bạn tin cậy. 
-// Các proxy được liệt kê trong biến $proxies sẽ được xem xét khi xác định địa chỉ IP của client. 
-// Điều này hữu ích khi ứng dụng của bạn chạy trong một môi trường proxy 
-
-
+// Xử lý các yêu cầu HTTP khi ứng dụng chạy phía sau một hoặc nhiều proxy server (ví dụ: load balancer, tường lửa, CDN).
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
-     *
-     * @var array<int, string>|string|null
+     * Danh sách các proxy server tin cậy.
+     * protected $proxies = ['192.168.1.1', '10.0.0.0/8']; 
      */
     protected $proxies;
 
     /**
-     * The headers that should be used to detect proxies.
-     *
-     * @var int
+     * Danh sách các tiêu đề (header) HTTP sẽ kiểm tra để xác định thông tin về client ban đầu và proxy.
+     * Các tiêu đề này thường được các proxy server thêm vào yêu cầu.
      */
     protected $headers =
+        // Xác định địa chỉ IP thật của client (người dùng).
+        Request::HEADER_X_FORWARDED_FOR | 
 
-    // HEADER_X_FORWARDED_FOR: Được sử dụng để xác định địa chỉ IP của client ban đầu khi thông qua proxy. Nó cho biết địa chỉ IP của client đã kết nối đến proxy.
-        Request::HEADER_X_FORWARDED_FOR |
-    // HEADER_X_FORWARDED_HOST: Xác định tên miền hoặc địa chỉ IP của máy chủ mà client ban đầu đã gửi yêu cầu đến trước khi đi qua proxy.
+        // Xác định tên miền hoặc địa chỉ IP của máy chủ mà client đã gửi yêu cầu đến trước khi đi qua proxy.
+        Request::HEADER_X_FORWARDED_HOST | 
 
-        Request::HEADER_X_FORWARDED_HOST |
-    // HEADER_X_FORWARDED_PORT: Được sử dụng để chỉ định cổng của máy chủ mà client ban đầu đã gửi yêu cầu đến trước khi đi qua proxy.
+        // Xác định cổng của máy chủ mà client đã gửi yêu cầu đến trước khi đi qua proxy.
+        Request::HEADER_X_FORWARDED_PORT | 
 
-        Request::HEADER_X_FORWARDED_PORT |
+        // Xác định giao thức (HTTP hoặc HTTPS) của yêu cầu gốc từ client.
+        Request::HEADER_X_FORWARDED_PROTO | 
 
-    // HEADER_X_FORWARDED_PROTO: Xác định giao thức của yêu cầu ban đầu của client trước khi đi qua proxy, chẳng hạn như http hoặc https.
-        Request::HEADER_X_FORWARDED_PROTO |
-
-    // HEADER_X_FORWARDED_AWS_ELB: Sử dụng trong môi trường AWS (Amazon Web Services) Elastic Load Balancer (ELB), xác định rằng yêu cầu đã đi qua một ELB.
-        Request::HEADER_X_FORWARDED_AWS_ELB;
+        // Xác định rằng yêu cầu đã đi qua một Elastic Load Balancer (ELB) của Amazon Web Services.
+        Request::HEADER_X_FORWARDED_AWS_ELB; 
 }
-// HEADER_X_FORWARDED_FOR: Được sử dụng để xác định địa chỉ IP của client ban đầu khi thông qua proxy. Nó cho biết địa chỉ IP của client đã kết nối đến proxy.
-// HEADER_X_FORWARDED_HOST: Xác định tên miền hoặc địa chỉ IP của máy chủ mà client ban đầu đã gửi yêu cầu đến trước khi đi qua proxy.
-// HEADER_X_FORWARDED_PORT: Được sử dụng để chỉ định cổng của máy chủ mà client ban đầu đã gửi yêu cầu đến trước khi đi qua proxy.
-// HEADER_X_FORWARDED_PROTO: Xác định giao thức của yêu cầu ban đầu của client trước khi đi qua proxy, chẳng hạn như http hoặc https.
-// HEADER_X_FORWARDED_AWS_ELB: Sử dụng trong môi trường AWS (Amazon Web Services) Elastic Load Balancer (ELB), xác định rằng yêu cầu đã đi qua một ELB.

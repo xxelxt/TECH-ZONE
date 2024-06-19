@@ -1,34 +1,30 @@
 <?php
 
-namespace App\Providers; // Khai báo namespace cho App\Providers
+namespace App\Providers;
 
-use Illuminate\Cache\RateLimiting\Limit; // Import Limit class từ Illuminate\Cache\RateLimiting
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider; // Import class RouteServiceProvider từ Illuminate\Foundation\Support\Providers
-use Illuminate\Http\Request; // Import class Request từ Illuminate\Http
-use Illuminate\Support\Facades\RateLimiter; // Import RateLimiter facade từ Illuminate\Support\Facades
-use Illuminate\Support\Facades\Route; // Import Route facade từ Illuminate\Support\Facades
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 
-// Tệp RouteServiceProvider đóng vai trò quan trọng trong việc cấu hình và quản lý các tuyến đường (routes)
-//  cũng như các dịch vụ khác cho ứng dụng Laravel của bạn.
-class RouteServiceProvider extends ServiceProvider // Khai báo lớp RouteServiceProvider kế thừa từ lớp ServiceProvider
+// Cấu hình, quản lý các routes và các dịch vụ khác.
+class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * The path to the "home" route for your application.
-     *
+     * Đường dẫn đến route "home" cho ứng dụng
      * Typically, users are redirected here after authentication.
      *
      * @var string
      */
-    public const HOME = '/home'; // Đường dẫn đến route "home" cho ứng dụng của bạn
+    public const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
-     *
-     * @return void
      */
-    public function boot() // Phương thức để khởi động các dịch vụ của ứng dụng
+    public function boot()
     {
-        $this->configureRateLimiting(); // Gọi phương thức để cấu hình giới hạn tốc độ truy cập
+        $this->configureRateLimiting(); // Cấu hình giới hạn tốc độ truy cập
 
         $this->routes(function () { // Định nghĩa các tuyến đường của ứng dụng
             Route::middleware('api') // Middleware 'api'
@@ -41,14 +37,13 @@ class RouteServiceProvider extends ServiceProvider // Khai báo lớp RouteServi
     }
 
     /**
-     * Configure the rate limiters for the application.
-     *
-     * @return void
+     * Cấu hình giới hạn tốc độ truy cập.
      */
-    protected function configureRateLimiting() // Phương thức để cấu hình giới hạn tốc độ truy cập
+    protected function configureRateLimiting()
     {
-        RateLimiter::for('api', function (Request $request) { // Đặt giới hạn tốc độ truy cập cho 'api'
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip()); // Giới hạn 60 lượt truy cập mỗi phút
+        // Đặt giới hạn tốc độ truy cập cho 'api' là 60 lượt truy cập mỗi phút
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
     }
 }

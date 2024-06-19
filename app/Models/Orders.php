@@ -1,36 +1,36 @@
 <?php
 
-namespace App\Models; // Khai báo namespace cho namespace App\Models
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory; // Import trait HasFactory
-use Illuminate\Database\Eloquent\Model; // Import class Model
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Orders extends Model // Khai báo lớp Orders kế thừa từ lớp Model
+class Orders extends Model
 {
-    use HasFactory; // Sử dụng trait HasFactory cho model này
+    use HasFactory;
 
-    protected $fillable = [ // Định nghĩa các thuộc tính có thể gán mass-assignment
-        'users_id', // ID của người dùng liên kết với đơn hàng
-        'lastname', // Họ của khách hàng
-        'firstname', // Tên của khách hàng
-        'address', // Địa chỉ của khách hàng
-        'district', // Quận của địa chỉ của khách hàng
-        'city', // Thành phố của địa chỉ của khách hàng
-        'phone', // Số điện thoại của khách hàng
-        'email', // Địa chỉ email của khách hàng
-        'content', // Nội dung của đơn hàng
-        'total', // Tổng số tiền của đơn hàng
-        'status', // Trạng thái của đơn hàng
-        'payment_status' // Trạng thái thanh toán của đơn hàng
+    protected $fillable = [
+        'users_id',
+        'lastname',
+        'firstname',
+        'address',
+        'district',
+        'city',
+        'phone',
+        'email',
+        'content',
+        'total',
+        'status',
+        'payment_status'
     ];
 
-    public function users() // Định nghĩa phương thức quan hệ với model User
+    public function users() // Quan hệ với model User
     {
-        return $this->belongsTo(User::class,'users_id','id'); // Đơn hàng thuộc về một người dùng
+        return $this->belongsTo(User::class, 'users_id', 'id'); // Đơn hàng thuộc về một người dùng
     }
 
-    public function orders_details() // Định nghĩa phương thức quan hệ với model Orders_Detail
+    public function orders_details() // Quan hệ với model Orders_Detail
     {
-        return $this->hasMany(Orders_Detail::class,'id','orders_id'); // Đơn hàng có nhiều chi tiết đơn hàng
+        return $this->hasMany(Orders_Detail::class, 'id', 'orders_id'); // Đơn hàng có nhiều chi tiết đơn hàng
     }
 }
