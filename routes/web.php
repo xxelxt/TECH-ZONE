@@ -194,13 +194,21 @@ Route::get('/your_orders_detail/{id}', [UserController::class, 'your_orders_deta
 Route::get('/check-cart-cookie', 'CartController@checkCartCookie');
 
 
-// xử lý quên mk
-Route::get('/forgetpassword', [UserController::class, 'forgetpassword']);
-// Route::post('/send_email',[MailController::class,'send_passreset_token']);
+// // xử lý quên mk
+// Route::get('/forgetpassword', [UserController::class, 'forgetpassword']);
+// // Route::post('/send_email',[MailController::class,'send_passreset_token']);
+// Route::post('/send_email', [UserController::class, 'send_passreset_token']);
+
+Route::get('/update-new-pass',[UserController::class,'update_new_pass']);
+Route::post('/solve-update-new-pass',[UserController::class,'solve_update_new_pass']);// xử lý quên mk
+Route::get('/forgetpassword',[UserController::class,'forgetpassword']);
 Route::post('/send_email', [UserController::class, 'send_passreset_token']);
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+// gửi mail cập nhật đơn hàng
+Route::get('/give_mail_your_order/{id}',[UserController::class,'give_mail_your_order']);
 
 Route::post('/vnpay_payment', [UserController::class, 'vnpay_payment'])->name('vnpay_payment');
 Route::get('/vnpay_check', [UserController::class, 'vnpay_check'])->name('vnpay.check');

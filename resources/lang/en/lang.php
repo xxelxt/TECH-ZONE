@@ -168,5 +168,9 @@ return [
     'activepass'=>"Active Pass",
     'enter_registered_gmail'=>'Enter your registered Email',
     'give_password'=>'Give password',
-    'back_to_login'=>'Back to login page'
+    'back_to_login'=>'Back to login page',
+    'update_new_pass'=>'Update new pass',
+    'update'=>"Update",
+    'newpass'=>"New password"
+
 ];
