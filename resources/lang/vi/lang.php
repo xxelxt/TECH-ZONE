@@ -167,5 +167,8 @@ return [
     'activepass'=>"Kích hoạt lại mật khẩu",
     'enter_registered_gmail'=>'Nhập Email đã đăng ký tài khoản',
     'give_password'=>'Lấy lại mật khẩu',
-    'back_to_login'=>'Quay lại đăng nhập'
+    'back_to_login'=>'Quay lại đăng nhập',
+    'update_new_pass'=>'Cập nhật mật khẩu mới',
+    'update'=>'Cập nhật',
+    'newpass'=>"Mật khẩu mới"
 ];
