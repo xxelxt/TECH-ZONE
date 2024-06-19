@@ -63,6 +63,40 @@ class UserController extends Controller
         return view('user.pages.home');
     }
 
+    public function get_login()
+    {
+        if (Auth::check()) {
+            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+        }
+        return view('user.login');
+    }
+
+    // Phương thức để hiển thị form đăng ký người dùng
+    public function get_register()
+    {
+        if (Auth::check()) {
+            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+        }
+        return view('user.register');
+    }
+
+    public function forgetpassword()
+    {
+        $about = About::first();
+        if (Auth::check()) {
+            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+        }
+        return view('user.forgetpassword');
+    }
+
+    public function update_new_pass()
+    {
+        if (Auth::check()) {
+            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+        }
+        return view('user.update_new_pass');
+    }
+
     // Phương thức để hiển thị trang danh sách người dùng (chỉ có quản trị viên mới được truy cập)
     public function list()
     {
@@ -110,12 +144,6 @@ class UserController extends Controller
         return response()->json(['success' => 'Delete Successfully']);
     }
 
-    // Phương thức để hiển thị form đăng ký người dùng
-    public function get_register()
-    {
-        return view('user.register');
-    }
-
     // Phương thức để xử lý việc đăng ký người dùng
     public function post_register(Request $request)
     {
@@ -145,29 +173,28 @@ class UserController extends Controller
         return redirect('login')->with('thongbao', 'Sign up successfully');
     }
 
-    // Phương thức để hiển thị form đăng nhập người dùng
-    public function get_login()
-    {
-        return view('user.login');
-    }
-
     // Phương thức để xử lý việc đăng nhập người dùng
     public function post_login(Request $request)
     {
-        // Xác thực dữ liệu đăng nhập người dùng và thử đăng nhập
         $request->validate([
-            'username' => 'required',
+            'login' => 'required', // Trường "login" sẽ chấp nhận cả email và username
             'password' => 'required'
         ], [
-            'username.required' => 'Please enter username',
-            'password.required' => 'Please enter password'
+            'login.required' => 'Vui lòng nhập email hoặc tên người dùng',
+            'password.required' => 'Vui lòng nhập mật khẩu'
         ]);
 
-        if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
-            Cookie::queue(Cookie::forget('cart')); // Xóa cookie cart
+        $login = $request->input('login');
+
+        // Kiểm tra xem giá trị nhập vào là email hay username
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        // Thử đăng nhập bằng trường tương ứng
+        if (Auth::attempt([$fieldType => $login, 'password' => $request->password])) {
+            Cookie::queue(Cookie::forget('cart'));
             return redirect('/');
         } else {
-            return redirect('/login')->with('canhbao', 'Sign in unsuccessfully');
+            return redirect('/login')->with('canhbao', 'Đăng nhập không thành công');
         }
     }
 
@@ -700,7 +727,7 @@ class UserController extends Controller
             // session()->forget('cart');
             cookie()->forget('cart');
             // return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
-            return redirect('/give_mail_your_order/'.$orders_id)->with('thongbao','Successfully'.$orders_id);
+            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', 'Successfully' . $orders_id);
         } else {
             $content = Cart::content();
             //echo $content;
@@ -738,7 +765,7 @@ class UserController extends Controller
             Cookie::queue(Cookie::forget('cart'));
             // cookie()->forget('cart');
             // return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
-            return redirect('/give_mail_your_order/'.$orders_id)->with('thongbao','Successfully'.$orders_id);
+            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', 'Successfully' . $orders_id);
         }
     }
     //-------------------------------------------------------------------------------------------------------//
@@ -986,7 +1013,7 @@ class UserController extends Controller
 
         if ($resultCode === '0') { // Success
             $this->handleMomoSuccess($orderId);
-            return redirect()->route('your_orders_detail', $orderId)->with('thongbao', 'Đặt hàng thành công');
+            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', 'Successfully' . $orderId);
         } else { // Failure or cancellation
             $this->handleMomoFailure($orderId);
             return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
@@ -1056,7 +1083,7 @@ class UserController extends Controller
         $vnp_OrderInfo = "Thanh toán đơn hàng #" . $vnp_TxnRef;
         $vnp_OrderType = "billpayment";
 
-        $vnp_Amount = Cart::total(0, '', '') * 1; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
+        $vnp_Amount = Cart::total(0, '', '') * 100; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
         $vnp_Locale = 'vn';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -1133,7 +1160,7 @@ class UserController extends Controller
         // Check response code and handle accordingly
         if ($vnp_ResponseCode === '00') { // Success
             $this->handleVnpaySuccess($orderId);
-            return redirect()->route('your_orders_detail', $orderId)->with('thongbao', 'Đặt hàng thành công');
+            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', 'Successfully' . $orderId);
         } else { // Failure or cancellation
             $this->handleVnpayFailure($orderId);
             return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
@@ -1189,33 +1216,25 @@ class UserController extends Controller
         }
     }
 
-    public function forgetpassword()
-    {
-        $about = About::first(); // Fetch the About information
-        // return view('user.forgetpassword', compact('about'));
-        return view('user.forgetpassword');
-    }
-
     public function send_passreset_token(Request $request)
     {
         $data = $request->all();
         // print_r($data);
 
         $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y');
-        $title = 'Lấy lại mật khẩu / Password retrieval';
-        
-        $user = User::where('email','=', $data['gmail'])->get();
+        $title = '[TechZone] Lấy lại mật khẩu / Password retrieval';
+
+        $user = User::where('email', '=', $data['gmail'])->get();
         print_r($data['gmail']);
-        foreach($user as $key => $value){
+        foreach ($user as $key => $value) {
             $user_id = $value->id;
         }
-        if($user){
+        if ($user) {
             $count = $user->count();
             print_r($count);
-            if ($count==0) {
+            if ($count == 0) {
                 return redirect()->back()->with('error', 'Email does not exist.');
-            }
-            else{
+            } else {
                 $token_random = Str::random(191);
                 $user = User::find($user_id);
                 $user->reset_token = $token_random;
@@ -1223,7 +1242,7 @@ class UserController extends Controller
 
                 // Send email
                 $to_email = $data['gmail'];
-                $link_reset_pass = url('/update-new-pass?email='.$to_email.'&token='.$token_random);
+                $link_reset_pass = url('/update-new-pass?email=' . $to_email . '&token=' . $token_random);
                 $mail_data = [
                     "name" => $title,
                     "body" => $link_reset_pass,
@@ -1233,54 +1252,47 @@ class UserController extends Controller
                 Mail::send('user.forget_notify', ['data' => $mail_data], function ($message) use ($title, $mail_data) {
                     $message->to($mail_data['email'])->subject($title);
                     $message->from('no-reply@yourdomain.com', 'Your Application Name');
-                    });
-                }
-            return redirect()->back()->with('success', 'Password reset link has been sent to your email.');
+                });
             }
+            return redirect()->back()->with('thongbao', 'Password reset link has been sent to your email.');
+        }
     }
 
-    // public function send_email_order($mail_data,$title){
-
-    //     Mail::send('/your_order', ['data' => $mail_data], function ($message) use ($title, $mail_data) {
-    //         $message->to($mail_data['email'])->subject($title);
-    //         $message->from('no-reply@yourdomain.com', 'Your Application Name');
-    //         });
-        
-    // }
-    public function update_new_pass(){
-        return view('user.update_new_pass');
-    }
-
-    public function solve_update_new_pass(Request $request){
+    public function solve_update_new_pass(Request $request)
+    {
         $data = $request->all();
-        $gmail=$data['gmail'];
-        $token=$data['token'];
+        $gmail = $data['gmail'];
+        $token = $data['token'];
         $token_random = Str::random(191);
-        $password = $data['newpass'];
-        $user = User::where('email','=',$gmail)->where('reset_token','=',$token)->get();
+
+        $newPassword = $data['newpass'];
+        $newPasswordConfirmation = $data['newpass_confirmation']; // Lấy giá trị xác nhận mật khẩu
+
+        if ($newPassword !== $newPasswordConfirmation) {
+            return redirect()->back()->with('', __('lang.password_not_match'));
+        }
+
+        $user = User::where('email', '=', $gmail)->where('reset_token', '=', $token)->get();
         $count = $user->count();
-        if($count==1){
+        if ($count == 1) {
 
-            foreach($user as $key => $value){
+            foreach ($user as $key => $value) {
                 $user_id = $value->id;
-
             }
             $reset = User::find($user_id);
-            $reset->password = bcrypt($password);
+            $reset->password = bcrypt($newPassword);
             $reset->reset_token = $token_random;
             $reset->save();
-            return redirect('/login')->with("success",'Update successful !');
+            return redirect('/login')->with("success", 'Update successful !');
+        } else {
+            return redirect('/forgetpassword')->with("error", 'Request Timeout! gmail:' . $gmail . 'check' . $count . 'token:' . $token);
         }
-        else{
-            return redirect('/forgetpassword')->with("error",'Request Timeout! gmail:'.$gmail.'check'.$count.'token:'.$token);
-        }
-
-
     }
 
-    public function give_mail_your_order($id){
-        
-        if(Auth::check()){
+    public function give_mail_your_order($id)
+    {
+
+        if (Auth::check()) {
             $orders_id = $id;
             // session()->forget('orders_id_use');
             Cart::destroy();
@@ -1289,30 +1301,38 @@ class UserController extends Controller
             //     $maxOrderId = Orders::max('id');
             //     $content = Orders::find($maxOrderId);
             // }
-            $gmail= $content['email'];
-            if($gmail==null){
-                $gmail='hagiabao980@gmail.com';
+            $gmail = $content['email'];
+            if ($gmail == null) {
+                $gmail = 'hagiabao980@gmail.com';
             }
-            $phone=$content['phone'];
-            $title = 'Đơn hàng của khách hàng có số điện thoại '.$phone;
-            
+            $phone = $content['phone'];
+            $title = 'Đơn hàng của khách hàng có số điện thoại ' . $phone;
+
 
             // Send email
             $to_email = $gmail;
-            $link_order = url('/your_orders_detail/'.$id);
+            $link_order = url('/your_orders_detail/' . $id);
+            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get(); // Lấy chi tiết đơn hàng
+
             $mail_data = [
                 "name" => $title,
                 "body" => $link_order,
-                'email' => $to_email
+                'email' => $to_email,
+                'order' => $content,             // Truyền thông tin order
+                'orders_detail' => $orders_detail // Truyền chi tiết đơn hàng
             ];
 
-            Mail::send('user.order_mail', ['data' => $mail_data], function ($message) use ($title, $mail_data) {
+            Mail::send('user.order_mail', [
+                'order' => $content,
+                'orders_detail' => $orders_detail,
+                'body' => $link_order
+            ], function ($message) use ($title, $mail_data) {
                 $message->to($mail_data['email'])->subject($title);
                 $message->from('no-reply@yourdomain.com', 'Your Application Name');
-                });
-        return redirect('/your_orders_detail/'.$id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail');
-        }
-        else{
+            });
+
+            return redirect('/your_orders_detail/' . $id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail');
+        } else {
 
             $orders_id = $id;
             // session()->forget('orders_id_use');
@@ -1322,29 +1342,37 @@ class UserController extends Controller
             //     $maxOrderId = Orders::max('id');
             //     $content = Orders::find($maxOrderId);
             // }
-            $gmail= $content['email'];
-            if($gmail==null){
-                $gmail='hagiabao980@gmail.com';
+            $gmail = $content['email'];
+            if ($gmail == null) {
+                $gmail = 'hagiabao980@gmail.com';
             }
-            $phone=$content['phone'];
-            $title = 'Đơn hàng của khách hàng có số điện thoại '.$phone;
-            
+            $phone = $content['phone'];
+            $title = 'Đơn hàng của khách hàng có số điện thoại ' . $phone;
+
 
             // Send email
             $to_email = $gmail;
-            $link_order = url('/your_orders_detail/'.$id);
+            $link_order = url('/your_orders_detail/' . $id);
+            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get(); // Lấy chi tiết đơn hàng
+
             $mail_data = [
                 "name" => $title,
                 "body" => $link_order,
-                'email' => $to_email
+                'email' => $to_email,
+                'order' => $content,             // Truyền thông tin order
+                'orders_detail' => $orders_detail // Truyền chi tiết đơn hàng
             ];
 
-            Mail::send('user.order_mail', ['data' => $mail_data], function ($message) use ($title, $mail_data) {
+            Mail::send('user.order_mail', [
+                'order' => $content,
+                'orders_detail' => $orders_detail,
+                'body' => $link_order
+            ], function ($message) use ($title, $mail_data) {
                 $message->to($mail_data['email'])->subject($title);
                 $message->from('no-reply@yourdomain.com', 'Your Application Name');
-                });
-        return redirect('/your_orders_detail/'.$id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail'.$id);
-        
-    }
+            });
+
+            return redirect('/your_orders_detail/' . $id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail' . $id);
+        }
     }
 }

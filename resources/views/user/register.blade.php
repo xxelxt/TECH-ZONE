@@ -109,18 +109,6 @@
             </div>
         @endif
 
-        @if (session('thongbao'))
-            <div class="alert alert-success">
-                {{ session('thongbao') }}
-            </div>
-        @endif
-
-        @if (session('canhbao'))
-            <div class="alert alert-danger">
-                {{ session('canhbao') }}
-            </div>
-        @endif
-
         {{-- Registration Fields --}}
         <div class="form-group">
             <input type="text" name="firstname" class="form-control" placeholder="@lang('lang.fristname')" required>

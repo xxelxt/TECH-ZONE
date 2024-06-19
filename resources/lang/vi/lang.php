@@ -170,5 +170,7 @@ return [
     'back_to_login'=>'Quay lại đăng nhập',
     'update_new_pass'=>'Cập nhật mật khẩu mới',
     'update'=>'Cập nhật',
-    'newpass'=>"Mật khẩu mới"
+    'newpass'=>"Mật khẩu mới",
+    'confirm_newpass'=>"Nhập lại mật khẩu mới",
+    'login_prompt'=>'Email hoặc tên người dùng'
 ];

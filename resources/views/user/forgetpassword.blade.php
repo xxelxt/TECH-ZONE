@@ -104,18 +104,6 @@
     <form action="/send_email" method="POST" class="login-form">
         @csrf
 
-        @if (session('thongbao'))
-            <div class="alert alert-success">
-                {{ session('thongbao') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-
         <div class="form-group">
             <input type="email" name="gmail" class="form-control" placeholder="@lang('lang.enter_registered_gmail')" required>
         </div>

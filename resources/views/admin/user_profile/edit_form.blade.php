@@ -63,7 +63,7 @@
       </div>
       <div class="row mb-4">
         <div class="col-sm-3">
-          <h6 class="mb-0">@lang('lang.password')</h6>
+          <h6 class="mb-0">@lang('lang.newpass')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
           <input type="password" class="password form-control" name="password" disabled placeholder="" />
@@ -71,7 +71,7 @@
       </div>
       <div class="row mb-4">
         <div class="col-sm-3">
-          <h6 class="mb-0">@lang('lang.password_again')</h6>
+          <h6 class="mb-0">@lang('lang.confirm_newpass')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
           <input type="password" class="password form-control" name="passwordagain" disabled placeholder="" />

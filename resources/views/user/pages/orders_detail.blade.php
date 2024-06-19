@@ -17,8 +17,8 @@
             <h2>@lang('lang.order_detail')</h2>
             <div class="breadcrumb__option">
               <a href="./index.html">@lang('lang.home')</a>
-              <span href="./your_orders"> > @lang('lang.orders') <span/>
-              <span> > {{ $order->id }}</span>
+              <span href="./your_orders"> > @lang('lang.orders') <span />
+                <span> > {{ $order->id }}</span>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <h2 class="mt-4" style="margin-bottom: 20px;"><b>Chi tiết sản phẩm</b></h2>
+      <h2 class="mt-4" style="margin-bottom: 20px;"><b>Chi tiết đơn hàng</b></h2>
       <div class="row mt-6">
         <div class="col-lg-12">
           <div class="shoping__cart__table">
@@ -74,7 +74,6 @@
               <thead>
                 <tr>
                   <th>@lang('lang.products')</th>
-                  <th>@lang('lang.image')</th>
                   <th>@lang('lang.quanty')</th>
                   <th>@lang('lang.price')</th>
                 </tr>
@@ -82,10 +81,12 @@
               <tbody>
                 @foreach($orders_detail as $value)
                 <tr>
-                  <td>{!! $value['name'] !!}</td>
-                  <td><img style="width: 100px" src="user_asset/images/products/{!! $value['image'] !!}" alt=""></td>
-                  <td>{!! $value['quantity'] !!}</td>
-                  <td>{!! number_format($value['price']) !!} đ</td>
+                  <td class="shoping__cart__item">
+                    <img src="user_asset/images/products/{!! $value['image'] !!}" width="75px" alt="">
+                    <h5><a href="{{ url('products/'.$value->product_id) }}">{!! $value->name !!}</a></h5>
+                  </td>
+                  <td class="shoping__cart__total">{!! $value['quantity'] !!}</td>
+                  <td class="shoping__cart__total">{!! number_format($value['price']) !!} đ</td>
                 </tr>
                 @endforeach
               </tbody>

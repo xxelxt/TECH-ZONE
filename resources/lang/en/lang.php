@@ -171,6 +171,7 @@ return [
     'back_to_login'=>'Back to login page',
     'update_new_pass'=>'Update new pass',
     'update'=>"Update",
-    'newpass'=>"New password"
-
+    'newpass'=>"New password",
+    'confirm_newpass'=>"Confirm new password",
+    'login_prompt'=>'Email or username'
 ];

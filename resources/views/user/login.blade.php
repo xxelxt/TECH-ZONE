@@ -112,20 +112,8 @@
             </div>
         @endif
 
-        @if (session('thongbao'))
-            <div class="alert alert-success">
-                {{ session('thongbao') }}
-            </div>
-        @endif
-
-        @if (session('canhbao'))
-            <div class="alert alert-danger">
-                {{ session('canhbao') }}
-            </div>
-        @endif
-
         <div class="form-group">
-            <input type="text" name="username" class="form-control" placeholder="@lang('lang.username')" required>
+            <input type="text" name="login" class="form-control" placeholder="@lang('lang.login_prompt')" required>
         </div>
 
         <div class="form-group">
