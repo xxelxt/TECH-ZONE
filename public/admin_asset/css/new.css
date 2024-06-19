@@ -1,0 +1,69 @@
+/* Table header styling */
+th {
+    text-align: center; /* No need for !important unless absolutely necessary */
+  }
+  
+  /* Toggle styling (iOS-specific) */
+  .toggle.ios,
+  .toggle-on.ios,
+  .toggle-off.ios {
+    border-radius: 20px; 
+  }
+  .toggle.ios .toggle-handle {
+    border-radius: 20px;
+  }
+  
+  /* Dropdown base styling */
+  .dropDown {
+    position: relative; 
+    line-height: 5;  
+  }
+  
+  /* Dropdown box appearance */
+  .dropDown_box {
+    width: 130px;
+    padding: 0 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease; /* Smooth transition */
+  }
+  
+  /* Dropdown menu list */
+  .list_dropdow_menu {
+    position: absolute;
+    background-color: #fff;
+    border-radius: 10px;
+    display: none;
+    width: 200px;
+    right: 0;
+    z-index: 10; /* Ensure menu appears above other content */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  /* Dropdown menu items */
+  .list_dropdow_menu li {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px; /* Add padding for better spacing */
+  }
+  
+  /* Dropdown menu item images */
+  .list_dropdow_menu li img {
+    width: 24px; /* Slightly smaller for a cleaner look */
+    height: 24px;
+    margin: auto 0; /* Center image vertically */
+  }
+  
+  /* Open dropdown menu state */
+  .list_dropdow_menu.openAc {
+    display: block;
+  }
+  
+  /* Active/selected item styling */
+  .active {
+    background-color: #263544;
+    color: #fff;
+    border-radius: 10px;
+  }
