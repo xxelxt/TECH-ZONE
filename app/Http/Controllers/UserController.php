@@ -30,21 +30,24 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    // Phương thức khởi tạo để chia sẻ dữ liệu chung qua các view
     function __construct()
     {
         // Lấy dữ liệu từ các model khác nhau và chia sẻ chúng với các view
         $user = User::all();
         $subcategories = SubCategories::where('active', 1)->orderBy('id', 'ASC')->get();
         $categories = Categories::where('active', 1)->orderBy('id', 'ASC')->get();
+
         $discounts = Discounts::all();
         $products = Products::where('active', 1)->orderBy('id', 'ASC')->get();
         $banners = Banners::where('active', 1)->orderBy('id', 'ASC')->get();
+
         $about = About::find(1);
         $brands = Brands::where('active', 1)->orderBy('id', 'ASC')->get();
         $image = Imagelibrary::all();
+
         $new_products = Products::get()->where('active', 1)->sortByDesc('created_at')->take(10);
         $wishlist = new Wishlist;
+
         view()->share('about', $about);
         view()->share('banners', $banners);
         view()->share('brands', $brands);
@@ -57,25 +60,32 @@ class UserController extends Controller
         view()->share('new_products', $new_products);
         view()->share('wishlist', $wishlist);
     }
-    // Phương thức để hiển thị trang chủ
+
     public function home()
     {
         return view('user.pages.home');
     }
 
+    public function list()
+    {
+        $users = User::with('roles', 'permissions')->get();
+        return view('admin.user.list', [
+            'users' => $users
+        ]);
+    }
+
     public function get_login()
     {
         if (Auth::check()) {
-            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+            return redirect('/');
         }
         return view('user.login');
     }
 
-    // Phương thức để hiển thị form đăng ký người dùng
     public function get_register()
     {
         if (Auth::check()) {
-            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+            return redirect('/');
         }
         return view('user.register');
     }
@@ -84,7 +94,7 @@ class UserController extends Controller
     {
         $about = About::first();
         if (Auth::check()) {
-            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+            return redirect('/');
         }
         return view('user.forgetpassword');
     }
@@ -92,62 +102,14 @@ class UserController extends Controller
     public function update_new_pass()
     {
         if (Auth::check()) {
-            return redirect('/'); // Chuyển hướng về trang chủ nếu đã đăng nhập
+            return redirect('/');
         }
         return view('user.update_new_pass');
     }
 
-    // Phương thức để hiển thị trang danh sách người dùng (chỉ có quản trị viên mới được truy cập)
-    public function list()
-    {
-        // Lấy và chuyển dữ liệu người dùng đến view
-        $users = User::with('roles', 'permissions')->get();
-        return view('admin.user.list', [
-            'users' => $users
-        ]);
-    }
-    //     public function index()
-    //     {
-    //         $user_id = Auth::user()->id;
-    //         $data = Auth::user()->roles;
-    //         dd($data);
-    //         // $arrPermission = [];
-    //         // foreach($data as $value) $arrPermission[] = $value->name;
-    //         // $collection = new Collection($arrPermission);
-    //         // dd($collection->contains("all_product"));
-    //  }
-
-    // Phương thức để xóa một nhân viên (chỉ có quản trị viên mới được thực hiện)
-    public function delete_staff($id)
-    {
-        $user = User::find($id);
-        if ($user['active'] == 0) {
-            if ($user->hasRole('admin')) {
-                return response()->json(['error' => "Can't delete admin account"]);
-            } else {
-                $user->delete($id);
-                if ($user['image'] != 'avatar.jpg') {
-                    File::delete('upload/avatar/' . $user['image']);
-                }
-                return response()->json(['success' => 'Delete Successfully']);
-            }
-        } else {
-            return response()->json(['error' => "Can't delete because Status being activated "]);
-        }
-    }
-
-    // Phương thức để xóa một đánh giá
-    public function delete_rating($id)
-    {
-        $rating = Rating::find($id);
-        $rating->delete($id);
-        return response()->json(['success' => 'Delete Successfully']);
-    }
-
-    // Phương thức để xử lý việc đăng ký người dùng
+    // Xử lý việc đăng ký tài khoản mới
     public function post_register(Request $request)
     {
-        // Xác thực dữ liệu đăng ký người dùng và tạo một người dùng mới
         $request->validate([
             'firstname' => 'required|min:1',
             'lastname' => 'required|min:1',
@@ -166,18 +128,21 @@ class UserController extends Controller
             'passwordagain.required' => 'Password is required',
             'passwordagain.same' => "Password doesn't match",
         ]);
+
         $request['password'] = bcrypt($request['password']);
         $request['image'] = 'avatar.jpg';
+
         $user = User::create($request->all());
         $user->syncRoles('user');
-        return redirect('login')->with('thongbao', 'Sign up successfully');
+
+        return redirect('login')->with('thongbao', __('lang.sign_up_success'));
     }
 
-    // Phương thức để xử lý việc đăng nhập người dùng
+    // Xử lý việc đăng nhập tài khoản
     public function post_login(Request $request)
     {
         $request->validate([
-            'login' => 'required', // Trường "login" sẽ chấp nhận cả email và username
+            'login' => 'required',
             'password' => 'required'
         ], [
             'login.required' => 'Vui lòng nhập email hoặc tên người dùng',
@@ -186,42 +151,66 @@ class UserController extends Controller
 
         $login = $request->input('login');
 
-        // Kiểm tra xem giá trị nhập vào là email hay username
         $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        // Thử đăng nhập bằng trường tương ứng
         if (Auth::attempt([$fieldType => $login, 'password' => $request->password])) {
             Cookie::queue(Cookie::forget('cart'));
             return redirect('/');
         } else {
-            return redirect('/login')->with('canhbao', 'Đăng nhập không thành công');
+            return redirect('/login')->with('canhbao', __('lang.failed_login'));
         }
     }
 
-    // phương thức log out
+    // Xử lý đăng xuất tài khoản
     public function logout()
     {
         Auth::logout();
         Cart::destroy();
-        return redirect('/'); // di chuyển về trang đăng nhập
+        return redirect('/');
     }
 
-    // Phương thức để hiển thị trang hồ sơ người dùng
+    // Hiển thị trang hồ sơ tài khoản
     public function profile()
     {
-        // Hiển thị trang hồ sơ người dùng
         if (Auth::check()) {
             $user = Auth()->user();
         } else {
             return redirect('/login');
         }
+
         return view('user.profile', ['user' => $user]);
     }
 
-    // Phương thức để hiển thị trang chi tiết sản phẩm
-    public function product_deltails($id)
+    public function delete_staff($id)
     {
-        // Lấy và hiển thị chi tiết sản phẩm cùng với các sản phẩm liên quan và đánh giá
+        $user = User::find($id);
+
+        if ($user['active'] == 0) {
+            if ($user->hasRole('admin')) {
+                return response()->json(['error' => __('lang.cant_delete_admin')]);
+            } else {
+                $user->delete($id);
+
+                if ($user['image'] != 'avatar.jpg') {
+                    File::delete('upload/avatar/' . $user['image']);
+                }
+
+                return response()->json(['success' => __('lang.delete_success')]);
+            }
+        } else {
+            return response()->json(['error' => __('lang.cant_delete_active')]);
+        }
+    }
+
+    public function delete_rating($id)
+    {
+        $rating = Rating::find($id);
+        $rating->delete($id);
+        return response()->json(['success' => __('lang.delete_success')]);
+    }
+
+    public function product_details($id)
+    {
         $pro = Products::all();
         $products = Products::find($id);
 
@@ -235,8 +224,7 @@ class UserController extends Controller
         $wishlist = new Wishlist;
         $countWishlist = $wishlist->countWishlist($products['id']);
         $ratings = Rating::where('products_id', $id)->orderBy('id', 'DESC')->get();
-        // dd($ratings);
-        // die;
+
         return view('user.pages.product_details', [
             'products' => $products,
             'related_products' => $related_products, 'countWishlist' => $countWishlist,
@@ -244,186 +232,6 @@ class UserController extends Controller
         ]);
     }
 
-    // Phương thức để hiển thị trang lưới sản phẩm theo danh mục
-    public function product_grid($id)
-    {
-        // Hiển thị trang lưới sản phẩm theo danh mục
-        $danhmuc = Categories::find($id);
-        $categories = Categories::all();
-
-        // Thêm điều kiện lọc và sắp xếp giống như hàm product_all
-        $query = Products::where('active', 1)->where('categories_id', $id);
-
-        if (request('sort') == 'price_asc') {
-            $query->orderBy('price', 'ASC');
-        } elseif (request('sort') == 'price_desc') {
-            $query->orderBy('price', 'DESC');
-        } elseif (request('sort') == 'name_asc') {
-            $query->orderBy('name', 'ASC');
-        } elseif (request('sort') == 'name_desc') {
-            $query->orderBy('name', 'DESC');
-        } else {
-            $query->orderBy('id', 'ASC');
-        }
-
-        $products = $query->paginate(12);
-        $count = $products->total(); // Sử dụng total() để lấy tổng số sản phẩm
-
-        $wishlist = new Wishlist;
-
-        return view('user.pages.product_grid', [
-            'danhmuc' => $danhmuc,
-            'categories' => $categories,
-            'products' => $products,
-            'count' => $count,
-            'wishlist' => $wishlist
-        ]);
-    }
-
-    // Phương thức để hiển thị trang lưới sản phẩm theo danh mục phụ
-    public function product_grid_sub($id)
-    {
-        // Hiển thị trang lưới sản phẩm theo danh mục phụ
-        $danhmuc = SubCategories::find($id);
-        $categories = Categories::all();
-
-        // Thêm điều kiện lọc và sắp xếp giống như hàm product_all
-        $query = Products::where('active', 1)->where('sub_id', $id);
-
-        if (request('sort') == 'price_asc') {
-            $query->orderBy('price', 'ASC');
-        } elseif (request('sort') == 'price_desc') {
-            $query->orderBy('price', 'DESC');
-        } elseif (request('sort') == 'name_asc') {
-            $query->orderBy('name', 'ASC');
-        } elseif (request('sort') == 'name_desc') {
-            $query->orderBy('name', 'DESC');
-        } else {
-            $query->orderBy('id', 'ASC');
-        }
-
-        $products = $query->paginate(12);
-        $count = $products->total(); // Sử dụng total() để lấy tổng số sản phẩm
-
-        $wishlist = new Wishlist;
-
-        return view('user.pages.product_grid_sub', [
-            'danhmuc' => $danhmuc,
-            'categories' => $categories,
-            'products' => $products,
-            'count' => $count,
-            'wishlist' => $wishlist
-        ]);
-    }
-
-    // Phương thức để xử lý thêm/xóa sản phẩm vào/khỏi danh sách yêu thích
-    public function wishlist(Request $request)
-    {
-        // Thêm/xóa sản phẩm vào/khỏi danh sách yêu thích và phản hồi với JSON
-        if ($request->ajax()) {
-            $data = $request->all();
-            $wishlist = new Wishlist;
-            $countWishlist = $wishlist->countWishlist($data['products_id']);
-            if ($countWishlist == 0) {
-                $wishlist->products_id = $data['products_id'];
-                $wishlist->users_id = $data['users_id'];
-                $wishlist->save();
-                return response()->json(['action' => 'add', 'message' => 'Product Added Successfully to Wishlist']);
-            } else {
-                Wishlist::where(['users_id' => Auth::user()->id, 'products_id' => $data['products_id']])->delete();
-                return response()->json(['action' => 'remove', 'message' => 'Product Remove Successfully to Wishlist']);
-            }
-        }
-    }
-
-    // Phương thức để lấy tổng số lượng mục yêu thích
-    public function total_wishlist()
-    {
-        // Lấy tổng số lượng mục yêu thích và phản hồi với JSON
-        $total_wishlist = Wishlist::where(['users_id' => Auth::user()->id])->count();
-        echo json_encode($total_wishlist);
-    }
-
-    public function product_latest_all()
-    {
-        // Hiển thị trang sản phẩm mới nhất
-        $categories = Categories::all();
-
-        // Lọc và sắp xếp giống như các hàm trước
-        $query = Products::where('active', 1);
-
-        if (request('sort') == 'price_asc') {
-            $query->orderBy('price', 'ASC');
-        } elseif (request('sort') == 'price_desc') {
-            $query->orderBy('price', 'DESC');
-        } elseif (request('sort') == 'name_asc') {
-            $query->orderBy('name', 'ASC');
-        } elseif (request('sort') == 'name_desc') {
-            $query->orderBy('name', 'DESC');
-        } else {
-            $query->orderBy('created_at', 'DESC'); // Mặc định sắp xếp theo ngày tạo mới nhất
-        }
-
-        $products = $query->paginate(12);
-        $count = $products->total();
-
-        return view('user.pages.product_latest_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
-    }
-
-    // Phương thức để hiển thị trang sản phẩm giảm giá
-    public function product_sale_all()
-    {
-        // Hiển thị trang sản phẩm giảm giá
-        $categories = Categories::all();
-
-        // Lọc sản phẩm có giá sale (giả sử có trường 'sale_price' trong bảng Products) và sắp xếp
-        $query = Products::where('active', 1)->whereNotNull('price_new'); // Chỉ lấy sản phẩm có giá sale
-
-        if (request('sort') == 'price_asc') {
-            $query->orderBy('price_new', 'ASC'); // Sắp xếp theo giá sale
-        } elseif (request('sort') == 'price_desc') {
-            $query->orderBy('price_new', 'DESC'); // Sắp xếp theo giá sale
-        } elseif (request('sort') == 'name_asc') {
-            $query->orderBy('name', 'ASC');
-        } elseif (request('sort') == 'name_desc') {
-            $query->orderBy('name', 'DESC');
-        } else {
-            $query->orderBy('id', 'ASC'); // Mặc định sắp xếp theo id tăng dần
-        }
-
-        $products = $query->paginate(12);
-        $count = $products->total();
-
-        return view('user.pages.product_sale_all', ['count' => $count, 'products' => $products, 'categories' => $categories]);
-    }
-
-    public function product_featured_all()
-    {
-        // Hiển thị trang sản phẩm nổi bật
-        $categories = Categories::all();
-
-        // Lọc và sắp xếp giống như các hàm trước
-        $query = Products::where('active', 1)->where('featured_product', 1);
-
-        if (request('sort') == 'price_asc') {
-            $query->orderBy('price', 'ASC');
-        } elseif (request('sort') == 'price_desc') {
-            $query->orderBy('price', 'DESC');
-        } elseif (request('sort') == 'name_asc') {
-            $query->orderBy('name', 'ASC');
-        } elseif (request('sort') == 'name_desc') {
-            $query->orderBy('name', 'DESC');
-        } else {
-            $query->orderBy('id', 'ASC');
-        }
-
-        $products = $query->paginate(12);
-        $count = $products->total();
-
-        return view('user.pages.product_featured_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
-    }
-
-    // Phương thức để hiển thị trang tất cả sản phẩm
     public function product_all(Request $request)
     {
         $categories = Categories::all();
@@ -431,7 +239,6 @@ class UserController extends Controller
 
         $query = Products::where('active', 1);
 
-        // Handle sorting logic
         if ($request->has('sort')) {
             switch ($request->input('sort')) {
                 case 'price_asc':
@@ -446,11 +253,9 @@ class UserController extends Controller
                 case 'name_desc':
                     $query->orderBy('name', 'desc');
                     break;
-                    // Add more sorting options as needed
             }
         }
 
-        // Fetch the paginated results after applying sorting
         $search = $query->paginate(15);
         $count = $search->total();
 
@@ -462,29 +267,154 @@ class UserController extends Controller
         ]);
     }
 
-    // Phương thức để xử lý tìm kiếm người dùng
-    public function search_user(Request $request)
+    // Hiển thị sản phẩm theo danh mục
+    public function product_grid($id)
     {
-        // Xử lý tìm kiếm người dùng và hiển thị trang tất cả sản phẩm tương ứng
-        if ($request['search']) {
-            $categories = Categories::all();
-            $search = Products::where('active', 1)->where('name', 'LIKE', '%' . $request['search'] . '%')->latest()->Paginate(15);
-            $count = count($search);
-            return view('user.pages.product_all', ['categories' => $categories, 'search' => $search, 'count' => $count]);
+        $danhmuc = Categories::find($id);
+        $categories = Categories::all();
+
+        $query = Products::where('active', 1)->where('categories_id', $id)->orderBy('id', 'DESC');
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
         } else {
-            return redirect()->back()->with('canhbao', 'Empty Search');
+            $query->orderBy('id', 'ASC');
         }
+
+        $products = $query->paginate(15);
+        $count = $products->total();
+
+        $wishlist = new Wishlist;
+
+        return view('user.pages.product_grid', [
+            'danhmuc' => $danhmuc,
+            'categories' => $categories,
+            'products' => $products,
+            'count' => $count,
+            'wishlist' => $wishlist
+        ]);
     }
 
-    // Phương thức để hiển thị trang sản phẩm theo thương hiệu
+    // Hiển thị sản phẩm theo danh mục con
+    public function product_grid_sub($id)
+    {
+        $danhmuc = SubCategories::find($id);
+        $categories = Categories::all();
+
+        $query = Products::where('active', 1)->where('sub_id', $id)->orderBy('id', 'DESC');
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'ASC');
+        }
+
+        $products = $query->paginate(15);
+        $count = $products->total();
+
+        $wishlist = new Wishlist;
+
+        return view('user.pages.product_grid_sub', [
+            'danhmuc' => $danhmuc,
+            'categories' => $categories,
+            'products' => $products,
+            'count' => $count,
+            'wishlist' => $wishlist
+        ]);
+    }
+
+    // Hiển thị sản phẩm mới nhất
+    public function product_latest_all()
+    {
+        $categories = Categories::all();
+
+        $query = Products::where('active', 1);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('created_at', 'DESC');
+        }
+
+        $products = $query->paginate(15);
+        $count = $products->total();
+
+        return view('user.pages.product_latest_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
+    }
+
+    // Hiển thị sản phẩm đang giảm giá
+    public function product_sale_all()
+    {
+        $categories = Categories::all();
+
+        $query = Products::where('active', 1)->whereNotNull('price_new'); // Chỉ lấy sản phẩm có giá sale
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price_new', 'ASC'); // Sắp xếp theo giá sale
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price_new', 'DESC'); // Sắp xếp theo giá sale
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'DESC');
+        }
+
+        $products = $query->paginate(15);
+        $count = $products->total();
+
+        return view('user.pages.product_sale_all', ['count' => $count, 'products' => $products, 'categories' => $categories]);
+    }
+
+    public function product_featured_all()
+    {
+        $categories = Categories::all();
+
+        $query = Products::where('active', 1)->where('featured_product', 1);
+
+        if (request('sort') == 'price_asc') {
+            $query->orderBy('price', 'ASC');
+        } elseif (request('sort') == 'price_desc') {
+            $query->orderBy('price', 'DESC');
+        } elseif (request('sort') == 'name_asc') {
+            $query->orderBy('name', 'ASC');
+        } elseif (request('sort') == 'name_desc') {
+            $query->orderBy('name', 'DESC');
+        } else {
+            $query->orderBy('id', 'DESC');
+        }
+
+        $products = $query->paginate(15);
+        $count = $products->total();
+
+        return view('user.pages.product_featured_all', ['products' => $products, 'categories' => $categories, 'count' => $count]);
+    }
+
     public function product_brand($id)
     {
-        // Hiển thị trang sản phẩm theo thương hiệu
         $danhmuc = Brands::find($id);
         $categories = Categories::all();
         $wishlist = new Wishlist;
 
-        // Thêm điều kiện lọc và sắp xếp giống như các hàm khác
         $query = Products::where('active', 1)->where('brands_id', $id);
 
         if (request('sort') == 'price_asc') {
@@ -496,22 +426,63 @@ class UserController extends Controller
         } elseif (request('sort') == 'name_desc') {
             $query->orderBy('name', 'DESC');
         } else {
-            $query->orderBy('id', 'ASC'); // Mặc định sắp xếp theo id tăng dần
+            $query->orderBy('id', 'DESC');
         }
 
-        $products = $query->paginate(15); // Phân trang kết quả
-        $count = $products->total(); // Lấy tổng số sản phẩm
+        $products = $query->paginate(15);
+        $count = $products->total();
 
         return view('user.pages.product_brand', [
             'categories' => $categories,
             'danhmuc' => $danhmuc,
             'products' => $products,
             'count' => $count,
-            'wishlist' => $wishlist // Truyền wishlist vào view
+            'wishlist' => $wishlist
         ]);
     }
 
-    // Phương thức để hiển thị trang yêu thích
+    // Xử lý tìm kiếm sản phẩm
+    public function search_user(Request $request)
+    {
+        if ($request['search']) {
+            $categories = Categories::all();
+            $search = Products::where('active', 1)->where('name', 'LIKE', '%' . $request['search'] . '%')->latest()->Paginate(15);
+            $count = count($search);
+            return view('user.pages.product_all', ['categories' => $categories, 'search' => $search, 'count' => $count]);
+        } else {
+            return redirect()->back()->with('canhbao', __('lang.empty_search'));
+        }
+    }
+
+    // Xử lý thêm/ xoá danh sách yêu thích với JSON
+    public function wishlist(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            $wishlist = new Wishlist;
+            $countWishlist = $wishlist->countWishlist($data['products_id']);
+
+            if ($countWishlist == 0) {
+                $wishlist->products_id = $data['products_id'];
+                $wishlist->users_id = $data['users_id'];
+                $wishlist->save();
+
+                return response()->json(['action' => 'add', 'message' => __('lang.wishlist_added')]);
+            } else {
+                Wishlist::where(['users_id' => Auth::user()->id, 'products_id' => $data['products_id']])->delete();
+                return response()->json(['action' => 'remove', 'message' => __('lang.wishlist_removed')]);
+            }
+        }
+    }
+
+    // Tổng số sản phẩm yêu thích
+    public function total_wishlist()
+    {
+        $total_wishlist = Wishlist::where(['users_id' => Auth::user()->id])->count();
+        echo json_encode($total_wishlist);
+    }
+
+    // Hiển thị trang yêu thích
     public function wishlist_pages()
     {
         // Hiển thị trang yêu thích
@@ -524,18 +495,18 @@ class UserController extends Controller
         return view('user.pages.wishlist', ['categories' => $categories, 'products' => $products, 'count' => $count, 'wishlist' => $wishlist, 'pro_wish' => $pro_wish]);
     }
 
-    // Phương thức để xử lý thêm đánh giá sản phẩm
+    // Xử lý thêm đánh giá sản phẩm
     public function addRating(Request $request)
     {
-        // Thêm đánh giá sản phẩm và chuyển hướng trở lại với thông báo thích hợp
-
         $data = $request->all();
         if (!isset($data['rating_value'])) {
-            return redirect()->back()->with('canhbao', 'Add at least one star rating for this Product');
+            return redirect()->back()->with('canhbao', __('lang.empty_rating'));
         }
+
         $ratingCount = Rating::where(['users_id' => Auth::user()->id, 'products_id' => $data['products_id']])->count();
+
         if ($ratingCount > 0) {
-            return redirect()->back()->with('canhbao', 'Your Rating is already exists for this Product');
+            return redirect()->back()->with('canhbao', __('lang.existed_rating'));
         } else {
             $rating = new Rating;
             $rating->users_id = Auth::user()->id;
@@ -543,22 +514,16 @@ class UserController extends Controller
             $rating->ratings = $data['rating_value'];
             $rating->content = $data['content'];
             $rating->save();
-            return redirect()->back()->with('thongbao', 'Successfully');
+
+            return redirect()->back()->with('thongbao', __('lang.rating_success'));
         }
     }
-    // khách (ko đăng nhập cũng có thể mua được)
-    // Phương thức để hiển thị trang giỏ hàng
-    // public function Getcart()
-    // {
-    //     // Hiển thị trang giỏ hàng
-    //     // if (session()->has('cart')) {
-    //     //     Cart::restore(session('cart'));
-    //     // }
 
-    //     return view('user.pages.product_cart');
-
-
-    // }
+    // Lấy nội dung giỏ hàng
+    public function index()
+    {
+        return Cart::content();
+    }
 
     public function Getcart()
     {
@@ -567,23 +532,17 @@ class UserController extends Controller
             if (Cookie::has('cart')) {
                 // Lấy nội dung giỏ hàng từ cookie và giải mã JSON thành mảng
                 $cartContent = json_decode(Cookie::get('cart'), true);
-                // $userId = Auth::id();
-                // print_r($userId);
-                // echo "Dữ liệu trong \$cartContent: <pre>";
-                // print_r($cartContent);
-                // echo "</pre>";
+
                 // Kiểm tra nếu có dữ liệu trong giỏ hàng
                 if (!empty($cartContent)) {
                     Cart::destroy(); // Xóa giỏ hàng hiện tại
-                    // Cookie::forget('cart'); // Xóa cookie có tên là 'cart'
+
                     foreach ($cartContent as $item) {
-                        // if($userId == $item['current_id']){
                         Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], $item['weight'], [
                             'image' => $item['options']['image'],
                             'price_new' => $item['options']['price_new'],
                             'size' => $item['options']['size']
                         ]);
-                        // }
                     }
                 }
             }
@@ -596,19 +555,13 @@ class UserController extends Controller
 
     public function Postcart(Request $request)
     {
-        // Hiển thị trang giỏ hàng
-        // echo ($request);
-        // Cart::destroy();
-
         $products_id = $request->productid_hidden;
         $quantity = $request->qty;
         $products = Products::where('id', $products_id)->first();
-        // Cart::add('293ad', 'Product 1', 1, 9.99, 550);
-        if ($quantity >= $products['quantity']) {
-            return redirect()->back()->with('canhbao', 'Vui lòng đặt hàng ít hơn số lượng: ' . $products['quantity'] . ' !!!');
-        } else {
 
-            // $userId = Auth::id();
+        if ($quantity >= $products['quantity']) {
+            return redirect()->back()->with('canhbao', __('lang.order_less_than') . $products['quantity']);
+        } else {
 
             $data['id'] = $products_id;
             $data['qty'] = $quantity;
@@ -618,73 +571,42 @@ class UserController extends Controller
             $data['options']['image'] = $products['image'];
             $data['options']['price_new'] = $products['price_new'];
             $data['options']['size'] = $products['size'];
-            // $data['current_id'] = $userId;
+
             Cart::add($data);
-            // Cart::destroy();
             Cart::setGlobalTax(0);
+
             if (Auth::check()) {
                 $cartContent = Cart::content();
                 Cookie::queue('cart', $cartContent, 43200);
             }
-            // $cartContent = json_decode(Cookie::get('cart'), true);
-            // echo "Dữ liệu trong \$cartContent: <pre>";
-            // print_r($cartContent);
-            // echo "</pre>";
         }
 
         return redirect('/cart')->with('thongbao', 'Sucessfully');
     }
 
-    // Phương thức để lấy nội dung giỏ hàng
-    public function index()
-    {
-        // Phương thức để lấy nội dung giỏ hàng
-        return Cart::content();
-    }
-
-    // Phương thức để hiển thị trang thanh toán
-    public function checkout()
-    {
-        // Hiển thị trang thanh toán
-        if (Auth::check()) {
-            $user = Auth::user();
-            return view('user.pages.product_checkout', ['user' => $user]);
-        } else {
-            return view('user.pages.product_checkout', ['user' => 2]);
-        }
-    }
-    // Phương thức để xóa mục khỏi giỏ hàng
+    // Xoá mục khỏi giỏ hàng
     public function delete_cart($rowId)
     {
-        // Xóa mục khỏi giỏ hàng
         Cart::update($rowId, 0);
         Orders_Detail::updated($rowId, 0);
+
         $cartContent = Cart::content();
-        // Cookie::queue('cart', $cartContent, 43200); // Lưu giỏ hàng vào cookie
         Cookie::queue('cart', $cartContent, 43200); // Lưu giỏ hàng vào cookie
-        return redirect('/cart')->with('thongbao', 'Sucessfully');
+
+        return redirect('/cart')->with('thongbao', __('lang.delete_cart_item'));
     }
 
-    // Phương thức để cập nhật giỏ hàng // chưa đăng nhập
+    // Cập nhật giỏ hàng
     public function update_cart(Request $request)
     {
-        // Cập nhật giỏ hàng và chuyển hướng với thông báo thích hợp
         $rowId = $request->rowId_cart;
         $quantity = $request->cart_quantity;
+
         Cart::update($rowId, $quantity);
         $cartContent = Cart::content();
-        // Cookie::queue('cart', $cartContent, 43200); // Lưu giỏ hàng vào cookie
+
         Cookie::queue('cart', $cartContent, 43200); // Lưu giỏ hàng vào cookie
-        return redirect('/cart')->with('thongbao', 'Sucessfully');
-    }
-    public function clearCartManually()
-    {
-        $response = new Response(); // Tạo một đối tượng response mới
-
-        // Đặt cookie mới với thời gian sống 0 để xóa cookie hiện tại
-        $response->withCookie(cookie()->forget('cart'));
-
-        return $response; // Trả về response
+        return redirect('/cart')->with('thongbao', __('lang.update_cart_item'));
     }
 
     public function order_place(Request $request)
@@ -693,6 +615,7 @@ class UserController extends Controller
 
             $content = Cart::content();
 
+            // Orders
             $orders = array();
             $orders['users_id'] = Auth::user()->id;
             $orders['lastname'] = $request->lastname;
@@ -705,10 +628,9 @@ class UserController extends Controller
             $orders['content'] = $request->content;
             $orders['total'] = (int)preg_replace("/[,]+/", "", Cart::total(0));
             $orders['created_at'] =  now();
-            // dd((int)preg_replace("/[,]+/", "", Cart::total(0)));
             $orders_id = Orders::insertGetId($orders);
 
-            //insert order_details
+            // Order details
             foreach ($content as $value) {
                 $orders_detail['orders_id'] = $orders_id;
                 $orders_detail['product_id'] = $value->id;
@@ -717,21 +639,22 @@ class UserController extends Controller
                 $orders_detail['quantity'] = $value->qty;
                 $orders_detail['price'] = $value->price;
                 Orders_Detail::create($orders_detail);
-                // Giảm số lượng sản phẩm trong bảng 'product'
+
+                // Cập nhật số lượng trong bảng products
                 $product = Products::find($value->id);
                 $product->quantity -= $value->qty;
                 $product->save();
             }
+
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
-            // session()->forget('cart');
+
             cookie()->forget('cart');
-            // return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
-            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', 'Successfully' . $orders_id);
+            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', __('lang.order_success') . $orders_id);
         } else {
             $content = Cart::content();
-            //echo $content;
-            //insert orders
+
+            // Orders
             $orders = array();
             $orders['users_id'] = 2;
             $orders['lastname'] = $request->lastname;
@@ -744,10 +667,9 @@ class UserController extends Controller
             $orders['content'] = $request->content;
             $orders['total'] = (int)preg_replace("/[,]+/", "", Cart::total(0));
             $orders['created_at'] =  now();
-            // dd((int)preg_replace("/[,]+/", "", Cart::total(0)));
             $orders_id = Orders::insertGetId($orders);
 
-            //insert order_details
+            // Order details
             foreach ($content as $value) {
                 $orders_detail['orders_id'] = $orders_id;
                 $orders_detail['product_id'] = $value->id;
@@ -756,51 +678,94 @@ class UserController extends Controller
                 $orders_detail['quantity'] = $value->qty;
                 $orders_detail['price'] = $value->price;
                 Orders_Detail::create($orders_detail);
-                // Giảm số lượng sản phẩm trong bảng 'product'
+
+                // Cập nhật số lượng trong bảng products
                 $product = Products::find($value->id);
                 $product->quantity -= $value->qty;
                 $product->save();
             }
+
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
-            // cookie()->forget('cart');
-            // return redirect()->route('your_orders_detail', $orders_id)->with('thongbao', 'Đặt hàng thành công');
-            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', 'Successfully' . $orders_id);
+
+            return redirect('/give_mail_your_order/' . $orders_id)->with('thongbao', __('lang.order_success') . $orders_id);
         }
     }
-    //-------------------------------------------------------------------------------------------------------//
-    // Phương thức để chỉnh sửa hình ảnh người dùng
+
+    public function checkout()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            return view('user.pages.product_checkout', ['user' => $user]);
+        } else {
+            return view('user.pages.product_checkout', ['user' => 2]);
+        }
+    }
+
+    // Apply mã giảm giá vào đơn hàng
+    public function discount(Request $request)
+    {
+        $discounts = Discounts::all();
+
+        foreach ($discounts as $value) {
+            if ($value['code'] == $request->code) {
+                if ($value['active'] == 1) {
+                    $data = $value['discounts'];
+                    Cart::setGlobalDiscount($data);
+
+                    return redirect()->back()->with('thongbao', __('lang.coupon_success'));
+                } else {
+                    return redirect()->back()->with('canhbao', __('lang.coupon_notavail'));
+                }
+            }
+        }
+
+        return redirect()->back()->with('canhbao', __('lang.coupon_notavail'));
+    }
+
+    // Xoá mã giảm giá khỏi đơn hàng
+    public function delete_discount()
+    {
+        Cart::setGlobalDiscount(0);
+        return redirect()->back()->with('thongbao', __('lang.delete_coupon_noti'));
+    }
+
+    // Cập nhật hình ảnh tài khoản
     public function edit_img(Request $request)
     {
-        // Chỉnh sửa hình ảnh người dùng và chuyển hướng với thông báo thích hợp
         $user = User::find(Auth::user()->id);
         if ($request->hasFile('Image')) {
+
             $file =  $request->file('Image');
             $format = $file->getClientOriginalExtension();
+
             if ($format != 'jpg' && $format != 'jpeg' && $format != 'png') {
-                return redirect('/profile')->with('thongbao', 'Không hỗ trợ ' . $format);
+                return redirect('/profile')->with('thongbao', __('lang.unsupported_file') . $format);
             }
+
             $name = $file->getClientOriginalName();
             $img = Str::random(4) . '-' . $name;
+
             while (file_exists("upload/avatar" . $img)) {
                 $img = Str::random(4) . '-' . $name;
             }
+
             $file->move('upload/avatar/', $img);
             if ($user['image'] != '') {
                 if ($user['image'] != 'avatar.jpg') {
                     unlink('upload/avatar/' . $user->image);
                 }
             }
+
             User::where('id', Auth::user()->id)->update(['image' => $img]);
-            // $request['image'] = $img;
         }
-        return redirect('profile')->with('thongbao', 'Update successfully!');
+
+        return redirect('profile')->with('thongbao', __('lang.update_successful'));
     }
 
-    // Phương thức để chỉnh sửa hồ sơ người dùng
+    // Cập nhật profile tài khoản
     public function edit_profile(Request $request)
     {
-        // Chỉnh sửa hồ sơ người dùng và chuyển hướng với thông báo thích hợp
         $user = User::find(Auth::user()->id);
         if ($request['changepasswordprofile'] == 'on') {
             $request->validate([
@@ -811,43 +776,72 @@ class UserController extends Controller
                 'passwordagain.required' => 'Vui lòng nhập lại mật khẩu mới',
                 'passwordagain.same' => 'Mật khẩu nhập lại không đúng'
             ]);
+
             $request['password'] = bcrypt($request['password']);
         }
         $user->update($request->all());
-        // User::where('id',Auth::user()->id)->update($request->all());
-        return redirect('/profile')->with('thongbao', 'Cập nhật thành công');
-        // dd($user);
+
+        return redirect('/profile')->with('thongbao', __('lang.update_successful'));
     }
 
-    // Phương thức để hiển thị danh sách đơn hàng (chỉ có quản trị viên mới được truy cập)    
+    // Hiển thị danh sách đon hàng (chỉ quản trị viên)
     public function orders_list()
     {
-        // Hiển thị danh sách đơn hàng
         $orders = Orders::all();
         return view('admin.orders.list', ['orders' => $orders]);
     }
+
+    // Hiển thị chi tiết đon hàng (chỉ quản trị viên)
     public function orders_details($orders_id)
     {
         $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get();
         return view('admin.orders.details', ['orders_detail' => $orders_detail]);
     }
+
+    // Cập nhật trạng thái đon hàng (chỉ quản trị viên)
     public function update(Request $request, $id)
     {
         Orders::find($id)->update($request->all());
-        return redirect()->back()->with('thongbao', "Successfully");
+        return redirect()->back()->with('thongbao', __('lang.update_successful'));
     }
+
+    // Xoá đơn hàng (chỉ quản trị viên)
+    public function delete_orders($id)
+    {
+        $order = Orders::find($id);
+
+        if ($order) {
+            $orderDetails = Orders_Detail::where('orders_id', $id)->get();
+
+            foreach ($orderDetails as $orderDetail) {
+                $product = Products::find($orderDetail->product_id);
+
+                if ($product) {
+                    // Cập nhật số lượng sản phẩm
+                    $product->quantity += $orderDetail->quantity;
+                    $product->save();
+                }
+            }
+
+            $order->delete($id);
+
+            return response()->json(['success' => __('lang.delete_success')]);
+        } else {
+            return response()->json(['error' => __('lang.order_404')], 404);
+        }
+    }
+
+    // Trang lịch sử đặt hàng (của người dùng)
     public function your_orders(Request $request)
     {
         if (Auth::check()) {
             $query = Orders::where('users_id', Auth::id());
 
-            // Handle sorting logic (only if sort is not empty)
             if ($request->filled('sort')) {
                 $sort = $request->input('sort');
                 $query->where('status', $sort);
             }
 
-            // Handle search logic
             if ($request->has('query')) {
                 $searchQuery = $request->input('query');
                 $query->where(function ($subQuery) use ($searchQuery) {
@@ -870,78 +864,29 @@ class UserController extends Controller
         }
     }
 
-    public function delete_orders($id)
-    {
-        // Tìm đơn hàng
-        $order = Orders::find($id);
-
-        if ($order) {
-            // Lấy các chi tiết đơn hàng liên quan
-            $orderDetails = Orders_Detail::where('orders_id', $id)->get();
-
-            foreach ($orderDetails as $orderDetail) {
-                // Tìm sản phẩm liên quan
-                $product = Products::find($orderDetail->product_id);
-
-                if ($product) {
-                    // Tăng số lượng sản phẩm trong bảng product
-                    $product->quantity += $orderDetail->quantity;
-                    $product->save();
-                }
-            }
-            // Xóa đơn hàng
-            $order->delete($id);
-
-            return response()->json(['success' => 'Delete Successfully']);
-        } else {
-            return response()->json(['error' => 'Order not found'], 404);
-        }
-    }
-
     public function your_orders_detail($id)
     {
-        $order = Orders::findOrFail($id); // Lấy thông tin đơn hàng từ ID
+        $order = Orders::findOrFail($id);
         $orders_detail = Orders_Detail::where('orders_id', $id)->get();
 
-        // Kiểm tra xem đơn hàng có thuộc về người dùng hiện tại không
         if (Auth::check() && $order->users_id !== Auth::id()) {
-            abort(403, 'Unauthorized'); // Hoặc chuyển hướng đến trang khác
+            abort(403, 'Unauthorized');
         }
 
         return view('user.pages.orders_detail', [
-            'order' => $order, // Truyền thông tin đơn hàng vào view
+            'order' => $order,
             'orders_detail' => $orders_detail
         ]);
-    }
-
-    public function discount(Request $request)
-    {
-        $discounts = Discounts::all();
-        foreach ($discounts as $value) {
-            if ($value['code'] == $request->code) {
-                if ($value['active'] == 1) {
-                    $data = $value['discounts'];
-                    Cart::setGlobalDiscount($data);
-                    return redirect()->back()->with('thongbao', 'Apply Coupon Successfully');
-                } else {
-                    return redirect()->back()->with('canhbao', 'Code not available');
-                }
-            }
-        }
-        return redirect()->back()->with('canhbao', 'Wrong coupon code');
-    }
-    public function delete_discount()
-    {
-        Cart::setGlobalDiscount(0);
-        return redirect()->back()->with('thongbao', 'Delete Coupon Successfully');
     }
 
     public function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
+
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
         curl_setopt(
             $ch,
             CURLOPT_HTTPHEADER,
@@ -950,15 +895,17 @@ class UserController extends Controller
                 'Content-Length: ' . strlen($data)
             )
         );
+
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        //execute post
+
         $result = curl_exec($ch);
-        //close connection
         curl_close($ch);
+
         return $result;
     }
 
+    // Thanh toán MoMo (ATM)
     public function momo_payment(Request $request)
     {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -969,10 +916,10 @@ class UserController extends Controller
 
         $cartContent = Cart::content();
         $amount = Cart::total(0, '', '');
-        $orderId = uniqid(); // Lấy ID của đơn hàng mới nhất
+        $orderId = uniqid();
 
-        $redirectUrl = route('momo.check'); // Success URL
-        $ipnUrl = route('momo.check'); // Success URL
+        $redirectUrl = route('momo.check');
+        $ipnUrl = route('momo.check');
         $requestId = uniqid();
         $requestType = "payWithATM";
         $extraData = "";
@@ -999,12 +946,13 @@ class UserController extends Controller
         Cookie::queue('cart_backup', $cartContent, 43200);
 
         $result = $this->execPostRequest($endpoint, json_encode($data));
-        $jsonResult = json_decode($result, true);  // decode json
+        $jsonResult = json_decode($result, true);
 
         $this->order_place($request);
         return redirect($jsonResult['payUrl']);
     }
 
+    // Kiểm tra thanh toán MoMo
     public function momo_check(Request $request)
     {
         $resultCode = $request->get('resultCode');
@@ -1013,35 +961,31 @@ class UserController extends Controller
 
         if ($resultCode === '0') { // Success
             $this->handleMomoSuccess($orderId);
-            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', 'Successfully' . $orderId);
-        } else { // Failure or cancellation
+            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', __('lang.pay_success') . $orderId);
+        } else {
             $this->handleMomoFailure($orderId);
-            return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
+            return redirect()->route('cart')->with('canhbao', __('lang.pay_failed'));
         }
     }
 
+    // Thanh toán MoMo thành công
     private function handleMomoSuccess($orderId)
     {
-        // Tìm đơn hàng dựa trên ID
         $order = Orders::find($orderId);
 
         if ($order) {
-            $order->payment_status = 2; // Set payment_status to 2 (paid)
+            $order->payment_status = 2;
             $order->save();
 
-            // Xóa giỏ hàng và cookie
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
             session()->forget('cart');
-        } else {
-            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
         }
     }
 
-    // Hàm xử lý khi thanh toán thất bại hoặc bị hủy
+    // Thanh toán MoMo thất bại
     private function handleMomoFailure($orderId)
     {
-        // Tìm đơn hàng dựa trên ID
         $order = Orders::find($orderId);
 
         if ($order) {
@@ -1054,41 +998,39 @@ class UserController extends Controller
                 }
             }
 
-            // Xóa đơn hàng
             $order->delete();
         } else {
             if (Cookie::has('cart_backup')) {
                 $cartContent = json_decode(Cookie::get('cart_backup'), true);
-                Cart::destroy(); // Xóa giỏ hàng hiện tại
+                Cart::destroy();
+
                 foreach ($cartContent as $item) {
                     Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], 0, $item['options']);
                 }
-                Cookie::queue(Cookie::forget('cart_backup')); // Xóa cookie sau khi đã khôi phục
+
+                Cookie::queue(Cookie::forget('cart_backup'));
             }
         }
     }
 
-
+    // Thanh toán VNPAY (ATM)
     public function vnpay_payment(Request $request)
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = route('vnpay.check'); // Success URL
-        $vnp_TmnCode = "0YKCXJ3P"; //Mã website tại VNPAY 
-        $vnp_HashSecret = "2YV8L7KX9HRPTBF2YNXMSAEIBZE6BO2R"; //Chuỗi bí mật
+        $vnp_Returnurl = route('vnpay.check');
+        $vnp_TmnCode = "0YKCXJ3P"; // Mã website tại VNPAY 
+        $vnp_HashSecret = "2YV8L7KX9HRPTBF2YNXMSAEIBZE6BO2R";
 
-        // Lấy thông tin đơn hàng từ giỏ hàng (Cart)
         $cartContent = Cart::content();
 
         $vnp_TxnRef = uniqid(); // Lấy ID của đơn hàng mới nhất
         $vnp_OrderInfo = "Thanh toán đơn hàng #" . $vnp_TxnRef;
         $vnp_OrderType = "billpayment";
 
-        $vnp_Amount = Cart::total(0, '', '') * 100; // Tổng giá trị đơn hàng (đơn vị: VNĐ)
+        $vnp_Amount = Cart::total(0, '', '') * 100;
         $vnp_Locale = 'vn';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
-        //Add Params of 2.0.1 Version
-        // $vnp_ExpireDate = $_POST['txtexpire'];
 
         $inputData = array(
             "vnp_Version" => "2.1.0",
@@ -1103,7 +1045,6 @@ class UserController extends Controller
             "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
-            // "vnp_ExpireDate"=>$vnp_ExpireDate,
         );
 
         if (isset($vnp_BankCode) && $vnp_BankCode != "") {
@@ -1113,7 +1054,6 @@ class UserController extends Controller
             $inputData['vnp_Bill_State'] = $vnp_Bill_State;
         }
 
-        //var_dump($inputData);
         ksort($inputData);
         $query = "";
         $i = 0;
@@ -1147,49 +1087,42 @@ class UserController extends Controller
         } else {
             echo json_encode($returnData); // Initial request, not a response from VNPay
         }
-        // vui lòng tham khảo thêm tại code demo
     }
 
+    // Kiểm tra thanh toán VNPAY
     public function vnpay_check(Request $request)
     {
-        // Get response code and transaction reference
         $vnp_ResponseCode = $request->get('vnp_ResponseCode');
         $latestOrder = Orders::orderBy('created_at', 'desc')->first(); // Tìm đơn hàng mới nhất
         $orderId = $latestOrder->id;
 
-        // Check response code and handle accordingly
         if ($vnp_ResponseCode === '00') { // Success
             $this->handleVnpaySuccess($orderId);
-            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', 'Successfully' . $orderId);
-        } else { // Failure or cancellation
+            return redirect('/give_mail_your_order/' . $orderId)->with('thongbao', __('lang.pay_success') . $orderId);
+        } else {
             $this->handleVnpayFailure($orderId);
-            return redirect()->route('cart')->with('canhbao', 'Thanh toán không thành công. Vui lòng thử lại.');
+            return redirect()->route('cart')->with('canhbao', __('lang.pay_failed'));
         }
     }
 
-    // Hàm xử lý khi thanh toán thành công
+    // Thanh toán VNPAY thành công
     private function handleVnpaySuccess($orderId)
     {
-        // Tìm đơn hàng dựa trên ID
         $order = Orders::find($orderId);
 
         if ($order) {
-            $order->payment_status = 2; // Set payment_status to 2 (paid)
+            $order->payment_status = 2;
             $order->save();
 
-            // Xóa giỏ hàng và cookie
             Cart::destroy();
             Cookie::queue(Cookie::forget('cart'));
             session()->forget('cart');
-        } else {
-            // Xử lý khi không tìm thấy đơn hàng (nếu cần)
         }
     }
 
-    // Hàm xử lý khi thanh toán thất bại hoặc bị hủy
+    // Thanh toán VNPAY thất bại
     private function handleVnpayFailure($orderId)
     {
-        // Tìm đơn hàng dựa trên ID
         $order = Orders::find($orderId);
 
         if ($order) {
@@ -1202,24 +1135,24 @@ class UserController extends Controller
                 }
             }
 
-            // Xóa đơn hàng
             $order->delete();
         } else {
             if (Cookie::has('cart_backup')) {
                 $cartContent = json_decode(Cookie::get('cart_backup'), true);
-                Cart::destroy(); // Xóa giỏ hàng hiện tại
+                Cart::destroy();
+
                 foreach ($cartContent as $item) {
                     Cart::add($item['id'], $item['name'], $item['qty'], $item['price'], 0, $item['options']);
                 }
-                Cookie::queue(Cookie::forget('cart_backup')); // Xóa cookie sau khi đã khôi phục
+                Cookie::queue(Cookie::forget('cart_backup'));
             }
         }
     }
 
+    // Gửi token đặt lại mật khẩu
     public function send_passreset_token(Request $request)
     {
         $data = $request->all();
-        // print_r($data);
 
         $now = Carbon::now('Asia/Ho_Chi_Minh')->format('d-m-Y');
         $title = '[TechZone] Lấy lại mật khẩu / Password retrieval';
@@ -1233,7 +1166,7 @@ class UserController extends Controller
             $count = $user->count();
             print_r($count);
             if ($count == 0) {
-                return redirect()->back()->with('error', 'Email does not exist.');
+                return redirect()->back()->with('error', __('lang.email_notexist'));
             } else {
                 $token_random = Str::random(191);
                 $user = User::find($user_id);
@@ -1254,10 +1187,12 @@ class UserController extends Controller
                     $message->from('no-reply@yourdomain.com', 'Your Application Name');
                 });
             }
-            return redirect()->back()->with('thongbao', 'Password reset link has been sent to your email.');
+
+            return redirect()->back()->with('thongbao', __('lang.pass_email_sent'));
         }
     }
 
+    // Xử lý đặt lại mật khẩu
     public function solve_update_new_pass(Request $request)
     {
         $data = $request->all();
@@ -1283,43 +1218,35 @@ class UserController extends Controller
             $reset->password = bcrypt($newPassword);
             $reset->reset_token = $token_random;
             $reset->save();
-            return redirect('/login')->with("success", 'Update successful !');
+
+            return redirect('/login')->with("success", __('lang.update_successs'));
         } else {
-            return redirect('/forgetpassword')->with("error", 'Request Timeout! gmail:' . $gmail . 'check' . $count . 'token:' . $token);
+            return redirect('/forgetpassword')->with("error", 'Request Timeout!');
         }
     }
 
+    // Gửi email sau khi đặt hàng thành công
     public function give_mail_your_order($id)
     {
 
         if (Auth::check()) {
             $orders_id = $id;
-            // session()->forget('orders_id_use');
+
             Cart::destroy();
             $content = Orders::find($orders_id);
-            // if($content==null){
-            //     $maxOrderId = Orders::max('id');
-            //     $content = Orders::find($maxOrderId);
-            // }
-            $gmail = $content['email'];
-            if ($gmail == null) {
-                $gmail = 'hagiabao980@gmail.com';
-            }
-            $phone = $content['phone'];
-            $title = 'Đơn hàng của khách hàng có số điện thoại ' . $phone;
 
+            $title = '[TechZone] Xác nhận đơn hàng mã #' . $orders_id;
 
-            // Send email
-            $to_email = $gmail;
+            $to_email = $content['email'];
             $link_order = url('/your_orders_detail/' . $id);
-            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get(); // Lấy chi tiết đơn hàng
+            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get();
 
             $mail_data = [
                 "name" => $title,
                 "body" => $link_order,
                 'email' => $to_email,
-                'order' => $content,             // Truyền thông tin order
-                'orders_detail' => $orders_detail // Truyền chi tiết đơn hàng
+                'order' => $content,
+                'orders_detail' => $orders_detail
             ];
 
             Mail::send('user.order_mail', [
@@ -1328,39 +1255,29 @@ class UserController extends Controller
                 'body' => $link_order
             ], function ($message) use ($title, $mail_data) {
                 $message->to($mail_data['email'])->subject($title);
-                $message->from('no-reply@yourdomain.com', 'Your Application Name');
+                $message->from('hi@techzone.io', 'TechZone');
             });
 
-            return redirect('/your_orders_detail/' . $id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail');
+            return redirect('/your_orders_detail/' . $id)->with('thongbao', __('lang.order_success'));
         } else {
 
             $orders_id = $id;
-            // session()->forget('orders_id_use');
+
             Cart::destroy();
             $content = Orders::find($orders_id);
-            // if($content==null){
-            //     $maxOrderId = Orders::max('id');
-            //     $content = Orders::find($maxOrderId);
-            // }
-            $gmail = $content['email'];
-            if ($gmail == null) {
-                $gmail = 'hagiabao980@gmail.com';
-            }
-            $phone = $content['phone'];
-            $title = 'Đơn hàng của khách hàng có số điện thoại ' . $phone;
 
+            $title = '[TechZone] Xác nhận đơn hàng mã #' . $orders_id;
 
-            // Send email
-            $to_email = $gmail;
+            $to_email = $content['email'];
             $link_order = url('/your_orders_detail/' . $id);
-            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get(); // Lấy chi tiết đơn hàng
+            $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get();
 
             $mail_data = [
                 "name" => $title,
                 "body" => $link_order,
                 'email' => $to_email,
-                'order' => $content,             // Truyền thông tin order
-                'orders_detail' => $orders_detail // Truyền chi tiết đơn hàng
+                'order' => $content,
+                'orders_detail' => $orders_detail
             ];
 
             Mail::send('user.order_mail', [
@@ -1369,10 +1286,10 @@ class UserController extends Controller
                 'body' => $link_order
             ], function ($message) use ($title, $mail_data) {
                 $message->to($mail_data['email'])->subject($title);
-                $message->from('no-reply@yourdomain.com', 'Your Application Name');
+                $message->from('hi@techzone.io', 'TechZone');
             });
 
-            return redirect('/your_orders_detail/' . $id)->with('thongbao', 'Successfully và đã gửi thông tin đến gmail' . $id);
+            return redirect('/your_orders_detail/' . $id)->with('thongbao', __('lang.order_success'));
         }
     }
 }

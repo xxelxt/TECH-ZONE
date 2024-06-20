@@ -11,7 +11,6 @@ class AboutController extends Controller
     /**
      * Hiển thị trang chỉnh sửa thông tin "About".
      */
-
     public function getEdit()
     {
         $about = About::find(1); // Tìm đối tượng "About" có ID là 1
@@ -34,7 +33,7 @@ class AboutController extends Controller
 
             // Kiểm tra định dạng file ảnh có hợp lệ không
             if ($format != 'jpg' && $format != 'png' && $format != 'jpeg') {
-                return redirect('admin/about')->with('thongbao', 'Không hỗ trợ ' . $format);
+                return redirect('admin/about')->with('thongbao', __('lang.unsupported_file') . $format);
             }
 
             $name = $file->getClientOriginalName(); // Lấy tên gốc của file ảnh
@@ -61,6 +60,6 @@ class AboutController extends Controller
         $about->update($request->all());
 
         // Chuyển hướng về trang "About" với thông báo thành công
-        return redirect('admin/about')->with('thongbao', 'Thành công');
+        return redirect('admin/about')->with('thongbao', __('lang.update_successful'));
     }
 }

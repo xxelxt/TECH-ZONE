@@ -1,16 +1,7 @@
 <div class="card mb-3">
   <div class="card-body">
     <div class="card-block">
-      @if(count($errors)>0)
-      <div class="alert alert-danger">
-        @foreach($errors->all() as $arr)
-        {{ $arr }}<br>
-        @endforeach
-      </div>
-
-      <hr>
     </div>
-    @endif
     <form action="admin/edit" method="POST">
       @csrf
       <div class="row mb-4">

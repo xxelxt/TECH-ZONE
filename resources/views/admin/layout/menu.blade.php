@@ -87,9 +87,9 @@
                     </a>
                 </li>
                 @endrole
-                 <!-- Orders -->
-                 @can('list orders')
-                 <li class="pcoded">
+                <!-- Orders -->
+                @can('list orders')
+                <li class="pcoded">
                     <a href="admin/orders/list" class="waves-effect waves-dark">
                         <span class="pcoded-micon">
                             <i class="feather icon-credit-card "></i>
@@ -99,7 +99,7 @@
                 </li>
                 @endcan
                 @role('admin')
-                 <!-- Ratings -->
+                <!-- Ratings -->
                 <li class="pcoded">
                     <a href="admin/rating" class="waves-effect waves-dark">
                         <span class="pcoded-micon">

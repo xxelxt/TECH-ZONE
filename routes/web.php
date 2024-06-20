@@ -200,7 +200,7 @@ Route::get('/all_products', [UserController::class, 'product_all']);
 
 Route::get('/search', [UserController::class, 'search_user']);
 Route::get('/brands/{id}', [UserController::class, 'product_brand']);
-Route::get('/products/{id}', [UserController::class, 'product_deltails']);
+Route::get('/products/{id}', [UserController::class, 'product_details']);
 Route::get('/categories/{id}', [UserController::class, 'product_grid']);
 Route::get('/subcategories/{id}', [UserController::class, 'product_grid_sub']);
 

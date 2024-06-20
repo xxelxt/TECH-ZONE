@@ -6,17 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Orders;
-use App\Models\About;
 use App\Models\Orders_Detail;
 use App\Models\Rating;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
-    // Hàm khởi tạo, được gọi khi controller này được khởi tạo
     function __construct()
     {
         $sum = 0;
@@ -91,7 +88,7 @@ class AdminController extends Controller
 
         $user->update($request->all());
 
-        return redirect('admin/profile')->with('thongbao', 'Cập nhật thành công');
+        return redirect('admin/profile')->with('thongbao', __('lang.update_successful'));
     }
 
     // Chỉnh sửa ảnh đại diện
@@ -102,7 +99,7 @@ class AdminController extends Controller
             $file =  $request->file('Image');
             $format = $file->getClientOriginalExtension();
             if ($format != 'jpg' && $format != 'jpeg' && $format != 'png') {
-                return redirect('admin/profile')->with('thongbao', 'Không hỗ trợ ' . $format);
+                return redirect('admin/profile')->with('thongbao', __('lang.unsupported_file') . $format);
             }
             $name = $file->getClientOriginalName();
             $img = Str::random(4) . '-' . $name;
@@ -117,7 +114,7 @@ class AdminController extends Controller
             }
             User::where('id', Auth::user()->id)->update(['image' => $img]);
         }
-        return redirect('admin/profile')->with('thongbao', 'Update successfully!');
+        return redirect('admin/profile')->with('thongbao', __('lang.update_successful'));
     }
 
     // Chỉnh sửa liên kết Facebook
@@ -125,7 +122,7 @@ class AdminController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $user->update($request->all());
-        return redirect('admin/profile')->with('thongbao', 'Update successfully!');
+        return redirect('admin/profile')->with('thongbao', __('lang.update_successful'));
     }
 
     // Hiển thị trang đăng nhập
@@ -148,7 +145,7 @@ class AdminController extends Controller
         if (Auth::attempt(['username' => $request['username'], 'password' => $request['password']])) {
             return redirect('admin');
         } else {
-            return redirect('admin/login')->with('canhbao', 'Đăng nhập không thành công');
+            return redirect('admin/login')->with('canhbao', __('lang.failed_login'));
         }
     }
 
@@ -203,7 +200,7 @@ class AdminController extends Controller
         $request['image'] = 'avatar.jpg';
         $user = User::create($request->all());
         $user->syncRoles('staff');
-        return redirect('admin/staff/list')->with('thongbao', 'Thêm thành công');
+        return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
     // Hiển thị trang chỉnh sửa người dùng
@@ -247,7 +244,7 @@ class AdminController extends Controller
 
         $user = User::find($id);
         $user->update($request->all());
-        return redirect('admin/staff/list')->with('thongbao', 'Thành công');
+        return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
     // Hiển thị trang quản lý vai trò của người dùng
@@ -266,7 +263,7 @@ class AdminController extends Controller
         $data = $request->all();
         $user = User::find($id);
         $user->syncRoles($data['role']);
-        return redirect('admin/staff/list')->with('thongbao', 'Update vai trò thành công');
+        return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
     // Hiển thị trang quản lý quyền hạn của người dùng
@@ -284,7 +281,7 @@ class AdminController extends Controller
         $data = $request->all();
         $user = User::find($id);
         $user->syncPermissions($data['permission']);
-        return redirect('admin/staff/list')->with('thongbao', 'Thêm quyền thành công');
+        return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
     // Hiển thị trang danh sách đánh giá

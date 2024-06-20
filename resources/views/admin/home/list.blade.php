@@ -106,31 +106,31 @@
                         <div class="col p-l-5">
                             <h6>{!! $value['users']['lastname'] !!} {!! $value['users']['firstname'] !!}</h6>
                             <div class="p-l-30">
-                            <ul class="ral rating">
-                                <?php
-                                $count = 0;
-                                while ($count < 5) {
-                                    if (($value['ratings'] - $count) > 0.5) {
-                                ?>
-                                        <i class="fa fa-star"></i>
+                                <ul class="ral rating">
                                     <?php
-                                    } else if (($value['ratings'] - $count) == 0.5) {
+                                    $count = 0;
+                                    while ($count < 5) {
+                                        if (($value['ratings'] - $count) > 0.5) {
                                     ?>
-                                        <i class="fa fa-star-half"></i>
+                                            <i class="fa fa-star"></i>
+                                        <?php
+                                        } else if (($value['ratings'] - $count) == 0.5) {
+                                        ?>
+                                            <i class="fa fa-star-half"></i>
+                                        <?php
+                                        } else if (($value['ratings'] - $count) < 0.5) {
+                                        ?>
+                                            <i class="fa fa-star-o"></i>
                                     <?php
-                                    } else if (($value['ratings'] - $count) < 0.5) {
-                                    ?>
-                                        <i class="fa fa-star-o"></i>
-                                <?php
+                                        }
+                                        $count++;
                                     }
-                                    $count++;
-                                }
-                                ?>
-                            </ul>
+                                    ?>
+                                </ul>
                             </div>
-                            
+
                             </p>
-                            <p class="text-white m-b-0">@lang('lang.products'): {!! $value['products']['name'] !!}</p>
+                            <p class="m-b-2" style="color: gray">@lang('lang.products'): {!! $value['products']['name'] !!}</p>
                             <p class="text-white m-b-0">{!! $value['content'] !!}</p>
                         </div>
                     </div>

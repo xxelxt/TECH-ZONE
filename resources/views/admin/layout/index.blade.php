@@ -51,26 +51,14 @@
                 <div class="pcoded-wrapper">
 
                     @include('admin.layout.menu')
-                    
+
                     <div class="pcoded-content">
                         <div class="pcoded-inner-content">
                             @yield('content')
-                            @if (session('thongbao'))
-                            <div class="alert alert-success">
-                                {{ session('thongbao') }}
-                            </div>
-                            @endif
-                            @if (session('canhbao'))
-                            <div class="alert alert-warning">
-                                {{ session('canhbao') }}
-                            </div>
-                            @endif
                         </div>
                     </div>
-                    
-                    <div id="styleSelector">
-                    </div>
 
+                    <div id="styleSelector"></div>
                 </div>
             </div>
         </div>
@@ -142,15 +130,15 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/35.2.1/classic/ckeditor.js"></script>
     <script>
-                        ClassicEditor
-                                .create( document.querySelector( '#editor' ) )
-                                .then( editor => {
-                                        console.log( editor );
-                                } )
-                                .catch( error => {
-                                        console.error( error );
-                                } );
-                </script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
     @yield('script')
 
 </body>

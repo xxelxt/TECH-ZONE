@@ -1,66 +1,79 @@
 @extends('admin.layout.index')
 @section('content')
 @can('list banners')
-    <div class="card" style="border: none; margin: 30px;">
-        <div class="row align-items-center">
-            <div class="col">
-                <h1>@lang('lang.ban')</h1>
-                <p class="text-muted">@lang('lang.list')</p>
-            </div>
-            @can('add banners')
-                <div class="col-auto">
-                    <a href="admin/banners/create" class="btn btn-primary">
-                        @lang('lang.add')
-                    </a>
-                    <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_banners') }}">
-                        @lang('lang.delete_all')
-                    </button>
-                </div>
-            @endcan
-        </div>
-    </div>
 
-    <div class="card" style="border: none; margin: 30px;">
-        <div class="table-responsive">
-            <table class="table table-bordered" style="width:100%">
-                <thead>
-                    <tr align="center">
-                        <th><input type="checkbox" id="master"></th>
-                        <th>@lang('lang.image')</th>
-                        <th>@lang('lang.active')</th>
-                        @can('edit banners')
-                        <th>@lang('lang.edit')</th>
-                        @endcan
-                        @can('delete banners')
-                        <th>@lang('lang.delete')</th>
-                        @endcan
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($banners as $value)
-                        <tr align="center">
-                            <td><input type="checkbox" class="sub_chk" data-id="{!! $value['id'] !!}"></td>
-                            <td>
-                                <img width="100px" src="user_asset/images/banners/{!! $value['image'] !!}" alt="">
-                            </td>
-                            <td>
-                                <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
-                            </td>
-                            @can('edit banners')
-                                <td><a class="btn btn-warning" href="admin/banners/edit/{!! $value['id'] !!}">@lang('lang.edit')</a></td>
-                            @endcan
-                            @can('delete banners')
-                                <td><a href="javascript:void(0)" data-url="{{ url('ajax/delete_banners', $value['id'] ) }}" class="btn btn-danger delete-banners">@lang('lang.delete')</a></td>
-                            @endcan
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+<div class="card" style="border: none; margin: 30px;">
+    @if(count($errors)>0)
+    <div class="alert alert-danger">
+        @foreach($errors->all() as $arr)
+        {{$arr}}<br>
+        @endforeach
     </div>
+    @endif
+    @if (session('thongbao'))
+    <div class="alert alert-success">
+        {{session('thongbao')}}
+    </div>
+    @endif
+    <div class="row align-items-center">
+        <div class="col">
+            <h1>@lang('lang.ban')</h1>
+            <p class="text-muted">@lang('lang.list')</p>
+        </div>
+        @can('add banners')
+        <div class="col-auto">
+            <a href="admin/banners/create" class="btn btn-primary">
+                @lang('lang.add')
+            </a>
+            <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_banners') }}">
+                @lang('lang.delete_all')
+            </button>
+        </div>
+        @endcan
+    </div>
+</div>
+
+<div class="card" style="border: none; margin: 30px;">
+    <div class="table-responsive">
+        <table class="table table-bordered" style="width:100%">
+            <thead>
+                <tr align="center">
+                    <th><input type="checkbox" id="master"></th>
+                    <th>@lang('lang.image')</th>
+                    <th>@lang('lang.active')</th>
+                    @can('edit banners')
+                    <th>@lang('lang.edit')</th>
+                    @endcan
+                    @can('delete banners')
+                    <th>@lang('lang.delete')</th>
+                    @endcan
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($banners as $value)
+                <tr align="center">
+                    <td><input type="checkbox" class="sub_chk" data-id="{!! $value['id'] !!}"></td>
+                    <td>
+                        <img width="100px" src="user_asset/images/banners/{!! $value['image'] !!}" alt="">
+                    </td>
+                    <td>
+                        <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
+                    </td>
+                    @can('edit banners')
+                    <td><a class="btn btn-warning" href="admin/banners/edit/{!! $value['id'] !!}">@lang('lang.edit')</a></td>
+                    @endcan
+                    @can('delete banners')
+                    <td><a href="javascript:void(0)" data-url="{{ url('ajax/delete_banners', $value['id'] ) }}" class="btn btn-danger delete-banners">@lang('lang.delete')</a></td>
+                    @endcan
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @else
-    <h1 align="center">@lang('lang.deny')</h1>
+<h1 align="center">@lang('lang.deny')</h1>
 @endcan
 @section('script')
 <script>

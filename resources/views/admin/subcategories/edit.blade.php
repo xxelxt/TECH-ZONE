@@ -9,43 +9,43 @@
     </div>
 </div>
 <div class="card" style="border: none; margin: 30px;">
-        @if(count($errors)>0)
-            <div class="alert alert-danger">
-                @foreach($errors->all() as $arr)
-                    {{ $arr }}<br>
-                @endforeach
-            </div>
-        @endif
-        @if (session('thongbao'))
-            <div class="alert alert-success">
-                {{ session('thongbao') }}
-            </div>
-        @endif
+    @if(count($errors)>0)
+    <div class="alert alert-danger">
+        @foreach($errors->all() as $arr)
+        {{$arr}}<br>
+        @endforeach
+    </div>
+    @endif
+    @if (session('thongbao'))
+    <div class="alert alert-success">
+        {{session('thongbao')}}
+    </div>
+    @endif
 
-        <form action="admin/subcategories/edit/{!! $subcategories['id'] !!}" method="POST">
-            @csrf
-            <div class="row mb-3">
-                <label class="col-md-1 col-form-label">@lang('lang.cate')</label>
-                <div class="col-md-11">
-                    <select name="cat_id" class="form-control form-control-primary">
-                        @foreach ($categories as $value)
-                            <option @if ($subcategories['categories']['id'] == $value['id']) selected @endif value="{!! $value['id'] !!}">{!! $value['name'] !!}</option>
-                        @endforeach
-                    </select>
-                </div>
+    <form action="admin/subcategories/edit/{!! $subcategories['id'] !!}" method="POST">
+        @csrf
+        <div class="row mb-3">
+            <label class="col-md-1 col-form-label">@lang('lang.cate')</label>
+            <div class="col-md-11">
+                <select name="cat_id" class="form-control form-control-primary">
+                    @foreach ($categories as $value)
+                    <option @if ($subcategories['categories']['id']==$value['id']) selected @endif value="{!! $value['id'] !!}">{!! $value['name'] !!}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="row mb-3">
-                <label class="col-md-1 col-form-label">@lang('lang.name')</label>
-                <div class="col-md-11">
-                    <input type="text" value="{!! $subcategories['name'] !!}" class="form-control" name="name" placeholder="Nhập tên danh mục" required>
-                </div>
+        </div>
+        <div class="row mb-3">
+            <label class="col-md-1 col-form-label">@lang('lang.name')</label>
+            <div class="col-md-11">
+                <input type="text" value="{!! $subcategories['name'] !!}" class="form-control" name="name" placeholder="Nhập tên danh mục" required>
             </div>
+        </div>
 
-            <div class="row mb-3">
-                <div class="col-md-11 offset-md-1">
-                    <button type="submit" class="btn btn-primary">@lang('lang.update')</button>
-                </div>
+        <div class="row mb-3">
+            <div class="col-md-11 offset-md-1">
+                <button type="submit" class="btn btn-primary">@lang('lang.update')</button>
             </div>
-        </form>
+        </div>
+    </form>
 </div>
 @endsection

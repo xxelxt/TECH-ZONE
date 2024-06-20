@@ -17,7 +17,7 @@ class CheckBanned
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->back()->with('canhbao', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ TechZone để biết thêm chi tiết.');
+            return redirect()->back()->with('canhbao', __('lang.banned_notice'));
         }
 
         return $next($request);

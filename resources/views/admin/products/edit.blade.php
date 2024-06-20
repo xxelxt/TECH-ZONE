@@ -113,10 +113,10 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Video</label>
             <div class="col-md-11">
-                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}"/>
+                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}" />
                 <div id="videoPreview" style="margin-top: 10px;">
                     @if(isset($products['link']))
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{!! $products['link'] !!}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/{!! $products['link'] !!}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     @endif
                 </div>
             </div>

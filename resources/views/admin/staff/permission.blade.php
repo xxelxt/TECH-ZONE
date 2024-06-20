@@ -4,7 +4,7 @@
     <div class="row align-items-center">
         <div class="col">
             <h1>@lang('lang.staff')</h1>
-            <p class="text-muted">@lang('lang.edit') @lang('lang.permission'): {!! $user['username'] !!}</p> 
+            <p class="text-muted">@lang('lang.edit') @lang('lang.permission'): {!! $user['username'] !!}</p>
         </div>
     </div>
 </div>
@@ -12,35 +12,29 @@
 <div class="card" style="border: none; margin: 30px;">
     <div class="card-body">
         @if(count($errors)>0)
-            <div class="alert alert-danger">
-                @foreach($errors->all() as $arr)
-                    {{ $arr }}<br>
-                @endforeach
-            </div>
+        <div class="alert alert-danger">
+            @foreach($errors->all() as $arr)
+            {{ $arr }}<br>
+            @endforeach
+        </div>
         @endif
 
         @if (session('thongbao'))
-            <div class="alert alert-success">
-                {{ session('thongbao') }}
-            </div>
+        <div class="alert alert-success">
+            {{ session('thongbao') }}
+        </div>
         @endif
 
         <form action="admin/staff/permission/{!! $user['id'] !!}" method="POST">
             @csrf
             <div class="row">
                 @foreach($permission as $permis)
-                    <div class="col-md-3 form-check">
-                        <input class="form-check-input" type="checkbox"
-                            @foreach($user_per as $pr)
-                                @if($pr['id'] == $permis['id'])
-                                    checked
-                                @endif
-                            @endforeach
-                            name="permission[]" value="{!! $permis['name'] !!}" id="{!! $permis['id'] !!}">
-                        <label class="form-check-label" for="{!! $permis['id'] !!}">
-                            {!! $permis['name'] !!}
-                        </label>
-                    </div>
+                <div class="col-md-3 form-check">
+                    <input class="form-check-input" type="checkbox" @foreach($user_per as $pr) @if($pr['id']==$permis['id']) checked @endif @endforeach name="permission[]" value="{!! $permis['name'] !!}" id="{!! $permis['id'] !!}">
+                    <label class="form-check-label" for="{!! $permis['id'] !!}">
+                        {!! $permis['name'] !!}
+                    </label>
+                </div>
                 @endforeach
             </div>
             <div class="row mb-3 mt-3">
@@ -64,6 +58,7 @@
                 ele[i].checked = true;
         }
     }
+
     function unselects() {
         var ele = document.getElementsByName('permission[]');
         for (var i = 0; i < ele.length; i++) {

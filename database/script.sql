@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 20, 2024 lúc 04:40 AM
+-- Thời gian đã tạo: Th6 20, 2024 lúc 01:53 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -706,6 +706,13 @@ CREATE TABLE `ratings` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Đang đổ dữ liệu cho bảng `ratings`
+--
+
+INSERT INTO `ratings` (`id`, `products_id`, `users_id`, `ratings`, `content`, `created_at`, `updated_at`) VALUES
+(1, 10, 7, 5, '<p>Sản phẩm xứng đáng giá tiền</p>', '2024-06-20 11:49:19', '2024-06-20 11:49:19');
+
 -- --------------------------------------------------------
 
 --
@@ -852,6 +859,14 @@ CREATE TABLE `wishlists` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `wishlists`
+--
+
+INSERT INTO `wishlists` (`id`, `products_id`, `users_id`, `created_at`, `updated_at`) VALUES
+(1, 1, 7, '2024-06-20 11:52:40', '2024-06-20 11:52:40'),
+(2, 12, 7, '2024-06-20 11:53:03', '2024-06-20 11:53:03');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -1084,7 +1099,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT cho bảng `ratings`
 --
 ALTER TABLE `ratings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `roles`
@@ -1108,7 +1123,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT cho bảng `wishlists`
 --
 ALTER TABLE `wishlists`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Các ràng buộc cho các bảng đã đổ

@@ -42,7 +42,7 @@
             <ul class="nav-right">
                 <div class="dropDown">
                     <div class="dropDown_box">
-                        <span class="seLect" >@lang('lang.lang')</span </div>
+                        <span class="seLect">@lang('lang.lang')</span </div>
                         <ul class="list_dropdow_menu" style="padding-left: 0px">
                             <!-- <li class="active">Tiếng Việt</li>
                         <li>Tiếng Anh</li> -->
@@ -50,10 +50,10 @@
                                 <img src="upload/admin/united-states.png" alt="">
                             </li>
 
-                            <li><a href="lang/vi">@lang('lang.vi')</a> 
-                            <img src="upload/admin/vietnam.png" alt="">
+                            <li><a href="lang/vi">@lang('lang.vi')</a>
+                                <img src="upload/admin/vietnam.png" alt="">
                             </li>
-                            
+
                         </ul>
                     </div>
             </ul>
