@@ -32,7 +32,7 @@
                             <td>{!! $value['users']['email'] !!}</td>
                             <td>{!! $value['products']['name'] !!}</td>
                             <td>{!! $value['ratings'] !!}</td>
-                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
+                            <td>{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
                             <td><a href="javascript:void(0)" data-url="{{ url('ajax/delete_rating', $value['id'] ) }}" class="btn btn-danger delete-rating">@lang('lang.delete')</a></td>
                         </tr>
                     @endforeach

@@ -4,17 +4,41 @@
 
 <style>
   .rating {
-    list-style-type: none;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
   }
 
-  .rating li {
-    float: left;
-    color: #EDBB0E;
+  .rating input[type="radio"] {
+    display: none;
   }
 
-  .ral {
+  .rating label {
+    position: relative;
     display: inline-block;
+    font-size: 2em;
+    color: #ccc;
     cursor: pointer;
+    --star-size: 0px;
+  }
+
+  .rating label::before {
+    content: '\f005 \f005 \f005 \f005 \f005';
+    /* 5 ngôi sao xám */
+    font-family: FontAwesome;
+  }
+
+  .rating label::after {
+    content: '\f005 \f005 \f005 \f005 \f005';
+    /* 5 ngôi sao vàng */
+    font-family: FontAwesome;
+    color: #EDBB0E;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--star-size);
+    height: 22.5px;
+    overflow: hidden;
   }
 
   /* Style for the enlarged image */
@@ -174,15 +198,16 @@
           <button class="btndanhgia">@lang('lang.your_review')</button>
           <div class="formdanhgia">
             <form action="/addRating" method="POST">
+            <input type="hidden" name="rating_value" id="ratingValue">
               @csrf
               <h6 class="tieude text-uppercase">GỬI ĐÁNH GIÁ CỦA BẠN</h6>
               <span class="danhgiacuaban">Đánh giá của bạn về sản phẩm này:</span>
-              <div class="rating d-flex flex-row-reverse align-items-center justify-content-end">
-                <input type="radio" name="ratings" id="star1" value="5"><label for="star1"></label>
-                <input type="radio" name="ratings" id="star2" value="4"><label for="star2"></label>
-                <input type="radio" name="ratings" id="star3" value="3"><label for="star3"></label>
-                <input type="radio" name="ratings" id="star4" value="2"><label for="star4"></label>
-                <input type="radio" name="ratings" id="star5" value="1"><label for="star5"></label>
+              <div class="rating">
+                <input type="radio" name="rating" id="star5" value="5"><label for="star5"></label>
+                <input type="radio" name="rating" id="star4" value="4"><label for="star4"></label>
+                <input type="radio" name="rating" id="star3" value="3"><label for="star3"></label>
+                <input type="radio" name="rating" id="star2" value="2"><label for="star2"></label>
+                <input type="radio" name="rating" id="star1" value="1"><label for="star1"></label>
               </div>
               <div class="form-group">
                 <textarea class="form-control txtComment w-100" name="content" id="editor" placeholder="Đánh giá của bạn về sản phẩm này"></textarea>
@@ -247,7 +272,7 @@
                   }
                   ?>
                 </ul>
-                <p style="font-size: 12px;">{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</p>
+                <p style="font-size: 12px;">{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</p>
                 <h6>{!! $value['content'] !!}</h6>
                 @endforeach
                 @else
@@ -327,6 +352,36 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+  var rating = document.querySelector('.btndanhgia');
+  var form_rating = document.querySelector('.formdanhgia');
+  rating.addEventListener('click', function() {
+    form_rating.classList.toggle('active')
+  })
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const ratingInputs = document.querySelectorAll('.rating input[type="radio"]');
+    ratingInputs.forEach(input => {
+      input.addEventListener('change', function() {
+        const ratingValue = this.value;
+        document.getElementById('ratingValue').value = ratingValue;
+        console.log(ratingValue);
+
+        const labels = document.querySelectorAll('.rating label');
+        labels.forEach((label, index) => {
+          const starIndex = 5 - index; // Do ngôi sao xếp ngược
+          if (starIndex <= ratingValue) {
+            // Cập nhật giá trị biến CSS
+            label.style.setProperty('--star-size', '15px');
+          } else {
+            label.style.setProperty('--star-size', '0px');
+          }
+        });
+      });
+    });
+  });
+</script>
+<script>
   totalWishlist();
 
   function totalWishlist() {
@@ -381,55 +436,6 @@
       });
     });
   });
-</script>
-<script>
-  $(document).ready(function() {
-    $('.related_wishlist').click(function() {
-      $.ajaxSetup({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-      var users_id = "{!! Auth::id() !!}";
-      var products_id = $(this).data('productid');
-      $.ajax({
-        type: 'POST',
-        url: '/wishlist',
-        data: {
-          products_id: products_id,
-          users_id: users_id
-        },
-        success: function(response) {
-          if (response.action == 'add') {
-            totalWishlist();
-            $('a[data-productid=' + products_id + ']').html('<i class="fas fa-heart"></i>');
-            $('#notifDiv').fadeIn();
-            $('#notifDiv').css('background', 'green');
-            $('#notifDiv').text(response.message);
-            setTimeout(() => {
-              $('#notifDiv').fadeOut();
-            }, 3000);
-          } else if (response.action == 'remove') {
-            totalWishlist();
-            $('a[data-productid=' + products_id + ']').html('<i class="far fa-heart"></i>');
-            $('#notifDiv').fadeIn();
-            $('#notifDiv').css('background', 'red');
-            $('#notifDiv').text(response.message);
-            setTimeout(() => {
-              $('#notifDiv').fadeOut();
-            }, 3000);
-          }
-        }
-      });
-    });
-  });
-</script>
-<script>
-  var rating = document.querySelector('.btndanhgia');
-  var form_rating = document.querySelector('.formdanhgia');
-  rating.addEventListener('click', function() {
-    form_rating.classList.toggle('active')
-  })
 </script>
 <script>
   function enlargeImage(imageUrl) {

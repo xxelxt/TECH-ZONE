@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 @foreach($user_new as $value)
-                <p class="m-b-0 text-white">From {!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</p>
+                <p class="m-b-0 text-white">From {!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</p>
                 @endforeach
             </div>
         </div>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 @foreach($orders_detail_new as $value)
-                <p class="m-b-0 text-white">From {!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</p>
+                <p class="m-b-0 text-white">From {!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</p>
                 @endforeach
             </div>
         </div>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 @foreach($orders_new as $value)
-                <p class="m-b-0 text-white">From {!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</p>
+                <p class="m-b-0 text-white">From {!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</p>
                 @endforeach
             </div>
         </div>
@@ -161,7 +161,7 @@
                     <div class="d-inline-block">
                         <h6>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</h6>
                         <p class="text-muted m-b-0">{!! $value['email'] !!}</p>
-                        <span class="status deactive text-mute"><i class="far fa-clock m-r-10"></i>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</span>
+                        <span class="status deactive text-mute"><i class="far fa-clock m-r-10"></i>{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</span>
                     </div>
                 </div>
                 @endforeach

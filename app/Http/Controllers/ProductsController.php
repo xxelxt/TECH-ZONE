@@ -173,34 +173,7 @@ class ProductsController extends Controller
         Products::find($id)->update($request->all());
         return redirect('admin/products/list')->with('thongbao','Update thành công');
     }
-    // public function Delete($id)
-    // {
-    //     $image = Products::find($id);
-    //     $imagelibrary= Imagelibrary::where('products_id',$image->id)->get();
-    //     if(File::exists('user_asset/images/products/'.$image->image))
-    //     {
-    //         File::delete('user_asset/images/products/'.$image->image);
-    //     }
-    //     foreach($imagelibrary as $img)
-    //     {
-    //         if(File::exists('user_asset/images/products/'.$img->image_library))
-    //         {
-    //             File::delete('user_asset/images/products/'.$img->image_library);
-    //         }
-    //     }
-    //     $image->delete();
-    //     return redirect('admin/products/list')->with('thongbao','Xóa Thành Công');
-    // }
-    // public function Deleteimages($id)
-    // {
-    //     $imagelibrary = Imagelibrary::find($id);
-    //     if(File::exists('user_asset/images/products/'.$imagelibrary->image_library))
-    //     {
-    //         File::delete('user_asset/images/products/'.$imagelibrary->image_library);
-    //     }
-    //     Imagelibrary::find($id)->delete();
-    //     return back();
-    // }
+
     public function Deleteimages($id)
     {
         $imagelibrary = Imagelibrary::find($id);
@@ -212,6 +185,7 @@ class ProductsController extends Controller
         return response()->json(['success' => 'Delete Successfully']);
         // return redirect()->back();
     }
+    
     public function delete_products($id)
     {
         $image = Products::find($id);

@@ -26,8 +26,8 @@
                         <tr align="center">
                             <td>{!! $value['id'] !!}</td>
                             <td>{!! $value['name'] !!}</td>
-                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                            <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
+                            <td>{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
+                            <td>{!! $value['updated_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
                         </tr>
                     @endforeach
                 </tbody>

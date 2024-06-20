@@ -78,7 +78,7 @@
                                     <h6 class="mb-0">@lang('lang.joining_date')</h6>
                                 </div>
                                 <div class="col-sm-9 text-secondary">
-                                    {!! date("d-m-Y H:m:s", strtotime($user['created_at'])) !!}
+                                    {!! $user['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}
                                 </div>
                             </div>
                             <div class="row mt-4">

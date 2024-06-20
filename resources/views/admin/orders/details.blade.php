@@ -32,7 +32,7 @@
                             <td><img style="width: 100px;" src="user_asset/images/products/{!! $value['image'] !!}" alt=""></td>
                             <td>{!! $value['quantity'] !!}</td>
                             <td>{!! number_format($value['price']) !!} đ</td>
-                            <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
+                            <td>{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
                         </tr>
                     @endforeach
                 </tbody>

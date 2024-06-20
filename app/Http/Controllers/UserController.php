@@ -530,7 +530,7 @@ class UserController extends Controller
         // Thêm đánh giá sản phẩm và chuyển hướng trở lại với thông báo thích hợp
 
         $data = $request->all();
-        if (!isset($data['ratings'])) {
+        if (!isset($data['rating_value'])) {
             return redirect()->back()->with('canhbao', 'Add at least one star rating for this Product');
         }
         $ratingCount = Rating::where(['users_id' => Auth::user()->id, 'products_id' => $data['products_id']])->count();
@@ -540,7 +540,7 @@ class UserController extends Controller
             $rating = new Rating;
             $rating->users_id = Auth::user()->id;
             $rating->products_id = $data['products_id'];
-            $rating->ratings = $data['ratings'];
+            $rating->ratings = $data['rating_value'];
             $rating->content = $data['content'];
             $rating->save();
             return redirect()->back()->with('thongbao', 'Successfully');

@@ -37,8 +37,8 @@
                                     <td>{!! $value['lastname'] !!} {!! $value['firstname'] !!}</td>
                                     <td>{!! $value['username'] !!}</td>
                                     <td>{!! $value['email'] !!}</td>
-                                    <td>{!! date("d-m-Y H:m:s", strtotime($value['created_at'])) !!}</td>
-                                    <td>{!! date("d-m-Y H:m:s", strtotime($value['updated_at'])) !!}</td>
+                                    <td>{!! $value['created_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
+                                    <td>{!! $value['updated_at']->timezone('Asia/Ho_Chi_Minh')->format('d-m-Y H:i:s') !!}</td>
                                     @can('delete users')
                                         <td>
                                             <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
