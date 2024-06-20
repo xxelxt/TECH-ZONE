@@ -12,7 +12,7 @@ class BannersController extends Controller
     // Phương thức để liệt kê tất cả các banners
     public function list()
     {
-        $banners = Banners::all()->paginate(10);
+        $banners = Banners::orderBy('id', 'DESC')->paginate(10);
         return view('admin.banners.list', ['banners' => $banners]);
     }
 
