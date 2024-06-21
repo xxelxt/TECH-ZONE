@@ -694,33 +694,58 @@ class UserController extends Controller
         }
     }
 
-    // Apply mã giảm giá vào đơn hàng
     public function discount(Request $request)
     {
         $discounts = Discounts::all();
-
+    
         foreach ($discounts as $value) {
-            if ($value['code'] == $request->code) {
-                if ($value['active'] == 1) {
-                    $data = $value['discounts'];
+            if ($value->code == $request->code) {
+                if ($value->active == 1) {
+                    $data = $value->discounts;
                     Cart::setGlobalDiscount($data);
-
+    
+                    // Lưu mã giảm giá vào session
+                    $request->session()->put('discount_code', $value->code);
+    
+                    // Giảm số lượng phiếu giảm giá trong cơ sở dữ liệu
+                    $value->quantity--;
+                    $value->save();
+    
                     return redirect()->back()->with('thongbao', __('lang.coupon_success'));
                 } else {
                     return redirect()->back()->with('canhbao', __('lang.coupon_notavail'));
                 }
             }
         }
-
+    
         return redirect()->back()->with('canhbao', __('lang.coupon_notavail'));
     }
+    
 
     // Xoá mã giảm giá khỏi đơn hàng
-    public function delete_discount()
+    public function delete_discount(Request $request)
     {
-        Cart::setGlobalDiscount(0);
-        return redirect()->back()->with('thongbao', __('lang.delete_coupon_noti'));
+        // Lấy mã giảm giá từ session
+        $discountCode = $request->session()->get('discount_code');
+    
+        // Xóa mã giảm giá khỏi session
+        $request->session()->forget('discount_code');
+    
+        // Tăng số lượng phiếu giảm giá trong cơ sở dữ liệu
+        $discount = Discounts::where('code', $discountCode)->first();
+        if ($discount) {
+            $discount->quantity++;
+            $discount->save();
+    
+            // Xóa giảm giá toàn cầu trong giỏ hàng
+            Cart::setGlobalDiscount(0);
+    
+            return redirect()->back()->with('thongbao', __('lang.delete_coupon_noti'));
+        }
+    
+        return redirect()->back()->with('canhbao', __('lang.coupon_notavail'));
     }
+    
 
     // Cập nhật hình ảnh tài khoản
     public function edit_img(Request $request)
