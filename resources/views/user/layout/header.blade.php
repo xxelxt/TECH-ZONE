@@ -1,5 +1,18 @@
 <?php
+
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Auth;
+
+if (Auth::check()) {
+    $cartContent = json_decode(Cookie::get('cart'), true);
+    
+    if ($cartContent) {
+        Cart::destroy();
+        Cart::add($cartContent);
+    }
+}
+
 $content = Cart::content();
 ?>
 <header class="header">
@@ -23,7 +36,7 @@ $content = Cart::content();
                             <a href="#"><i class="fa fa-pinterest-p"></i></a>
                         </div>
                         <div class="header__top__right__language">
-                            <span class="seLect" >@lang('lang.lang')</span >
+                            <span class="seLect">@lang('lang.lang')</span>
                             <span class="arrow_carrot-down"></span>
                             <ul>
                                 <li><a href="lang/vi">@lang('lang.vi')</a></li>
@@ -74,20 +87,20 @@ $content = Cart::content();
             </div>
             <div class="col-lg-3" style="margin-top: 10px">
                 <div class="header__cart">
-                @auth
-                    <ul>               
+                    @auth
+                    <ul>
                         <li><a href="/wishlist_pages">
-                            <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
-                        </a></li>
-                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
+                                <i class="fas fa-heart"></i> <span class="total_wishlist"></span>
+                            </a></li>
+                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>
                     </ul>
                     <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').'đ' !!}</span></div>
-                @else
-                    <ul>               
-                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>                     
+                    @else
+                    <ul>
+                        <li><a href="cart"><i class="fa fa-shopping-bag"></i> <span>{!! $content->count() !!}</span></a></li>
                     </ul>
                     <div class="header__cart__price">@lang('lang.total_price'): <span>{!! Cart::total(0,',','.').'đ' !!}</span></div>
-                @endauth
+                    @endauth
 
                 </div>
             </div>
