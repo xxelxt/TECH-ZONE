@@ -7,9 +7,17 @@ use App\Models\Discounts;
 
 class DiscountsController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $discounts = Discounts::orderBy('id', 'DESC')->paginate(10);
+        $query = Discounts::orderBy('id', 'DESC');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('code', 'like', "%$search%")
+                ->orWhere('discounts', 'like', "%$search%");
+        }
+
+        $discounts = $query->paginate(10);
         return view('admin.discounts.list', ['discounts' => $discounts]);
     }
 

@@ -9,9 +9,19 @@ use App\Models\Categories;
 
 class SubCategoriesController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $subcategories = Subcategories::orderBy('id', 'DESC')->paginate(10);
+        $query = Subcategories::orderBy('id', 'DESC');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%$search%")
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
+        }
+
+        $subcategories = $query->paginate(10);
         return view('admin.subcategories.list', ['subcategories' => $subcategories]);
     }
 
@@ -88,7 +98,7 @@ class SubCategoriesController extends Controller
     {
         $ids = $request->ids;
         $check = count(Products::where('sub_id', $ids)->get());
-        
+
         if ($check != 0) {
             return response()->json(['error' => __('lang.delete_error_subcat')]);
         } else {

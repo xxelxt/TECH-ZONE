@@ -10,9 +10,16 @@ use Illuminate\Support\Facades\File;
 
 class BrandsController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $brands = Brands::orderBy('id', 'DESC')->paginate(10);
+        $query = Brands::orderBy('id', 'DESC');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%$search%");
+        }
+
+        $brands = $query->paginate(10);
         return view('admin.brands.list', ['brands' => $brands]);
     }
 

@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Orders;
 use App\Models\Orders_Detail;
+use App\Models\Products;
 use App\Models\Rating;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -156,23 +158,55 @@ class AdminController extends Controller
         return redirect('admin/login');
     }
 
-    // Hiển thị danh sách người dùng
-    public function list()
+    // Hiển thị danh sách tài khoản khách hàng
+    public function userList(Request $request)
     {
-        $users = User::with('roles', 'permissions')->orderBy('id', 'DESC')->get();
-        return view('admin.staff.list', [
-            'users' => $users,
-        ]);
+        $query = User::with('roles', 'permissions');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where(DB::raw("CONCAT(lastname, ' ', firstname)"), 'like', "%$search%")
+                    ->orWhere('username', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->whereHas('roles', function ($r) {
+                        $r->where('name', 'user');
+                    });
+            });
+        }
+
+        $users = $query->orderBy('id', 'DESC')->paginate(20);
+        return view('admin.user.list', ['users' => $users]);
     }
 
-    // Hiển thị trang tạo người dùng mới
+    // Hiển thị danh sách nhân viên
+    public function list(Request $request)
+    {
+        $query = User::with('roles', 'permissions');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where(DB::raw("CONCAT(lastname, ' ', firstname)"), 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhereHas('roles', function ($r) use ($search) {
+                        $r->where('name', 'like', "%$search%");
+                    });
+            });
+        }
+
+        $users = $query->orderBy('id', 'DESC')->paginate(20);
+        return view('admin.staff.list', ['users' => $users]);
+    }
+
+    // Hiển thị trang tạo nhân viên mới
     public function getcreate()
     {
         $role = Role::orderBy('id', 'ASC')->get();
         return view('admin/staff/create', ['role' => $role]);
     }
 
-    // Xử lý tạo người dùng mới
+    // Xử lý tạo nhân viên mới
     public function postcreate(Request $request)
     {
         $request->validate([
@@ -198,12 +232,14 @@ class AdminController extends Controller
 
         $request['password'] = bcrypt($request['password']);
         $request['image'] = 'avatar.jpg';
+
         $user = User::create($request->all());
         $user->syncRoles('staff');
+
         return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
-    // Hiển thị trang chỉnh sửa người dùng
+    // Hiển thị trang chỉnh sửa nhân viên
     public function getEdit($id)
     {
         $role = Role::all();
@@ -212,7 +248,7 @@ class AdminController extends Controller
         return view('admin.staff.edit', ['user' => $user, 'role' => $role, 'all_role' => $all_role]);
     }
 
-    // Xử lý chỉnh sửa người dùng
+    // Xử lý chỉnh sửa nhân viên
     public function postEdit(Request $request, $id)
     {
         $request->validate([
@@ -247,7 +283,7 @@ class AdminController extends Controller
         return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
-    // Hiển thị trang quản lý vai trò của người dùng
+    // Hiển thị trang quản lý vai trò của nhân viên
     public function getrole($id)
     {
         $user = User::find($id);
@@ -257,7 +293,7 @@ class AdminController extends Controller
         return view('admin.staff.role', ['role' => $role, 'user' => $user, 'all_role' => $all_role, 'permission' => $permission]);
     }
 
-    // Xử lý cập nhật vai trò của người dùng
+    // Xử lý cập nhật vai trò của nhân viên
     public function postrole(Request $request, $id)
     {
         $data = $request->all();
@@ -266,7 +302,7 @@ class AdminController extends Controller
         return redirect('admin/staff/list')->with('thongbao', __('lang.update_successful'));
     }
 
-    // Hiển thị trang quản lý quyền hạn của người dùng
+    // Hiển thị trang quản lý quyền hạn của nhân viên
     public function getpermission($id)
     {
         $user = User::find($id);
@@ -275,7 +311,7 @@ class AdminController extends Controller
         return view('admin.staff.permission', ['user' => $user, 'permission' => $permission, 'user_per' => $user_per]);
     }
 
-    // Xử lý cập nhật quyền hạn của người dùng
+    // Xử lý cập nhật quyền hạn của nhân viên
     public function postpermission(Request $request, $id)
     {
         $data = $request->all();
@@ -285,9 +321,86 @@ class AdminController extends Controller
     }
 
     // Hiển thị trang danh sách đánh giá
-    public function getRating()
+    public function getRating(Request $request)
     {
-        $rating = Rating::all();
+        $query = Rating::with(['users', 'products']);
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->whereHas('users', function ($q) use ($search) {
+                $q->where('firstname', 'like', "%$search%")
+                    ->orWhere('lastname', 'like', "%$search%");
+            })
+                ->orWhereHas('products', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
+        }
+
+        $rating = $query->orderBy('id', 'DESC')->paginate(10);
+
         return view('admin.rating.list', ['rating' => $rating]);
+    }
+
+    // Hiển thị danh sách đon hàng (chỉ quản trị viên)
+    public function orders_list(Request $request)
+    {
+        $query = Orders::with('users');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->where('phone', 'like', "%$search%")
+                    ->orWhere('address', 'like', "%$search%")
+                    ->orWhere('district', 'like', "%$search%")
+                    ->orWhereHas('users', function ($q) use ($search) {
+                        $q->where(DB::raw("CONCAT(lastname, ' ', firstname)"), 'like', "%$search%")
+                            ->orWhere('email', 'like', "%$search%");
+                    });
+            });
+        }
+
+        $orders = $query->orderBy('id', 'DESC')->paginate(20);
+        return view('admin.orders.list', ['orders' => $orders]);
+    }
+
+    // Hiển thị chi tiết đon hàng (chỉ quản trị viên)
+    public function orders_details($orders_id)
+    {
+        $orders_detail = Orders_Detail::where('orders_id', $orders_id)->paginate(10);
+        return view('admin.orders.details', ['orders_detail' => $orders_detail]);
+    }
+
+    // Cập nhật trạng thái đon hàng (chỉ quản trị viên)
+    public function update(Request $request, $id)
+    {
+        Orders::find($id)->update($request->all());
+        return redirect()->back()->with('thongbao', __('lang.update_successful'));
+    }
+
+    // Xoá đơn hàng (chỉ quản trị viên)
+    public function delete_orders($id)
+    {
+        $order = Orders::find($id);
+
+        if ($order) {
+            $orderDetails = Orders_Detail::where('orders_id', $id)->get();
+
+            foreach ($orderDetails as $orderDetail) {
+                $product = Products::find($orderDetail->product_id);
+
+                if ($product) {
+                    // Cập nhật số lượng sản phẩm
+                    $product->quantity += $orderDetail->quantity;
+                    $product->save();
+                }
+            }
+
+            $order->delete($id);
+
+            return response()->json(['success' => __('lang.delete_success')]);
+        } else {
+            return response()->json(['error' => __('lang.order_404')], 404);
+        }
     }
 }

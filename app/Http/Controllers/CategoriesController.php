@@ -9,9 +9,16 @@ use App\Models\Subcategories;
 
 class CategoriesController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        $categories = Categories::orderBy('id', 'DESC')->paginate(10);
+        $query = Categories::orderBy('id', 'DESC');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%$search%");
+        }
+
+        $categories = $query->paginate(10);
         return view('admin.categories.list', ['categories' => $categories]);
     }
 

@@ -24,6 +24,12 @@
                 @lang('lang.add')
             </a>
         </div>
+        <form action="{{ route('admin.staff.list') }}" method="GET">
+            <div class="input-group" style="margin-top: 20px; margin-right: 200px; padding-right: 15px;">
+                <input type="text" class="form-control" name="search" placeholder="@lang('lang.search')" value="{{ request('search') }}">
+                <button class="btn btn-outline-secondary" type="submit">@lang('lang.search')</button>
+            </div>
+        </form>
     </div>
 </div>
 

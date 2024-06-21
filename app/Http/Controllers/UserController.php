@@ -66,14 +66,6 @@ class UserController extends Controller
         return view('user.pages.home');
     }
 
-    public function list()
-    {
-        $users = User::with('roles', 'permissions')->get();
-        return view('admin.user.list', [
-            'users' => $users
-        ]);
-    }
-
     public function get_login()
     {
         if (Auth::check()) {
@@ -154,7 +146,7 @@ class UserController extends Controller
         $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         if (Auth::attempt([$fieldType => $login, 'password' => $request->password])) {
-            Cookie::queue(Cookie::forget('cart'));
+            // Cookie::queue(Cookie::forget('cart'));
             return redirect('/');
         } else {
             return redirect('/login')->with('canhbao', __('lang.failed_login'));
@@ -782,53 +774,6 @@ class UserController extends Controller
         $user->update($request->all());
 
         return redirect('/profile')->with('thongbao', __('lang.update_successful'));
-    }
-
-    // Hiển thị danh sách đon hàng (chỉ quản trị viên)
-    public function orders_list()
-    {
-        $orders = Orders::all();
-        return view('admin.orders.list', ['orders' => $orders]);
-    }
-
-    // Hiển thị chi tiết đon hàng (chỉ quản trị viên)
-    public function orders_details($orders_id)
-    {
-        $orders_detail = Orders_Detail::where('orders_id', $orders_id)->get();
-        return view('admin.orders.details', ['orders_detail' => $orders_detail]);
-    }
-
-    // Cập nhật trạng thái đon hàng (chỉ quản trị viên)
-    public function update(Request $request, $id)
-    {
-        Orders::find($id)->update($request->all());
-        return redirect()->back()->with('thongbao', __('lang.update_successful'));
-    }
-
-    // Xoá đơn hàng (chỉ quản trị viên)
-    public function delete_orders($id)
-    {
-        $order = Orders::find($id);
-
-        if ($order) {
-            $orderDetails = Orders_Detail::where('orders_id', $id)->get();
-
-            foreach ($orderDetails as $orderDetail) {
-                $product = Products::find($orderDetail->product_id);
-
-                if ($product) {
-                    // Cập nhật số lượng sản phẩm
-                    $product->quantity += $orderDetail->quantity;
-                    $product->save();
-                }
-            }
-
-            $order->delete($id);
-
-            return response()->json(['success' => __('lang.delete_success')]);
-        } else {
-            return response()->json(['error' => __('lang.order_404')], 404);
-        }
     }
 
     // Trang lịch sử đặt hàng (của người dùng)

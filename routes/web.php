@@ -46,7 +46,7 @@ Route::prefix('admin')->group(function () {
 Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function () {
     Route::get('/', [AdminController::class, 'home']);
     Route::prefix('staff')->group(function () {
-        Route::get('/list', [AdminController::class, 'list']);
+        Route::get('/list', [AdminController::class, 'list'])->name('admin.staff.list');
 
         Route::get('/create', [AdminController::class, 'getcreate']);
         Route::post('/create', [AdminController::class, 'postcreate']);
@@ -62,11 +62,11 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('user')->group(function () {
-        Route::get('/list', [UserController::class, 'list']);
+        Route::get('/list', [AdminController::class, 'userList'])->name('admin.users.list');
     });
 
     Route::prefix('categories')->group(function () {
-        Route::get('/list', [CategoriesController::class, 'list']);
+        Route::get('/list', [CategoriesController::class, 'list'])->name('admin.categories.list');
 
         Route::get('/create', [CategoriesController::class, 'getCreate']);
         Route::post('/create', [CategoriesController::class, 'postCreate']);
@@ -76,7 +76,7 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('subcategories')->group(function () {
-        Route::get('/list', [SubCategoriesController::class, 'list']);
+        Route::get('/list', [SubCategoriesController::class, 'list'])->name('admin.subcategories.list');
 
         Route::get('/create', [SubCategoriesController::class, 'getCreate']);
         Route::post('/create', [SubCategoriesController::class, 'postCreate']);
@@ -86,7 +86,7 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('products')->group(function () {
-        Route::get('/list', [ProductsController::class, 'list']);
+        Route::get('/list', [ProductsController::class, 'list'])->name('admin.products.list');
 
         Route::get('/create', [ProductsController::class, 'getCreate']);
         Route::post('/create', [ProductsController::class, 'postCreate']);
@@ -96,7 +96,7 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('brands')->group(function () {
-        Route::get('/list', [BrandsController::class, 'list']);
+        Route::get('/list', [BrandsController::class, 'list'])->name('admin.brands.list');
 
         Route::get('/create', [BrandsController::class, 'getCreate']);
         Route::post('/create', [BrandsController::class, 'postCreate']);
@@ -108,7 +108,7 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('discounts')->group(function () {
-        Route::get('/list', [DiscountsController::class, 'list']);
+        Route::get('/list', [DiscountsController::class, 'list'])->name('admin.discounts.list');
 
         Route::get('/create', [DiscountsController::class, 'getCreate']);
         Route::post('/create', [DiscountsController::class, 'postCreate']);
@@ -137,7 +137,7 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('rating')->group(function () {
-        Route::get('/', [AdminController::class, 'getRating']);
+        Route::get('/', [AdminController::class, 'getRating'])->name('admin.ratings.list');
     });
 
     Route::prefix('roles')->group(function () {
@@ -145,9 +145,9 @@ Route::prefix('admin')->middleware('admin', 'role:admin|staff')->group(function 
     });
 
     Route::prefix('orders')->group(function () {
-        Route::get('/list', [UserController::class, 'orders_list']);
-        Route::get('/details/{orders_id}', [UserController::class, 'orders_details']);
-        Route::post('/update/{id}', [UserController::class, 'update']);
+        Route::get('/list', [AdminController::class, 'orders_list'])->name('admin.orders.list');
+        Route::get('/details/{orders_id}', [AdminController::class, 'orders_details']);
+        Route::post('/update/{id}', [AdminController::class, 'update']);
     });
 });
 
@@ -176,7 +176,8 @@ Route::delete('ajax/delete_rating/{id}', [UserController::class, 'delete_rating'
 Route::delete('ajax/delete_staff/{id}', [UserController::class, 'delete_staff']);
 Route::delete('ajax/delete_products/{id}', [ProductsController::class, 'delete_products']);
 Route::delete('ajax/deleteimages/{id}', [ProductsController::class, 'Deleteimages']);
-Route::delete('ajax/delete_orders/{id}', [UserController::class, 'delete_orders']);
+
+Route::delete('ajax/delete_orders/{id}', [AdminController::class, 'delete_orders']);
 
 Route::get('/', [UserController::class, 'home'])->name('user.home');
 Route::get('/register', [UserController::class, 'get_register']);

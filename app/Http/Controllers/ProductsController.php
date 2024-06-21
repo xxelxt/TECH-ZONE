@@ -15,12 +15,29 @@ use Illuminate\Support\Facades\File;
 
 class ProductsController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
         $brands = Brands::all();
         $users = User::all();
         $categories = Categories::all();
-        $products = Products::orderBy('id', 'DESC')->paginate(10);
+
+        $query = Products::orderBy('id', 'DESC');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'like', "%$search%")
+                ->orWhereHas('categories', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                ->orWhereHas('subcategories', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                ->orWhereHas('brands', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
+        }
+
+        $products = $query->paginate(10);
 
         return view('admin.products.list', compact('products', 'categories', 'users', 'brands'));
     }

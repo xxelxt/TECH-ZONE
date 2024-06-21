@@ -19,6 +19,12 @@
             <h1>@lang('lang.rating')</h1>
             <p class="text-muted">@lang('lang.list')</p>
         </div>
+        <form action="{{ route('admin.ratings.list') }}" method="GET">
+            <div class="input-group" style="margin-top: 20px; margin-right: 200px; padding-right: 15px;">
+                <input type="text" class="form-control" name="search" placeholder="@lang('lang.search')" value="{{ request('search') }}">
+                <button class="btn btn-outline-secondary" type="submit">@lang('lang.search')</button>
+            </div>
+        </form>
     </div>
 </div>
 
