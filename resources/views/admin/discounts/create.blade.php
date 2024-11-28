@@ -28,19 +28,19 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.code')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" name="code" placeholder="@lang('lang.code') @lang('lang.discounts')" required>
+                <input type="text" class="form-control" name="code" placeholder="@lang('lang.code') @lang('lang.discounts')" maxlength="191" required>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.discounts')</label>
             <div class="col-md-11">
-                <input type="number" class="form-control" name="discounts" placeholder="" required>
+                <input type="number" class="form-control" name="discounts" placeholder="" min="0" max="100" required>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.quanty')</label>
             <div class="col-md-11">
-                <input type="number" class="form-control" name="quantity" placeholder="" required>
+                <input type="number" class="form-control" name="quantity" placeholder="" min="0" step="1" required>
             </div>
         </div>
         <div class="row mb-3">

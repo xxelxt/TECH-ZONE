@@ -61,7 +61,7 @@
                         <input type="checkbox" class="toggle-class" data-toggle="toggle" data-id="{!! $value['id'] !!}" data-onstyle="primary" data-offstyle="danger" {!! $value['active']==true ? 'checked' : '' !!}>
                     </td>
                     <td>
-                        <a href="javascript:void(0)" data-url="{{ url('ajax/delete_user', $value['id'] ) }}" class="btn btn-danger delete-user">@lang('lang.delete')</a>
+                        <a href="javascript:void(0)" data-url="{{ url('ajax/delete_staff', $value['id'] ) }}" class="btn btn-danger delete-user">@lang('lang.delete')</a>
                     </td>
                     @endcan
                 </tr>
@@ -98,7 +98,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('.delete-staff').on('click', function() {
+        $('.delete-user').on('click', function() {
             var userURL = $(this).data('url');
             var trObj = $(this);
             if (confirm("Are you sure you want to remove it?") == true) {

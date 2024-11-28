@@ -40,11 +40,11 @@
                     <th>@lang('lang.address')</th>
                     <th>@lang('lang.district')</th>
                     <th>@lang('lang.total_price')</th>
+                    @can('edit orders')
                     <th>@lang('lang.status')</th>
                     <th>@lang('lang.update')</th>
-                    @can('edit orders')
-                    <th>@lang('lang.billing_details')</th>
                     @endcan
+                    <th>@lang('lang.billing_details')</th>
                     @can('delete orders')
                     <th>@lang('lang.delete')</th>
                     @endcan
@@ -61,6 +61,7 @@
                     <td>{!! $value['district'] !!}</td>
                     <td>{!! number_format($value['total'])!!} đ</td>
 
+                    @can('edit orders')
                     {{-- Form để cập nhật trạng thái đơn hàng --}}
                     <form action="admin/orders/update/{!! $value['id'] !!}" method="POST">
                         @csrf
@@ -82,10 +83,11 @@
                         </td>
                         <td><button type="submit" class="btn btn-success">@lang('lang.update')</button></td>
                     </form>
-
-                    @can('edit orders')
-                    <td><a class="btn btn-primary" href="admin/orders/details/{!! $value['id'] !!}">@lang('lang.billing_details_short')</a></td>
                     @endcan
+
+                    
+                    <td><a class="btn btn-primary" href="admin/orders/details/{!! $value['id'] !!}">@lang('lang.billing_details_short')</a></td>
+
                     @can('delete orders')
                     <td><a href="javascript:void(0)" class="btn btn-danger delete-orders" data-url="{{ url('ajax/delete_orders', $value['id'] ) }}">@lang('lang.delete')</a></td>
                     @endcan

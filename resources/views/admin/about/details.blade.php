@@ -46,40 +46,40 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.web_name')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->name:""}}" name="name">
+                <input type="text" class="form-control" value="{{($about!=null)?$about->name:""}}" name="name" maxlength="191" required>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.title')</label>
             <div class="col-md-11">
-                <textarea class="form-control" name="title" rows="5" cols="50">{{($about!=null)?$about->title:""}}</textarea>
+                <textarea class="form-control" name="title" rows="5" cols="50" required>{{($about!=null)?$about->title:""}}</textarea>
             </div>
         </div>
 
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.phone')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->phone:""}}" name="phone">
+                <input type="number" class="form-control" value="{{($about!=null)?$about->phone:""}}" name="phone" min="0" step="1" maxlength="12" required>
             </div>
         </div>
 
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Email</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->email:""}}" name="email">
+                <input type="text" class="form-control" value="{{($about!=null)?$about->email:""}}" name="email" maxlength="191" required>
             </div>
         </div>
 
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.address')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->address:""}}" name="address">
+                <input type="text" class="form-control" value="{{($about!=null)?$about->address:""}}" name="address" maxlength="191" required>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.social_network')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->linkfanpage:""}}" name="linkfanpage">
+                <input type="text" class="form-control" value="{{($about!=null)?$about->linkfanpage:""}}" name="linkfanpage" maxlength="191">
             </div>
         </div>
         <div class="row mb-3">
@@ -92,7 +92,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.worktime')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" value="{{($about!=null)?$about->worktime:""}}" name="worktime">
+                <input type="text" class="form-control" value="{{($about!=null)?$about->worktime:""}}" name="worktime" maxlength="191" required>
             </div>
         </div>
 

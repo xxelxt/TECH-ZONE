@@ -37,7 +37,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.name')</label>
             <div class="col-md-11">
-                <input type="text" value="{!! $subcategories['name'] !!}" class="form-control" name="name" placeholder="Nhập tên danh mục" required>
+                <input type="text" value="{!! $subcategories['name'] !!}" class="form-control" name="name" placeholder="Nhập tên danh mục" maxlength="191" required>
             </div>
         </div>
 

@@ -21,7 +21,7 @@
             <label for="Image">@lang('lang.new_profile_image'):</label>
           </div>
           <div class="col-md-8">
-            <input type="file" name="Image" id="Image" class="form-control">
+            <input type="file" name="Image" id="Image" class="form-control" required>
           </div>
           <div class="col-md-2">
             <button type="submit" class="btn btn-danger bg-gradient">@lang('lang.submit')</button>
@@ -37,7 +37,7 @@
             <h6>@lang('lang.social_network'):</h6>
           </div>
           <div class="col-md-8">
-            <input type="text" value="{{ $user['facebook'] }}" class="form-control text-secondary" name="facebook">
+            <input type="text" value="{{ $user['facebook'] }}" class="form-control text-secondary" name="facebook" maxlength="191" required>
           </div>
           <div class="col-md-2">
             <button type="submit" class="btn btn-danger bg-gradient">@lang('lang.submit')</button>

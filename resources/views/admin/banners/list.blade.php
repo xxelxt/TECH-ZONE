@@ -20,16 +20,19 @@
             <h1>@lang('lang.ban')</h1>
             <p class="text-muted">@lang('lang.list')</p>
         </div>
-        @can('add banners')
         <div class="col-auto">
+            @can('add banners')
             <a href="admin/banners/create" class="btn btn-primary">
                 @lang('lang.add')
             </a>
+            @endcan
+            @can('delete banners')
             <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_banners') }}">
                 @lang('lang.delete_all')
             </button>
+            @endcan
         </div>
-        @endcan
+
     </div>
 </div>
 

@@ -59,7 +59,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.name')</label>
             <div class="col-md-11">
-                <input class="form-control" name="name" placeholder="@lang('lang.enter') @lang('lang.name')" value="{!! $products['name'] !!}" />
+                <input class="form-control" name="name" placeholder="@lang('lang.enter') @lang('lang.name')" value="{!! $products['name'] !!}" maxlength="191" />
             </div>
         </div>
 
@@ -100,20 +100,20 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.size')</label>
             <div class="col-md-11">
-                <input class="form-control" name="size" placeholder="@lang('lang.enter') @lang('lang.size')" value="{!! $products['size'] !!}" />
+                <input class="form-control" name="size" placeholder="@lang('lang.enter') @lang('lang.size')" value="{!! $products['size'] !!}" maxlength="191" />
             </div>
         </div>
 
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.quanty')</label>
             <div class="col-md-11">
-                <input class="form-control" type="number" name="quantity" placeholder="@lang('lang.enter') @lang('lang.quanty')" value="{!! $products['quantity'] !!}" />
+                <input class="form-control" type="number" name="quantity" placeholder="@lang('lang.enter') @lang('lang.quanty')" value="{!! $products['quantity'] !!}" min="0" step="1" />
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Video</label>
             <div class="col-md-11">
-                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}" />
+                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="{!! $products['link'] !!}" maxlength="191" />
                 <div id="videoPreview" style="margin-top: 10px;">
                     @if(isset($products['link']))
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/{!! $products['link'] !!}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -124,7 +124,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.price')</label>
             <div class="col-md-11">
-                <input class="form-control" type="number" name="price" placeholder="@lang('lang.enter') @lang('lang.price')" value="{!! $products['price'] !!}" />
+                <input class="form-control" type="number" name="price" placeholder="@lang('lang.enter') @lang('lang.price')" value="{!! $products['price'] !!}" min="0" step="1" />
             </div>
         </div>
         <div class="row mb-3">
@@ -133,7 +133,7 @@
                 <label for="checkPrice" class="form-check-label">@lang('lang.new_price')</label>
             </div>
             <div class="col-md-11">
-                <input class="price_new form-control" type="number" name="price_new" disabled placeholder="@lang('lang.enter') @lang('lang.new_price')" value="{!! $products['price_new'] !!}" />
+                <input class="price_new form-control" type="number" name="price_new" disabled placeholder="@lang('lang.enter') @lang('lang.new_price')" value="{!! $products['price_new'] !!}" min="0" step="1" />
             </div>
         </div>
         <div class="row mb-3">

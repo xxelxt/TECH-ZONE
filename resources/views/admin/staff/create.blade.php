@@ -27,37 +27,37 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.fristname')</label>
             <div class="col-md-11">
-                <input class="form-control" name="firstname" placeholder="@lang('lang.enter') @lang('lang.fristname')" />
+                <input class="form-control" name="firstname" placeholder="@lang('lang.enter') @lang('lang.fristname')" maxlength="191" required/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.lastname')</label>
             <div class="col-md-11">
-                <input class="form-control" name="lastname" placeholder="@lang('lang.enter') @lang('lang.lastname')" />
+                <input class="form-control" name="lastname" placeholder="@lang('lang.enter') @lang('lang.lastname')" maxlength="191" required/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.username')</label>
             <div class="col-md-11">
-                <input class="form-control" type="text" name="username" placeholder="@lang('lang.enter') @lang('lang.username')" />
+                <input class="form-control" type="text" name="username" placeholder="@lang('lang.enter') @lang('lang.username')" maxlength="30" required/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Email</label>
             <div class="col-md-11">
-                <input class="form-control" type="email" name="email" placeholder="@lang('lang.enter') Email" />
+                <input class="form-control" type="email" name="email" placeholder="@lang('lang.enter') Email" maxlength="191" required/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.social_network')</label>
             <div class="col-md-11">
-                <input class="form-control" type="text" name="facebook" placeholder="@lang('lang.enter') @lang('lang.social_network')" />
+                <input class="form-control" type="text" name="facebook" placeholder="@lang('lang.enter') @lang('lang.social_network')" maxlength="191"/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.phone')</label>
             <div class="col-md-11">
-                <input class="form-control" type="phone" name="phone" placeholder="@lang('lang.enter') @lang('lang.phone')" />
+                <input class="form-control" type="phone" name="phone" placeholder="@lang('lang.enter') @lang('lang.phone')" min="0" step="1" maxlength="13" required/>
             </div>
         </div>
         <div class="row mb-3">
@@ -76,13 +76,13 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.password')</label>
             <div class="col-md-11">
-                <input type="password" class="form-control" name="password" placeholder="@lang('lang.enter') @lang('lang.password')" />
+                <input type="password" class="form-control" name="password" placeholder="@lang('lang.enter') @lang('lang.password')" maxlength="30" required/>
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.password_again')</label>
             <div class="col-md-11">
-                <input type="password" class="form-control" name="passwordagain" placeholder="@lang('lang.password_again')" />
+                <input type="password" class="form-control" name="passwordagain" placeholder="@lang('lang.password_again')" maxlength="30" required/>
             </div>
         </div>
         <div class="row mb-3">

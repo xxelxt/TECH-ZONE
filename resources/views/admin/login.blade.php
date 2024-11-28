@@ -88,11 +88,11 @@
 							@endif
 							<div class="form-group mb-3">
 								<label class="label" for="name">@lang('lang.username')</label>
-								<input type="text" name="username" class="form-control" placeholder="">
+								<input type="text" name="username" class="form-control" placeholder="" maxlength="30">
 							</div>
 							<div class="form-group mb-3">
 								<label class="label" for="password">@lang('lang.password')</label>
-								<input type="password" name="password" class="form-control" placeholder="">
+								<input type="password" name="password" class="form-control" placeholder="" maxlength="30">
 							</div>
 							<div class="form-group">
 								<button type="submit" class="form-control btn btn-primary rounded submit px-3">@lang('lang.sign_in')</button>

@@ -65,7 +65,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.name')</label>
             <div class="col-md-11">
-                <input class="form-control" name="name" placeholder="@lang('lang.enter') @lang('lang.name')" />
+                <input class="form-control" name="name" placeholder="@lang('lang.enter') @lang('lang.name')" maxlength="191" />
             </div>
         </div>
         <div class="row mb-3">
@@ -85,25 +85,25 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">Video</label>
             <div class="col-md-11">
-                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="" />
+                <input class="form-control" id="link" name="link" placeholder="https://www.youtube.com/watch?v=" value="" maxlength="191" />
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.size')</label>
             <div class="col-md-11">
-                <input class="form-control" name="size" placeholder="@lang('lang.enter') @lang('lang.size')" />
+                <input class="form-control" name="size" placeholder="@lang('lang.enter') @lang('lang.size')" maxlength="191" />
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.quanty')</label>
             <div class="col-md-11">
-                <input class="form-control" type="number" name="quantity" placeholder="@lang('lang.enter') @lang('lang.quanty')" />
+                <input class="form-control" type="number" name="quantity" placeholder="@lang('lang.enter') @lang('lang.quanty')" min="0" step="1" />
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.price')</label>
             <div class="col-md-11">
-                <input class="form-control" type="number" name="price" placeholder="@lang('lang.enter') @lang('lang.price')" />
+                <input class="form-control" type="number" name="price" placeholder="@lang('lang.enter') @lang('lang.price')" min="0" step="1" />
             </div>
         </div>
 
@@ -113,7 +113,7 @@
                 <label for="checkPrice" class="form-check-label">@lang('lang.new_price')</label>
             </div>
             <div class="col-md-11">
-                <input class="price_new form-control" type="number" name="price_new" disabled placeholder="@lang('lang.enter') @lang('lang.new_price')" />
+                <input class="price_new form-control" type="number" name="price_new" disabled placeholder="@lang('lang.enter') @lang('lang.new_price')" min="0" step="1" />
             </div>
         </div>
         <div class="row mb-3">

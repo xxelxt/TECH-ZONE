@@ -9,7 +9,7 @@
           <h6 class="mb-0">@lang('lang.fristname')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="text" value="{!! $user['firstname'] !!}" class="form-control" name="firstname" placeholder="">
+          <input type="text" value="{!! $user['firstname'] !!}" class="form-control" name="firstname" placeholder="" maxlength="191" required>
         </div>
       </div>
       <div class="row mb-4">
@@ -17,7 +17,7 @@
           <h6 class="mb-0">@lang('lang.lastname')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="text" value="{!! $user['lastname'] !!}" class="form-control" name="lastname" placeholder="">
+          <input type="text" value="{!! $user['lastname'] !!}" class="form-control" name="lastname" placeholder="" maxlength="191" required>
         </div>
       </div>
       <div class="row mb-4">
@@ -25,7 +25,7 @@
           <h6 class="mb-0">Email</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="text" value="{!! $user['email'] !!}" class="form-control" name="email" placeholder="">
+          <input type="text" value="{!! $user['email'] !!}" class="form-control" name="email" placeholder="" maxlength="191" required>
         </div>
       </div>
       <div class="row mb-4">
@@ -33,7 +33,7 @@
           <h6 class="mb-0">@lang('lang.phone')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="phone" value="{!! $user['phone'] !!}" class="form-control" name="phone" placeholder="">
+          <input type="phone" value="{!! $user['phone'] !!}" class="form-control" name="phone" placeholder="" min="0" step="1" maxlength="13" required>
         </div>
       </div>
       <div class="row mb-4">
@@ -57,7 +57,7 @@
           <h6 class="mb-0">@lang('lang.newpass')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="password" class="password form-control" name="password" disabled placeholder="" />
+          <input type="password" class="password form-control" name="password" disabled placeholder="" maxlength="30"/>
         </div>
       </div>
       <div class="row mb-4">
@@ -65,7 +65,7 @@
           <h6 class="mb-0">@lang('lang.confirm_newpass')</h6>
         </div>
         <div class="col-sm-9 text-secondary">
-          <input type="password" class="password form-control" name="passwordagain" disabled placeholder="" />
+          <input type="password" class="password form-control" name="passwordagain" disabled placeholder="" maxlength="30"/>
         </div>
       </div>
       <div class="row mb-4">

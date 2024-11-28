@@ -28,7 +28,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.image')</label>
             <div class="col-md-11">
-                <input type="file" name="Image[]" class="form-control" id="imageInput" multiple>
+                <input type="file" name="Image[]" class="form-control" id="imageInput" multiple required>
                 <div id="imagePreview" class="row mt-2"></div> {{-- Hiển thị ảnh xem trước tại đây --}}
             </div>
         </div>

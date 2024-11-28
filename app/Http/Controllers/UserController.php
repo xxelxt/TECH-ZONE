@@ -988,8 +988,8 @@ class UserController extends Controller
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = route('vnpay.check');
-        $vnp_TmnCode = "0YKCXJ3P"; // Mã website tại VNPAY 
-        $vnp_HashSecret = "2YV8L7KX9HRPTBF2YNXMSAEIBZE6BO2R";
+        $vnp_TmnCode = "EWDJBAMF"; // Mã website tại VNPAY 
+        $vnp_HashSecret = "57BZVM5409982UV6C8SIV0LYZZRAAD9L";
 
         $cartContent = Cart::content();
 

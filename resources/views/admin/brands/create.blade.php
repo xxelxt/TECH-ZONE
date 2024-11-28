@@ -28,7 +28,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.name')</label>
             <div class="col-md-11">
-                <input type="text" class="form-control" name="name" placeholder="@lang('lang.name') @lang('lang.brands')" required>
+                <input type="text" class="form-control" name="name" placeholder="@lang('lang.name') @lang('lang.brands')" maxlength="191" required>
             </div>
         </div>
         <div class="row mb-3">

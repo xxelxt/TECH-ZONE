@@ -27,11 +27,6 @@
 </head>
 
 <body>
-    <!-- Page Preloder -->
-    <div id="preloder">
-        <div class="loader"></div>
-    </div>
-
     <!-- Reponsive header -->
     @include('user.layout.header_mobile')
     <!-- Reponsive header End -->

@@ -20,16 +20,19 @@
             <h1>@lang('lang.cate')</h1>
             <p class="text-muted">@lang('lang.list')</p>
         </div>
-        @can('add category')
+
         <div class="col-auto">
+            @can('add category')
             <a href="admin/categories/create" class="btn btn-primary">
                 @lang('lang.add')
             </a>
+            @endcan
+            @can('delete category')
             <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_categories') }}">
                 @lang('lang.delete_all')
             </button>
+            @endcan
         </div>
-        @endcan
         <form action="{{ route('admin.categories.list') }}" method="GET">
             <div class="input-group" style="margin-top: 20px; margin-right: 200px; padding-right: 15px;">
                 <input type="text" class="form-control" name="search" placeholder="@lang('lang.search')" value="{{ request('search') }}">

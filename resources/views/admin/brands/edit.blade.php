@@ -28,7 +28,7 @@
         <div class="row mb-3">
             <label class="col-md-1 col-form-label">@lang('lang.name')</label>
             <div class="col-md-11">
-                <input type="text" value="{!! $brands['name'] !!}" class="form-control" name="name" placeholder="Nhập tên thương hiệu" required>
+                <input type="text" value="{!! $brands['name'] !!}" class="form-control" name="name" placeholder="Nhập tên thương hiệu" maxlength="191" required>
             </div>
         </div>
         <div class="row mb-3">

@@ -15,22 +15,26 @@
         {{session('thongbao')}}
     </div>
     @endif
-    
+
     <div class="row align-items-center">
         <div class="col">
             <h1>@lang('lang.sub')</h1>
             <p class="text-muted">@lang('lang.list')</p>
         </div>
-        @can('add category')
+
         <div class="col-auto">
+            @can('add category')
             <a href="admin/subcategories/create" class="btn btn-primary">
                 @lang('lang.add')
             </a>
+            @endcan
+            @can('delete category')
             <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_subcategories') }}">
                 @lang('lang.delete_all')
             </button>
+            @endcan
         </div>
-        @endcan
+
         <form action="{{ route('admin.subcategories.list') }}" method="GET">
             <div class="input-group" style="margin-top: 20px; margin-right: 200px; padding-right: 15px;">
                 <input type="text" class="form-control" name="search" placeholder="@lang('lang.search')" value="{{ request('search') }}">

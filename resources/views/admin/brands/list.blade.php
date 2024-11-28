@@ -20,16 +20,19 @@
             <h1>@lang('lang.brands')</h1>
             <p class="text-muted">@lang('lang.list')</p>
         </div>
-        @can('add brands')
+
         <div class="col-auto">
+            @can('add brands')
             <a href="admin/brands/create" class="btn btn-primary">
                 @lang('lang.add')
             </a>
+            @endcan
+            @can('delete brands')
             <button class="btn btn-danger delete_all" data-url="{{ url('ajax/deleteall_brands') }}">
                 @lang('lang.delete_all')
             </button>
+            @endcan
         </div>
-        @endcan
         <form action="{{ route('admin.brands.list') }}" method="GET">
             <div class="input-group" style="margin-top: 20px; margin-right: 200px; padding-right: 15px;">
                 <input type="text" class="form-control" name="search" placeholder="@lang('lang.search')" value="{{ request('search') }}">
